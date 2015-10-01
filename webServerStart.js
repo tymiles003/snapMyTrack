@@ -1,6 +1,6 @@
 // 'Hallo Welt' Webserver
 var getHandler = require('./lib/getHandler');
-var postHandler = require('./lib/postHaandler');
+var postHandler = require('./lib/postHandler');
 var express = require('express');
 var bodyParser = require('body-parser')
 var app = express();
