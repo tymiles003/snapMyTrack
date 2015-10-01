@@ -1,13 +1,21 @@
 <html>
   <head>
     <title>Geo Tracker</title>
-    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="public/css/main.css">
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
   </head>
   <body>
-    <div id="showLocation" class="button">Show my Location</div>
-    <div id="sendLocation" class="button">Send my Location to Nitrous Geo Tracker</div>
+    <h1>Geo tracker</h1>
+    <!-- set userId value to 'allUsers' to display geo-data of all users -->
+    <input id="userId" class="userInput" value="" placeholder="Tell us a unique user id">
+    <div id="showMyGeoData" class="button">Display Geo data</div>
+    <div id="trackLocation" class="button">Track my Location</div>
+    <div id="trackLocationStatus" class="statusOff statusOn"></div>
+    <div id="messageArea" class="messageArea"></div>
+    <div id="GoogleMapsCanvas" class="map"></div>
     <!-- initialization -->
-    <script type="text/javascript" src="js/initialization.js"></script>
+    <script type="text/javascript" src="public/js/initialization.js"></script>
+    <script type="text/javascript" src="public/js/googleMap.js"></script>
   </body>
 </html>

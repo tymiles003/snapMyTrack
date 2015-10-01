@@ -1,0 +1,28 @@
+.userInput{
+  margin-left:10px;
+}
+.button{
+  margin:10px;
+  width:250px;
+  background:#B2B2B2;
+}
+.messageArea{
+  margin-top:50px;
+  margin-left:10px;
+  color:#2378EF;
+  font-size:16;
+}
+.map{
+  width: 500px;
+  height: 500px;
+}
+.statusOn{
+  width: 10px;
+  height: 10px;
+  background: #10EE10;
+}
+.statusOff{
+  width: 10px;
+  height: 10px;
+  background: #EE1010;
+}
