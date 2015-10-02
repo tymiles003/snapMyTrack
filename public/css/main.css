@@ -1,10 +1,40 @@
+.body{
+  color:#BFBFBF;
+  background:#363636;
+}
+
 .userInput{
-  margin-left:10px;
+  width: 343px;
+  font-size: 170%;
+  margin-bottom:10px;
+  padding-top: 0.5em;
+  padding-bottom: 0.75em;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+  text-align: center;
+  border: 1px solid #ffffff;
+  border-radius: 4.5px;
 }
 .button{
-  margin:10px;
-  width:250px;
-  background:#B2B2B2;
+  width: 330px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  color:#FFFFFF;
+  font-size: 170%;
+  padding-top: 0.6em;
+  padding-bottom: 0.75em;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+  text-align: center;
+  border: 1px solid #ffffff;
+  border-radius: 4.5px;
+  margin-bottom:10px;
+}
+.button:hover,
+.button:active{
+	background: #b8b8b8;
+	border: 1px solid #b8b8b8;
+    transition: background-color 0.3s ease-in, color 0.3s ease-in;
 }
 .messageArea{
   margin-top:15px;
@@ -14,19 +44,53 @@
   font-size:16;
 }
 .map{
-  width: 500px;
-  height: 500px;
+  width: 100%;
+  height: 55%;
 }
 .statusOn{
-  width: 10px;
-  height: 10px;
-  background: #10EE10;
+ background-color: #34FF34;
+ height: 30px;
+ -moz-border-radius:40px;
+ -webkit-border-radius: 40px;
+ width: 15px;
 }
 .statusOff{
-  width: 10px;
-  height: 10px;
-  background: #EE1010;
+ background-color: #EE1010;
+ height: 30px;
+ -moz-border-radius:40px;
+ -webkit-border-radius: 40px;
+ width: 15px;
 }
 .horizontalContainer>div{
   display: inline-block;
+}
+.homeFooter{
+    display: -moz-box;  display: -webkit-box; display: -ms-flexbox;
+	-moz-box-orient: vertical; -webkit-box-orient: vertical; -ms-flex-direction: column;
+    color:#494949;
+    background: #868686;
+    font-size: 50%;
+    padding-top:15px;
+    padding-bottom:10px;
+    padding-left:10px;
+    padding-right:10px;
+}
+.footerLine{
+	margin-top: 0.50em;
+}
+.policyLink{
+    color:#494949;
+    font-size: 140%;
+}
+.mailLink{
+    color:#494949;
+}
+.addressContainer{
+	margin-left: 1.00em;
+    font-size: 150%;
+}
+.designMattersImage{
+    vertical-align: text-top;
+    max-height: 1.50em;
+    margin-right: 0.25em;
 }
