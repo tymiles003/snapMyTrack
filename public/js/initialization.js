@@ -1,23 +1,33 @@
 // initialization
 // 1) assign click events
 
-$('#showMyGeoData').click(showMyGeoData);
+$('#showMyGeoData').click(showGeoData);
 $('#trackLocation').click(sendLocationPeriodically);
 
 var trackingIsActive=false;
-function showMyGeoData(){
+
+function showGeoData(evt,userId){
   // get geo point data of user
-  var userId = $("#userId").val();
   if(userId){
-    getGeoDataFromServer(userId);
+    userIdForShow = userId;
   }
   else{
-    $("#messageArea").text('provide a unique user Id');
+    userIdForShow = $("#userId").val();
   }
+  if(!userIdForShow){
+    userIdForShow="allUsers";
+  }
+  getGeoDataFromServer(userIdForShow);
 };
 
 function sendLocationPeriodically(evt, doNotTogglePeriodicSend){
   var frequencySeconds = 15;   // send every 15 seconds
+  var userId = $("#userId").val();
+  if(!userId){
+    $("#messageArea").text('Add "User Id" for tracking. The user id can be any sequence of characters.');
+    return;
+  }
+
   if(trackingIsActive && !doNotTogglePeriodicSend){
     trackingIsActive=false;
     $("#trackLocationStatus").addClass("statusOff");
@@ -96,4 +106,4 @@ function sendGeoDataToServer(timestamp, accuracy, latitude, longitude, speed) {
 };
 
 // initial display of map
-showMyGeoData();
+showGeoData();

@@ -23,7 +23,10 @@ function renderMap(center, currentPosition, geoPoints){
       center: center,
       mapTypeControl: false,
       navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
-      mapTypeId: google.maps.MapTypeId.ROADMAP
+//      mapTypeId: google.maps.MapTypeId.ROADMAP,
+//      mapTypeId: google.maps.MapTypeId.SATELLITE,
+      mapTypeId: google.maps.MapTypeId.HYBRID,
+//      mapTypeId: google.maps.MapTypeId.TERRAIN,
     };
   var map = new google.maps.Map(document.getElementById("GoogleMapsCanvas"), myOptions);
 

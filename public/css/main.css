@@ -7,7 +7,8 @@
   background:#B2B2B2;
 }
 .messageArea{
-  margin-top:50px;
+  margin-top:15px;
+  margin-bottom:5px;
   margin-left:10px;
   color:#2378EF;
   font-size:16;
@@ -25,4 +26,7 @@
   width: 10px;
   height: 10px;
   background: #EE1010;
+}
+.horizontalContainer>div{
+  display: inline-block;
 }
