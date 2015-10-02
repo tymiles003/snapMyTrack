@@ -19,4 +19,5 @@ postHandler.registerHandlerGeodataPost(app);
 // debugger;
 
 var server = http.createServer(app).listen(port,'0.0.0.0');
-console.log('Call the server via http://geotracker-js-131771.nitrousapp.com:' + port);
+console.log('Listening on port %d', server.address().port);
+// console.log('Call the server via http://geotracker-js-131771.nitrousapp.com:' + port);
