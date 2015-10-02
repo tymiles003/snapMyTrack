@@ -4,7 +4,7 @@ var postHandler = require('./lib/postHandler');
 var express = require('express');
 var bodyParser = require('body-parser')
 var app = express();
-var http = require('http');
+// var http = require('http');
 var port = 3000;
 
 app.use('/', express.static(__dirname));
@@ -18,6 +18,8 @@ app.get('/*', function(req, res) {
 postHandler.registerHandlerGeodataPost(app);
 // debugger;
 
-var server = http.createServer(app).listen(port,'0.0.0.0');
-console.log('Listening on port %d', server.address().port);
-// console.log('Call the server via http://geotracker-js-131771.nitrousapp.com:' + port);
+var server = app.listen(port,'0.0.0.0', function(){
+        console.log('Listening on port %d', server.address().port);
+        console.log('i.e. http://umkk1a021936.michaelbiermann.koding.io:'+server.address().port)
+        console.log('i.e. http://geotracker-js-131771.nitrousapp.com:'+server.address().port)
+    });
