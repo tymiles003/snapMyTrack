@@ -1,0 +1,21 @@
+body {
+    background: #868686;
+    text-decoration: none;
+    -ms-user-select: none;
+    cursor: default;
+    font-family: Comic Sans MS;
+    color:#494949;
+    padding:0px;
+}
+
+.frameBackground{
+  margin:1.00em;
+  padding:1.25em;
+  border: 2px solid black;
+  border-radius: 6px;
+  min-height: 80px;
+  background: -webkit-linear-gradient(top, #dddddd, #eeeeee);
+  background: -moz-linear-gradient(top, #dddddd, #eeeeee);
+  background: -ms-linear-gradient(top, #dddddd, #eeeeee);
+}
+
