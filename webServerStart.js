@@ -1,4 +1,4 @@
-// 'Hallo Welt' Webserver
+// Webserver for geo tracker
 var getHandler = require('./lib/getHandler');
 var postHandler = require('./lib/postHandler');
 var express = require('express');
