@@ -1,1 +1,1 @@
-{"builders":{"configs":{}},"mixinTypes":["contribution"],"runners":{"configs":{}},"type":"blank","attributes":{"contribute_branch":["master"],"contribute_mode":["contribute"]},"description":"Simple geo tracker"}
+{"builders":{"configs":{}},"mixinTypes":[],"runners":{"configs":{"project:/Node%20-%20geoTracker":{"ram":1000,"variables":{"configurationType":"blank"},"options":{}}},"default":"project:/Node%20-%20geoTracker"},"type":"blank","attributes":{},"description":"Simple geo tracker"}
