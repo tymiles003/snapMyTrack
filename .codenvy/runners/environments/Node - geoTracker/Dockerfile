@@ -11,4 +11,4 @@ CMD cd /home/user/app
 RUN sudo npm install express body-parser type-is sqlite3 http
 CMD cd /home/user/app && node app
 CMD sleep 365d
-# run 'cd /home/user/app' and 'node app' via terminal (Codenvy)
+# run 'cd /home/user/app' and 'node geoTracker' via terminal (Codenvy)
