@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
 var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "0.0.0.0";
-var port = process.env.OPENSHIFT_NODEJS_PORT || 8081;   // 8081 -> Nitrous
+var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;   // 8081 -> Nitrous
 
 app.set('port', port);
 app.use('/', express.static(__dirname));
