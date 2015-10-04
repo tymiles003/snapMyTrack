@@ -1,5 +1,3 @@
-// https://docs.npmjs.com/files/package.json
-
 {
 	"name": "geoTracker",
 	"description": "Simple browser-based geo-tracking",
