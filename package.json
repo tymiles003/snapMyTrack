@@ -1,3 +1,5 @@
+// https://docs.npmjs.com/files/package.json
+
 {
 	"name": "geoTracker",
 	"description": "Simple browser-based geo-tracking",
@@ -16,7 +18,7 @@
   	},
 	"engines": {
 		"node" : "latest"		// Codenvy: "0.10.29",
-		"npm"  : "latest"    // Codenvy: "1.4.21"
+		"npm"  : "1.4.28"    // Codenvy: "1.4.21"
   	},
 	"scripts": {
   	}
