@@ -5,7 +5,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 var http = require('http');
-var port = 3000;    // Nitrous
+var port = 8081;    // Nitrous
 
 app.set('port', port);
 app.use('/', express.static(__dirname));

@@ -30,13 +30,6 @@ function renderMap(center, currentPosition, geoPoints){
     };
   var map = new google.maps.Map(document.getElementById("GoogleMapsCanvas"), myOptions);
 
-  var currentlatlng = new google.maps.LatLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
-  var markerCurrentPosition = new google.maps.Marker({
-    position: currentlatlng,
-    map: map,
-    title:"You are here! (at least within a "+currentPosition.coords.accuracy+" meter radius)"
-  });
-
   var markers = [];
   var geoData = [];
   if(geoPoints && geoPoints.length>0){
@@ -45,10 +38,26 @@ function renderMap(center, currentPosition, geoPoints){
       markers.push(new google.maps.Marker({
           position: latlng,
           map: map,
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 5,
+            fillColor: "#4169E1",
+				fillOpacity: 1.0,
+            strokeColor: "#4169E1",
+            strokeWeight: 3
+          },
           title: geoPoints[i].userId
         })
       );
     }
   }
+  
+  var currentlatlng = new google.maps.LatLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
+  var markerCurrentPosition = new google.maps.Marker({
+    position: currentlatlng,
+    map: map,
+    title:"You are here! (at least within a "+currentPosition.coords.accuracy+" meter radius)"
+  });
+  
 //  map.data.addGeoJson(geoData);
 }
