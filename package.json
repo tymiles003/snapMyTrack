@@ -8,17 +8,17 @@
 	"private": false,
 	"main": "./boot",
 	"dependencies": {
-		"express"     : "latest", 	// Codenvy: "4.13.3"
-		"body-parser" : "latest", 	// Codenvy: "1.14.1"
-		"type-is" :		 "latest",	// Codenvy: "1.6.9"
-		"sqlite3" :		 "latest",	// Codenvy: "3.1.0"
-		"http" : 		 "latest"	// Codenvy: "0.0.0"
+		"express"     : "latest",
+		"body-parser" : "latest",
+		"type-is" :		 "latest",
+		"sqlite3" :		 "latest",
+		"http" : 		 "latest"
 	},
 	"devDependencies": {
   	},
 	"engines": {
-		"node" : "latest",	// Codenvy: "0.10.29",
-		"npm"  : "latest"    // Codenvy: "1.4.21"
+		"node" : "latest",
+		"npm"  : "latest"
   	},
 	"scripts": {
   	}
