@@ -19,6 +19,6 @@
 		"npm"  : "latest"
   	},
 	"scripts": {
-		main: "node geoTracker.js"
+		"start" : "node geoTracker.js"
    }
 }
