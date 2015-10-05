@@ -5,8 +5,8 @@ var http = require('http');
 var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
-var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "0.0.0.0";
-var port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3000;   // def: 8080, 3000 -> Nitrous
+var ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || '0.0.0.0';
+var port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8081;   // def: 8081->Codenvy, 3000->Nitrous
 
 app.set('ip', ipaddress);
 app.set('port', port);
@@ -21,15 +21,19 @@ app.get('/*', function(req, res) {
 postHandler.registerHandlerGeodataPost(app);
 // debugger;
 
-// use host '0.0.0.0' to connect from any host
-var server = http.createServer(app).listen(app.get('port'), app.get('ip'), function() {
-        console.log('Listening on port %d', server.address().port);
-        console.log('i.e. http://umkk1a021936.michaelbiermann.koding.io:'+server.address().port)
-        console.log('i.e. http://geotracker-js-131771.nitrousapp.com:'+server.address().port)
-	});
+console.log('ip:'+ipaddress);
+console.log('port:'+port);
 
-/*var server = app.listen(port,'0.0.0.0', function(){
+// use host '0.0.0.0' to connect from any host
+/*var server = http.createServer(app).listen(app.get('port'), app.get('ip'), function() {
         console.log('Listening on port %d', server.address().port);
         console.log('i.e. http://umkk1a021936.michaelbiermann.koding.io:'+server.address().port)
         console.log('i.e. http://geotracker-js-131771.nitrousapp.com:'+server.address().port)
-   }); */
+	});*/
+
+var server = app.listen(port,ipaddress, function(){
+        console.log('Listening on port %d', server.address().port);
+        console.log('i.e. http://umkk1a021936.michaelbiermann.koding.io:'+server.address().port)
+        console.log('i.e. http://geotracker-js-131771.nitrousapp.com:'+server.address().port)
+        console.log('i.e. -> for Codenvy see test URL shown in IDE');
+   });
