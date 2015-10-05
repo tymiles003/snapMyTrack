@@ -7,7 +7,7 @@ ENV CODENVY_APP_PORT_8081_HTTP 8081
 EXPOSE 8081
 ADD $app$ /home/user/app/
 RUN sudo chown user:user -R /home/user/app && \
-	cd /home/user/app && sudo npm install express body-parser type-is sqlite3 http
+	cd /home/user/app && sudo npm install express body-parser type-is mongodb sqlite3 http
 CMD cd /home/user/app
 # RUN node geoTracker.js
 CMD sleep 365d
