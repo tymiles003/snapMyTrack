@@ -4,7 +4,7 @@
 	"author": "Michael Biermann (DsingMatters)",
 	"version": "0.1.0",
 	"private": false,
-	"main": "./boot",
+	"main" : "geoTracker.js"
 	"dependencies": {
 		"express"     : "latest",
 		"body-parser" : "latest",
@@ -19,6 +19,6 @@
 		"npm"  : "latest"
   	},
 	"scripts": {
-		"start" : "node geoTracker.js"
+//		"start" : "node geoTracker.js"
    }
 }
