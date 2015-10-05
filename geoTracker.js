@@ -1,4 +1,4 @@
-// Webserver for geo tracker
+// Webserver for app 'geo tracker'
 var getHandler = require('./lib/getHandler');
 var postHandler = require('./lib/postHandler');
 var http = require('http');
