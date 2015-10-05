@@ -6,16 +6,26 @@ function updateGoogleMap( geoPoints ){
     navigator.geolocation.getCurrentPosition(function(position) {
       var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
       renderMap(latlngForInit, position, geoPoints);
-    });
+    }, function(err){
+        if (err.code == 1) {
+            // user did not allow
+            return;
+        }        
+    }, { enableHighAccuracy: true});
   }
   else{
     navigator.geolocation.getCurrentPosition(function(position) {
       var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
       renderMap(latlng, position, geoPoints);
-    });
+    }, function(err){
+        if (err.code == 1) {
+            // user did not allow
+            return;
+        }        
+    }, { enableHighAccuracy: true});
   }
 
-};
+}
 
 function renderMap(center, currentPosition, geoPoints){
   var myOptions = {
