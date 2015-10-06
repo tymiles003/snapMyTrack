@@ -26,10 +26,10 @@ console.log('ip:'+ipaddress);
 console.log('port:'+port);
 // OPENSHIFT_MONGODB_DB_URL set via SSH (Chrome app 'Secure Shell'), see path .env/user_vars
 if(process.env.OPENSHIFT_MONGODB_DB_URL){
-  console.log('mongodb Url (process.env.OPENSHIFT_MONGODB_DB_URL):'+process.env.OPENSHIFT_MONGODB_DB_URL);  // deactivate later
+  console.log('mongodb Url (process.env.OPENSHIFT_MONGODB_DB_URL): ',process.env.OPENSHIFT_MONGODB_DB_URL);   // deactivate later
 }
 else{
-  console.log('mongodbUrl: process.env.OPENSHIFT_MONGODB_DB_URL not available');  // deactivate later
+  console.log('mongodbUrl:', process.env.OPENSHIFT_MONGODB_DB_URL not available);  // deactivate later
   return;
 }
 
