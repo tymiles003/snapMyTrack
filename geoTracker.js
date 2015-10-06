@@ -24,11 +24,11 @@ postHandler.registerHandlerGeodataPost(app);
 
 console.log('ip:'+ipaddress);
 console.log('port:'+port);
-if(process.env.MONGODB_DB_URL){
-  console.log('mongodbUrl:'+process.env.MONGODB_DB_URL);  // deactivate later
+if(process.env.MY_MONGODB_DB_URL){
+  console.log('mongodb Url (process.env.MY_MONGODB_DB_URL):'+process.env.MY_MONGODB_DB_URL);  // deactivate later
 }
 else{
-  console.log('mongodbUrl: process.env.MONGODB_DB_URL not available');  // deactivate later
+  console.log('mongodbUrl: process.env.MY:MONGODB_DB_URL not available');  // deactivate later
   return;
 }
 
