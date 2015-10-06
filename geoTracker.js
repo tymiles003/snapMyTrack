@@ -24,7 +24,12 @@ postHandler.registerHandlerGeodataPost(app);
 
 console.log('ip:'+ipaddress);
 console.log('port:'+port);
-console.log('mongodbUrl:'+process.env.OPENSHIFT_MONGODB_DB_URL);  // deactivate later
+if(process.env.OPENSHIFT_MONGODB_DB_URL){
+  console.log('mongodbUrl:'+process.env.OPENSHIFT_MONGODB_DB_URL);  // deactivate later  
+}
+else{
+  console.log('mongodbUrl: process.env.OPENSHIFT_MONGODB_DB_URL not available');  // deactivate later
+}
 
 // use host '0.0.0.0' to connect from any host
 /*var server = http.createServer(app).listen(app.get('port'), app.get('ip'), function() {
