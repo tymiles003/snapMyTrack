@@ -8,7 +8,6 @@ var app = express();
 var ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || '0.0.0.0';
 // var port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8081;   // def: 8081->Codenvy, 3000->Nitrous
 var port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3000;   // def: 8081->Codenvy, 3000->Nitrous
-console.log(process.env.OPENSHIFT_MONGODB_DB_URL);  // deactivate later
 
 app.set('ip', ipaddress);
 app.set('port', port);
@@ -25,6 +24,7 @@ postHandler.registerHandlerGeodataPost(app);
 
 console.log('ip:'+ipaddress);
 console.log('port:'+port);
+console.log('mongodbUrl:'+process.env.OPENSHIFT_MONGODB_DB_URL);  // deactivate later
 
 // use host '0.0.0.0' to connect from any host
 /*var server = http.createServer(app).listen(app.get('port'), app.get('ip'), function() {
