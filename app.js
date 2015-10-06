@@ -29,7 +29,7 @@ if(process.env.OPENSHIFT_MONGODB_DB_URL){
   console.log('mongodb Url (process.env.OPENSHIFT_MONGODB_DB_URL): ', process.env.OPENSHIFT_MONGODB_DB_URL);   // deactivate later
 }
 else{
-  console.log('mongodbUrl:', process.env.OPENSHIFT_MONGODB_DB_URL not available);  // deactivate later
+  console.log('mongodbUrl: process.env.OPENSHIFT_MONGODB_DB_URL not available');  // deactivate later
   return;
 }
 
