@@ -1,5 +1,13 @@
 // Webserver for app 'geo tracker'
-var dev_config = require('./.dev_config/config.json');
+var dev_config;
+try{
+    dev_config = require('./.dev_config/config.json');
+}
+catch(err){
+    if(!process.env.OPENSHIFT_MONGODB_DB_URL){
+      console.log('mongodbUrl: process.env.OPENSHIFT_MONGODB_DB_URL AND ./.dev_config/config.json not available');  // deactivate later
+    }
+}
 var getHandler = require('./lib/getHandler');
 var postHandler = require('./lib/postHandler');
 var http = require('http');
@@ -32,7 +40,7 @@ if(process.env.OPENSHIFT_MONGODB_DB_URL){
   mongodb_db_url=process.env.OPENSHIFT_MONGODB_DB_URL;
   console.log('mongodb Url (process.env.OPENSHIFT_MONGODB_DB_URL): ', process.env.OPENSHIFT_MONGODB_DB_URL);   // ToDo: May be deactivate later
 }
-else if(dev_config.MONGODB_DB_URL){
+else if(dev_config && dev_config.MONGODB_DB_URL){
   mongodb_db_url=dev_config.MONGODB_DB_URL;
   console.log('mongodb Url (dev_config.MONGODB_DB_URL): ', dev_config.MONGODB_DB_URL);   // ToDo: May be deactivate later
 }
