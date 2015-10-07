@@ -6,7 +6,8 @@ var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
 var ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || '0.0.0.0';
-var port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8081;   // def: 8081->Codenvy, 3000->Nitrous
+// var port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8081;   // def: 8081->Codenvy, 3000->Nitrous
+var port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3000;   // def: 8081->Codenvy, 3000->Nitrous
 
 app.set('ip', ipaddress);
 app.set('port', port);
@@ -23,6 +24,14 @@ postHandler.registerHandlerGeodataPost(app);
 
 console.log('ip:'+ipaddress);
 console.log('port:'+port);
+// OPENSHIFT_MONGODB_DB_URL set via SSH (Chrome app 'Secure Shell'), see path .env/user_vars
+if(process.env.OPENSHIFT_MONGODB_DB_URL){
+  console.log('mongodb Url (process.env.OPENSHIFT_MONGODB_DB_URL): ', process.env.OPENSHIFT_MONGODB_DB_URL);   // deactivate later
+}
+else{
+  console.log('mongodbUrl: process.env.OPENSHIFT_MONGODB_DB_URL not available');  // deactivate later
+  return;
+}
 
 // use host '0.0.0.0' to connect from any host
 /*var server = http.createServer(app).listen(app.get('port'), app.get('ip'), function() {
