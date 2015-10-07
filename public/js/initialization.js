@@ -21,7 +21,7 @@ function showGeoData(evt,userId){
 };
 
 function sendLocationPeriodically(evt, doNotTogglePeriodicSend){
-  var frequencySeconds = 15;   // send every 15 seconds
+  var frequencySeconds = 5;   // send every 5 seconds
   var userId = $("#userId").val();
   if(!userId){
     $("#messageArea").text('Add "User Id" for tracking. The user id can be any sequence of characters.');

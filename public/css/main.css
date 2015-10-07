@@ -5,12 +5,13 @@
 
 .userInput{
   width: 343px;
-  font-size: 170%;
-  margin-bottom:10px;
-  padding-top: 0.5em;
-  padding-bottom: 0.75em;
-  padding-left: 0.25em;
-  padding-right: 0.25em;
+  font-size: 195%;
+  margin-bottom: 0.3em;;
+  margin-right: 0.3em;
+  padding-top: 0.3em;
+  padding-bottom: 0.45em;
+  padding-left: 0.15em;
+  padding-right: 0.15em;
   text-align: center;
   border: 1px solid #ffffff;
   border-radius: 4.5px;
@@ -20,11 +21,11 @@
   background-repeat: no-repeat;
   background-size: 100% 100%;
   color:#FFFFFF;
-  font-size: 170%;
-  padding-top: 0.6em;
-  padding-bottom: 0.75em;
-  padding-left: 0.25em;
-  padding-right: 0.25em;
+  font-size: 220%;
+  padding-top: 0.3em;
+  padding-bottom: 0.45em;
+  padding-left: 0.15em;
+  padding-right: 0.15em;
   text-align: center;
   border: 1px solid #ffffff;
   border-radius: 4.5px;
@@ -45,7 +46,7 @@
 }
 .map{
   width: 100%;
-  height: 55%;
+  height: 70%;
 }
 .statusOn{
  background-color: #34FF34;
