@@ -1,12 +1,25 @@
 // initialization
 // 1) assign click events
 
+$('#userSettingsBtn').click(toggleSettings);
+$('#userSettingsCloseBtn').click(toggleSettings);
 $('#showMyGeoData').click(showGeoData);
 $('#trackLocation').click(sendLocationPeriodically);
+$('#userId').keyup(userIdUpdate);
 
 var trackingIsActive=false;
 
-function showGeoData(evt,userId){
+function userIdUpdate (event) {
+    if (event.keyCode == 13) {   // ENTER
+        initializeUi(event);
+    }
+}
+
+function showGeoData(event,userId){     // get user settings and show map
+    initializeUi(event,userId);
+}
+
+function initializeUi(event,userId){     // get user settings and show map
   // get geo point data of user
   if(userId){
     userIdForShow = userId;
@@ -17,10 +30,11 @@ function showGeoData(evt,userId){
   if(!userIdForShow){
     userIdForShow="allUsers";
   }
-  getGeoDataFromServer(userIdForShow);
-};
+  // get user settings and afterwards update map
+  getUserSettingsFromServer(userIdForShow, true);
+}
 
-function sendLocationPeriodically(evt, doNotTogglePeriodicSend){
+function sendLocationPeriodically(event, doNotTogglePeriodicSend){
   var frequencySeconds = 5;   // send every 5 seconds
   var userId = $("#userId").val();
   if(!userId){
@@ -42,18 +56,18 @@ function sendLocationPeriodically(evt, doNotTogglePeriodicSend){
       setTimeout( function(){
         sendLocationPeriodically( null, true );
       },
-      frequencySeconds*1000)
+      frequencySeconds*1000);
     }
     else{
       return;    // periodic tracking has been switched off
     }
   }
-};
+}
 
 function sendLocation(){
   var self=this;
 
-  if(trackingIsActive = true){
+  if(trackingIsActive){
     var userId = $("#userId").val();
     if(userId){
       navigator.geolocation.getCurrentPosition(function(position) {
@@ -70,14 +84,14 @@ function sendLocation(){
         $("#messageArea").text('provide a unique user Id');
     }
   }
-};
+}
 
 function getGeoDataFromServer(userId) {
   $.getJSON('/geodata?userId='+userId, function( data ) {
-      updateGoogleMap(data.geoPoints);
+      updateGoogleMap(data.geoPoints, userSettings.mapTypeId);
     }
   );
-};
+}
 
 function sendGeoDataToServer(timestamp, accuracy, latitude, longitude, speed) {
   $.post('/geodata',{
@@ -90,7 +104,7 @@ function sendGeoDataToServer(timestamp, accuracy, latitude, longitude, speed) {
                        }
       )
       .done(function(msg){
-        var messageText = msg.success
+        var messageText = msg.success;
         if(msg.data && msg.data.length>0){
           messageText += '\n' + JSON.stringify(msg.data);
         }
@@ -103,7 +117,42 @@ function sendGeoDataToServer(timestamp, accuracy, latitude, longitude, speed) {
       });
     var messageText = 'Send -> Latitude:'+latitude+', Longitude: '+longitude+', Speed: '+speed+', Timestamp: '+timestamp+', Accuracy: '+accuracy;
     $("#messageArea").text(messageText);
-};
+}
+
+// user userSettings
+function getUserSettingsFromServer(userId, doUpdateMap) {
+  $.getJSON('/usersettings?userId='+userId, function( data ) {
+      if(data.userSettings && data.userSettings.length>0){    // expected to be one or none^
+          updateUserSettings(data.userSettings[0]);
+      }
+      if(doUpdateMap){
+        getGeoDataFromServer(userId);
+      }
+    }
+  );
+}
+
+function sendUserSettingsToServer(userId, mapTypeId) {
+  $.post('/usersettings',{
+                         userId: userId,
+                         mapTypeId: mapTypeId
+                       }
+      )
+      .done(function(msg){
+        var messageText = msg.success;
+        if(msg.data && msg.data.length>0){
+          messageText += '\n' + JSON.stringify(msg.data);
+        }
+        $("#messageArea").text(messageText);
+      })
+      .fail(function(xhr, statusText, err){
+        var currentText = $("#messageArea").text();
+        var messageText = currentText + ' ------------> ' + 'Error: '+err;
+        $("#messageArea").text(messageText);
+      });
+    var messageText = 'Send -> MapTypeId:'+mapTypeId;
+    $("#messageArea").text(messageText);
+}
 
 // initial display of map
 showGeoData();

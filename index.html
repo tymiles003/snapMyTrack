@@ -1,11 +1,12 @@
 <html>
   <head>
     <title>Geo-Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="author" content="DsignMatters"/>
     <meta name="description" content="Simple location tracker"/>
-	  <meta name="keywords" content="dsignmatters, simple, location, tracker, tracking, lattitude, longitufe, geo, location, google api, map"/>
+    <meta name="keywords" content="dsignmatters, simple, location, tracker, tracking, lattitude, longitufe, geo, location, google api, map"/>
     <link rel="shortcut icon" href="public/icon/dsignmatters_icon_round.ico" type="image/x-icon"/>
-  	<link rel="shortcut icon" sizes="196x196" href="public/icon/dsignmatters_icon_round_196.png"/>
+    <link rel="shortcut icon" sizes="196x196" href="public/icon/dsignmatters_icon_round_196.png"/>
     <link rel="shortcut icon" sizes="128x128" href="public/icon/dsignmatters_icon_round_128.png"/>
     <link rel="apple-touch-icon" href="public/icon/touch-icon-iphone.png"/>
     <link rel="apple-touch-icon" sizes="76x76" href="public/icon/touch-icon-ipad.png" />
@@ -19,19 +20,37 @@
     <script src="https://maps.googleapis.com/maps/api/js"></script>
   </head>
   <body class="body">
-    <h1>Geo Tracker</h1>
+	<!-- settings popover -->
+	<div id='settingsPopin' class='popin popinUserSetting boxShadowPopover isInvisible'>
+        <div id="userBar" class="horizontalContainer">
+            <div id="userSettingsCloseBtn" class="buttonUserSettingsClose"></div>
+            <div id="mapTypeLabel" class="popinLabel">Map Type:</div>
+            <select id="mapTypeSelect" class="mySelect">
+                <option value="roadmap" selected>Roadmap</option>      <!-- mapTypeId: google.maps.MapTypeId.ROADMAP -->
+                <option value="satellite">Satellite</option>            <!-- mapTypeId: google.maps.MapTypeId.SATELLITE -->
+                <option value="hybrid">Hybrid</option>            <!-- mapTypeId: google.maps.MapTypeId.HYBRID -->
+                <option value="terrain">Terrain</option>            <!-- mapTypeId: google.maps.MapTypeId.TERRAIN -->
+            </select>
+        </div>
+	</div>
+    <!-- title / settings -->
+    <div id="titleBar" class="horizontalContainer">
+        <div class="appTitle">Geo Tracker</div>
+        <div id="userSettingsBtn" class="buttonUserSettings"></div>
+    </div>
     <!-- set userId value to 'allUsers' to display geo-data of all users -->
     <div id="userBar" class="horizontalContainer">
-      <input id="userId" class="userInput" value="" placeholder="Tell us a unique user id">
-      <div id="showMyGeoData" class="button">Display Geo data</div>
+        <input id="userId" class="userInput" value="" placeholder="Tell us a unique user id">
+        <div id="showMyGeoData" class="button buttonWidthStandard">Display Geo data</div>
     </div>
     <div id="trackLocationBar" class="horizontalContainer">
-      <div id="trackLocation" class="button">Track my Location</div>
-      <div id="trackLocationStatus" class="statusOff"></div>
+        <div id="trackLocation" class="button buttonWidthStatus">Track my Location</div>
+        <div id="trackLocationStatus" class="statusOff"></div>
     </div>
     <div id="messageArea" class="messageArea"></div>
     <div id="GoogleMapsCanvas" class="map"></div>
 
+    <!-- footer -->
 	<div>
 		<div id="homeFooter" class="homeFooter"
 			 data-selectorUpId="trialLink">
@@ -55,14 +74,16 @@
 			<div class="addressContainer">
   			<a id="linkToDsignMatters"
 						   href="http://dsignmatters.com">
-						<img class="designMattersImage" src="public/icon/dsignmatters_icon_round_50.png">DsignMatters</img></a> , Germany 69190 Walldorf, Zum Brühl 33, Phone: +49-6227-890723, E-Mail: <a class="mailLink" href='mailto://dsignmatters@outlook.com' tabindex=9000>info@dsignmatters.com</a>
+						<img class="designMattersImage" src="public/icon/dsignmatters_icon_round_50.png">DsignMatters</a> , Germany 69190 Walldorf, Zum Brühl 33, Phone: +49-6227-890723, E-Mail: <a class="mailLink" href='mailto://dsignmatters@outlook.com' tabindex=9000>info@dsignmatters.com</a>
 			</div>
 		<div class="footerLine">Last-Updated: October 2nd 2015, 10:07 pm</div>
 		</div>
 	</div>
     <!-- initialization -->
+    <script type="text/javascript" src="public/js/settings.js"></script>
     <script type="text/javascript" src="public/js/initialization.js"></script>
     <script type="text/javascript" src="public/js/uiHelper.js"></script>
+    <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerwithlabel/src/markerwithlabel.js"></script>
     <script type="text/javascript" src="public/js/googleMap.js"></script>
   </body>
 </html>

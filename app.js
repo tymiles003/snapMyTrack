@@ -25,10 +25,14 @@ app.use('/', express.static(__dirname));
 app.use('/public', express.static(__dirname));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+//console.log('register GET handlers');
+getHandler.registerHandlerUserSettingsGet(app);
 getHandler.registerHandlerGeodataGet(app);
 app.get('/*', function(req, res) {
     res.status(404).sendFile(__dirname + '/error.html');
 });
+//console.log('register POST handlers');
+postHandler.registerHandlerUserSettingsPost(app);
 postHandler.registerHandlerGeodataPost(app);
 // debugger;
 
@@ -57,8 +61,11 @@ else{
 	});*/
 
 var server = app.listen(port,ipaddress, function(){
+        console.log('Latest official deployment: Openshift: http://geotracker-dsignmatters.rhcloud.com/');
+        console.log('-----');
         console.log('Listening on port %d', server.address().port);
-        console.log('i.e. http://umkk1a021936.michaelbiermann.koding.io:'+server.address().port)
-        console.log('i.e. http://geotracker-js-131771.nitrousapp.com:'+server.address().port)
-        console.log('i.e. -> for Codenvy see test URL shown in IDE');
+        console.log('i.e. Koding:    http://umkk1a021936.michaelbiermann.koding.io:'+server.address().port);
+        console.log('i.e. Nitrous:   http://geotracker-js-131771.nitrousapp.com:'+server.address().port);
+        console.log('i.e. Codenvy:   -> for Codenvy see test URL shown in IDE');
    });
+   

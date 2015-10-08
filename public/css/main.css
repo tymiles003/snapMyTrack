@@ -2,10 +2,26 @@
   color:#BFBFBF;
   background:#363636;
 }
-
+.appTitle{
+  font-size: 250%;
+}
+.buttonUserSettings{
+    width: 2em;
+    content: url('../icon/icon_gear_settings.png');
+    float: right;
+}
+.buttonUserSettingsClose{
+    width: 2em;
+    content: url('../icon/icon_close.png');
+    float: right;
+}
+.popinLabel{
+  color:#FFFFFF;
+  font-size: 220%;
+}
 .userInput{
-  width: 343px;
-  font-size: 195%;
+  width: 12em;
+  font-size: 150%;
   margin-bottom: 0.3em;;
   margin-right: 0.3em;
   padding-top: 0.3em;
@@ -16,12 +32,17 @@
   border: 1px solid #ffffff;
   border-radius: 4.5px;
 }
+.buttonWidthStandard{
+  width: 12em;
+}
+.buttonWithStatus{
+  width: 10em;
+}
 .button{
-  width: 330px;
   background-repeat: no-repeat;
   background-size: 100% 100%;
   color:#FFFFFF;
-  font-size: 220%;
+  font-size: 150%;
   padding-top: 0.3em;
   padding-bottom: 0.45em;
   padding-left: 0.15em;
@@ -37,6 +58,19 @@
 	border: 1px solid #b8b8b8;
     transition: background-color 0.3s ease-in, color 0.3s ease-in;
 }
+.mySelect{
+  font-size: 175%;
+  margin-top: 0.3em;
+  margin-bottom: 0.3em;
+  margin-right: 0.3em;
+  padding-top: 0.3em;
+  padding-bottom: 0.45em;
+  padding-left: 0.15em;
+  padding-right: 0.15em;
+  text-align: center;
+  border: 1px solid #ffffff;
+  border-radius: 4.5px;
+}
 .messageArea{
   margin-top:15px;
   margin-bottom:5px;
@@ -46,7 +80,7 @@
 }
 .map{
   width: 100%;
-  height: 70%;
+  height: 65%;
 }
 .statusOn{
  background-color: #34FF34;
@@ -94,4 +128,39 @@
     vertical-align: text-top;
     max-height: 1.50em;
     margin-right: 0.25em;
+}
+.boxShadowPopover{
+	-moz-box-shadow:    1px 1px 1px 1.3px #a1a1a1;
+  	-webkit-box-shadow: 1px 1px 1px 1.3px #a1a1a1;
+  	box-shadow:         1px 1px 1px 1.3px #a1a1a1;
+  	border-radius: 2.5px;
+}
+.popin{
+    position: absolute; 
+    z-index: 1200;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+
+	background: -webkit-linear-gradient(top, #777777, #333333);
+    background: -moz-linear-gradient(top, #777777, #333333);
+    background: -ms-linear-gradient(top, #777777, #333333);    
+
+    padding-top: 0.6em;
+    padding-bottom: 0.6em;
+    padding-left: 0.6em;
+    padding-right: 0.6em;
+    color:#dddddd;
+    font-size: 110%;
+}
+.popinUserSetting{
+    height: 20em;
+    width: 15em;
+    top: calc( 50vh - ( 20em / 2 ) );
+    left: calc( 50vw - ( 15em / 2 ) );
+}
+.isInvisible{
+    visibility: hidden;
+}
+.mapLabel{
+    font-size: 150%;
 }
