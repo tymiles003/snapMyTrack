@@ -20,7 +20,11 @@
     <script src="https://maps.googleapis.com/maps/api/js"></script>
   </head>
   <body class="body">
-	<!-- settings popover -->
+    <!-- messages popin -->
+	<div id='messageLogPopin' class='popin popinMessageLog boxShadowPopover isInvisible'>
+        <div id="messageArea" class="messageArea"></div>
+	</div>
+	<!-- settings popin -->
 	<div id='settingsPopin' class='popin popinUserSetting boxShadowPopover isInvisible'>
         <div id="userBar" class="horizontalContainer">
             <div id="userSettingsCloseBtn" class="buttonUserSettingsClose"></div>
@@ -39,15 +43,17 @@
         <div id="userSettingsBtn" class="buttonUserSettings"></div>
     </div>
     <!-- set userId value to 'allUsers' to display geo-data of all users -->
-    <div id="userBar" class="horizontalContainer">
-        <input id="userId" class="userInput" value="" placeholder="Tell us a unique user id">
-        <div id="showMyGeoData" class="button buttonWidthStandard">Display Geo data</div>
+    <div id="TopFrame" class="horizontalContainer">
+        <div id="userBar" class="horizontalContainer">
+            <input id="userId" class="userInput" value="" placeholder="User Id">
+            <div id="showMyGeoData" class="buttonShow">Show</div>
+        </div>
+        <div id="trackLocationBar" class="horizontalContainer">
+            <div id="trackLocation" class="button buttonWidthStatus">Track my Location</div>
+            <div id="trackLocationStatus" class="statusOff"></div>
+            <div id="sendSnapLocLink" class="sendSnapLocLink"></div>
+        </div>
     </div>
-    <div id="trackLocationBar" class="horizontalContainer">
-        <div id="trackLocation" class="button buttonWidthStatus">Track my Location</div>
-        <div id="trackLocationStatus" class="statusOff"></div>
-    </div>
-    <div id="messageArea" class="messageArea"></div>
     <div id="GoogleMapsCanvas" class="map"></div>
 
     <!-- footer -->
@@ -80,9 +86,11 @@
 		</div>
 	</div>
     <!-- initialization -->
+    <script type="text/javascript" src="public/js/uiHelper.js"></script>
+    <script type="text/javascript" src="public/js/publishHelper.js"></script>
+    <script type="text/javascript" src="public/js/messageLog.js"></script>
     <script type="text/javascript" src="public/js/settings.js"></script>
     <script type="text/javascript" src="public/js/initialization.js"></script>
-    <script type="text/javascript" src="public/js/uiHelper.js"></script>
     <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerwithlabel/src/markerwithlabel.js"></script>
     <script type="text/javascript" src="public/js/googleMap.js"></script>
   </body>

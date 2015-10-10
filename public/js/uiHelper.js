@@ -26,7 +26,7 @@ function getGeoInfo(geoPoints) {
   geoInfo.size = getSize(latitudes, longitudes);
 
   return geoInfo;
-};
+}
 
 function getSize(latitudes, longitudes) {
   var size = {};
@@ -37,7 +37,7 @@ function getSize(latitudes, longitudes) {
   size.height = longitudes[longitudes.length-1] - longitudes[0];
 
   return size;
-};
+}
 
 function getCenterPoint(latitudes, longitudes) {
   var centerPoint={};
@@ -48,7 +48,7 @@ function getCenterPoint(latitudes, longitudes) {
   centerPoint.lng = ( longitudes[longitudes.length-1] + longitudes[0] ) / 2;
 
   return centerPoint;
-};
+}
 
 function getMedianPoint(latitudes, longitudes) {
   var medPoint={};
@@ -71,4 +71,12 @@ function getMedianPoint(latitudes, longitudes) {
   }
 
   return medPoint;
-};
+}
+
+function spinnerOn(){
+    $('#userSettingsBtn').addClass('spinner');
+}
+
+function spinnerOff(){
+    $('#userSettingsBtn').removeClass('spinner');
+}

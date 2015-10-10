@@ -1,9 +1,9 @@
 .body{
-  color:#BFBFBF;
-  background:#363636;
+    color:#BFBFBF;
+    background:#363636;
 }
 .appTitle{
-  font-size: 250%;
+    font-size: 250%;
 }
 .buttonUserSettings{
     width: 2em;
@@ -15,42 +15,57 @@
     content: url('../icon/icon_close.png');
     float: right;
 }
+.buttonShow{
+    margin-top: 0.5em;
+    margin-right: 0.75em;
+    width: 2em;
+    content: url('../icon/icon_show.png');
+}
+.sendSnapLocLink{
+    margin-top: 0.5em;
+    margin-right: 0.75em;
+    width: 2em;
+    content: url('../icon/icon_publish.png');
+}
 .popinLabel{
-  color:#FFFFFF;
-  font-size: 220%;
+    color:#FFFFFF;
+    font-size: 220%;
 }
 .userInput{
-  width: 12em;
-  font-size: 150%;
-  margin-bottom: 0.3em;;
-  margin-right: 0.3em;
-  padding-top: 0.3em;
-  padding-bottom: 0.45em;
-  padding-left: 0.15em;
-  padding-right: 0.15em;
-  text-align: center;
-  border: 1px solid #ffffff;
-  border-radius: 4.5px;
+    width: 12em;
+    font-size: 150%;
+    margin-bottom: 0.3em;
+    margin-right: 0;
+    padding-top: 0.3em;
+    padding-bottom: 0.45em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: center;
+    border: 1px solid #ffffff;
+    border-radius: 4.5px;
+}
+.buttonWidthSmall{
+    width: 4em;
 }
 .buttonWidthStandard{
-  width: 12em;
+    width: 11em;
 }
 .buttonWithStatus{
-  width: 10em;
+    width: 10em;
 }
 .button{
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  color:#FFFFFF;
-  font-size: 150%;
-  padding-top: 0.3em;
-  padding-bottom: 0.45em;
-  padding-left: 0.15em;
-  padding-right: 0.15em;
-  text-align: center;
-  border: 1px solid #ffffff;
-  border-radius: 4.5px;
-  margin-bottom:10px;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    color:#FFFFFF;
+    font-size: 150%;
+    padding-top: 0.3em;
+    padding-bottom: 0.45em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: center;
+    border: 1px solid #ffffff;
+    border-radius: 4.5px;
+    margin-bottom:10px;
 }
 .button:hover,
 .button:active{
@@ -59,45 +74,38 @@
     transition: background-color 0.3s ease-in, color 0.3s ease-in;
 }
 .mySelect{
-  font-size: 175%;
-  margin-top: 0.3em;
-  margin-bottom: 0.3em;
-  margin-right: 0.3em;
-  padding-top: 0.3em;
-  padding-bottom: 0.45em;
-  padding-left: 0.15em;
-  padding-right: 0.15em;
-  text-align: center;
-  border: 1px solid #ffffff;
-  border-radius: 4.5px;
-}
-.messageArea{
-  margin-top:15px;
-  margin-bottom:5px;
-  margin-left:10px;
-  color:#2378EF;
-  font-size:16;
+    font-size: 175%;
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
+    margin-right: 0.3em;
+    padding-top: 0.3em;
+    padding-bottom: 0.45em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: center;
+    border: 1px solid #ffffff;
+    border-radius: 4.5px;
 }
 .map{
-  width: 100%;
-  height: 65%;
+    width: 100%;
+    height: 65%;
 }
 .statusOn{
- background-color: #34FF34;
- height: 30px;
- -moz-border-radius:40px;
- -webkit-border-radius: 40px;
- width: 15px;
+    background-color: #34FF34;
+    height: 30px;
+    -moz-border-radius: 40px;
+    -webkit-border-radius: 40px;
+    width: 15px;
 }
 .statusOff{
- background-color: #EE1010;
- height: 30px;
- -moz-border-radius:40px;
- -webkit-border-radius: 40px;
- width: 15px;
+    background-color: #EE1010;
+    height: 30px;
+    -moz-border-radius: 40px;
+    -webkit-border-radius: 40px;
+    width: 15px;
 }
 .horizontalContainer>div{
-  display: inline-block;
+    display: inline-block;
 }
 .homeFooter{
     display: -moz-box;  display: -webkit-box; display: -ms-flexbox;
@@ -158,9 +166,55 @@
     top: calc( 50vh - ( 20em / 2 ) );
     left: calc( 50vw - ( 15em / 2 ) );
 }
+.popinMessageLog{
+    font-size:175%;
+    height: 8em;
+    width: 10em;
+    top: calc( 50vh - ( 8em / 2 ) );
+    left: calc( 50vw - ( 11em / 2 ) );
+}
+.messageArea{
+    padding-left: 0.45em;
+    padding-right: 0.45em;
+    padding-top: 0.45em;
+    padding-bottom: 0.45em;
+    white-space: pre-line;
+}
 .isInvisible{
     visibility: hidden;
 }
 .mapLabel{
     font-size: 150%;
+}
+
+.spinner{
+    -webkit-animation-name: spin;
+    -webkit-animation-duration: 2000ms;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-name: spin;
+    -moz-animation-duration: 2000ms;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-timing-function: linear;
+    -ms-animation-name: spin;
+    -ms-animation-duration: 2000ms;
+    -ms-animation-iteration-count: infinite;
+    -ms-animation-timing-function: linear;
+    animation-name: spin;
+    animation-duration: 2000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes spin {
+    from { transform:rotate(0deg); }
+    to { transform:rotate(360deg); }
+}
+@-moz-keyframes spin {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
 }

@@ -6,18 +6,19 @@
 	"private": false,
 	"main" : "app.js",
 	"dependencies": {
-		"express"     : "latest",
-		"body-parser" : "latest",
-		"type-is" :		 "latest",
-      "mongodb" :     "latest",
-		"sqlite3" :		 "latest",
-		"http" : 		 "latest"
+        "express":      "latest",
+        "body-parser":  "latest",
+        "type-is":      "latest",
+        "mongodb":      "latest",
+        "sqlite3":      "latest",
+        "http":         "latest",
+        "sendgrid":     "latest"
 	},
 	"devDependencies": {
   	},
 	"engines": {
-		"node" : "latest",
-		"npm"  : "latest"
+        "node": "latest",
+        "npm":  "latest"
   	},
 	"scripts": {
    }

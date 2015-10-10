@@ -9,6 +9,9 @@ var userSettings = {
 
 function toggleSettings(evt){
     if($('#settingsPopin').hasClass('isInvisible')){
+        // Update DIV from userSettings
+        $('#mapTypeSelect').val(userSettings.mapTypeId);
+        // Set current select value
         $('#settingsPopin').removeClass('isInvisible');
     }
     else{

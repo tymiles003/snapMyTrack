@@ -34,6 +34,7 @@ app.get('/*', function(req, res) {
 //console.log('register POST handlers');
 postHandler.registerHandlerUserSettingsPost(app);
 postHandler.registerHandlerGeodataPost(app);
+postHandler.registerHandlerPublish(app);
 // debugger;
 
 console.log('ip:'+ipaddress);
@@ -68,4 +69,3 @@ var server = app.listen(port,ipaddress, function(){
         console.log('i.e. Nitrous:   http://geotracker-js-131771.nitrousapp.com:'+server.address().port);
         console.log('i.e. Codenvy:   -> for Codenvy see test URL shown in IDE');
    });
-   

@@ -3,10 +3,12 @@
 
 $('#userSettingsBtn').click(toggleSettings);
 $('#userSettingsCloseBtn').click(toggleSettings);
+$('#sendSnapLocLink').click(snapLoc);
 $('#showMyGeoData').click(showGeoData);
 $('#trackLocation').click(sendLocationPeriodically);
 $('#userId').keyup(userIdUpdate);
 
+var isDevelopment_mode=true;   // Add some dev. info ( success/error messages )
 var trackingIsActive=false;
 
 function userIdUpdate (event) {
@@ -15,39 +17,50 @@ function userIdUpdate (event) {
     }
 }
 
+function getUserIdFromUrl(){
+	var params = window.location.href.split('=');
+    return params[1] || 0;
+}
+
 function showGeoData(event,userId){     // get user settings and show map
+    hideMessageLog();
     initializeUi(event,userId);
 }
 
 function initializeUi(event,userId){     // get user settings and show map
-  // get geo point data of user
-  if(userId){
+    spinnerOn();
+    // get geo point data of user
+    if(userId){
     userIdForShow = userId;
-  }
-  else{
+    }
+    else{
     userIdForShow = $("#userId").val();
-  }
-  if(!userIdForShow){
+    }
+    if(!userIdForShow){
     userIdForShow="allUsers";
-  }
-  // get user settings and afterwards update map
-  getUserSettingsFromServer(userIdForShow, true);
+    }
+    // get user settings and afterwards update map
+    getUserSettingsFromServer(userIdForShow, true);
 }
 
 function sendLocationPeriodically(event, doNotTogglePeriodicSend){
-  var frequencySeconds = 5;   // send every 5 seconds
-  var userId = $("#userId").val();
-  if(!userId){
-    $("#messageArea").text('Add "User Id" for tracking. The user id can be any sequence of characters.');
+    var frequencySeconds = 5;   // send every 5 seconds
+    var userId = $("#userId").val();
+    if(!userId){
+    $("#messageArea").text('Add "User Id" for tracking.\nThe user id can be any sequence of characters.');
+    showMessageLog(true);
     return;
-  }
-
-  if(trackingIsActive && !doNotTogglePeriodicSend){
+    }
+    else{
+    hideMessageLog();
+    }
+    
+    if(trackingIsActive && !doNotTogglePeriodicSend){
     trackingIsActive=false;
     $("#trackLocationStatus").addClass("statusOff");
     $("#trackLocationStatus").removeClass("statusOn");
-  }
-  else{
+    }
+    else{
     if(trackingIsActive || (!doNotTogglePeriodicSend&&!trackingIsActive) ){
       trackingIsActive=true;
       $("#trackLocationStatus").addClass("statusOn");
@@ -61,7 +74,7 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
     else{
       return;    // periodic tracking has been switched off
     }
-  }
+    }
 }
 
 function sendLocation(){
@@ -82,15 +95,16 @@ function sendLocation(){
     }
     else{
         $("#messageArea").text('provide a unique user Id');
-    }
+            showMessageLog(true);
+        }
   }
 }
 
 function getGeoDataFromServer(userId) {
-  $.getJSON('/geodata?userId='+userId, function( data ) {
-      updateGoogleMap(data.geoPoints, userSettings.mapTypeId);
-    }
-  );
+    $.getJSON('/geodata?userId='+userId, function( data ) {
+        updateGoogleMap(data.geoPoints, userSettings.mapTypeId);
+        setTimeout(function(){spinnerOff();},1750);
+    });
 }
 
 function sendGeoDataToServer(timestamp, accuracy, latitude, longitude, speed) {
@@ -121,15 +135,14 @@ function sendGeoDataToServer(timestamp, accuracy, latitude, longitude, speed) {
 
 // user userSettings
 function getUserSettingsFromServer(userId, doUpdateMap) {
-  $.getJSON('/usersettings?userId='+userId, function( data ) {
-      if(data.userSettings && data.userSettings.length>0){    // expected to be one or none^
-          updateUserSettings(data.userSettings[0]);
-      }
-      if(doUpdateMap){
-        getGeoDataFromServer(userId);
-      }
-    }
-  );
+    $.getJSON('/usersettings?userId='+userId, function( data ) {
+        if(data.userSettings && data.userSettings.length>0){    // expected to be one or none^
+            updateUserSettings(data.userSettings[0]);
+        }
+        if(doUpdateMap){
+            getGeoDataFromServer(userId);
+        }
+    });
 }
 
 function sendUserSettingsToServer(userId, mapTypeId) {
@@ -150,9 +163,18 @@ function sendUserSettingsToServer(userId, mapTypeId) {
         var messageText = currentText + ' ------------> ' + 'Error: '+err;
         $("#messageArea").text(messageText);
       });
-    var messageText = 'Send -> MapTypeId:'+mapTypeId;
+    var messageText = 'Send -> MapTypeId: '+mapTypeId;
     $("#messageArea").text(messageText);
+    if(isDevelopment_mode){
+        showMessageLog(true);
+    }
 }
 
-// initial display of map
-showGeoData();
+window.onload = function() {
+    // initial display of map
+    var userIdFromUrl = getUserIdFromUrl();
+    if(userIdFromUrl!==0){
+        $("#userId").val(userIdFromUrl);        
+    }
+    showGeoData();
+}
