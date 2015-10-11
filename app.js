@@ -1,4 +1,4 @@
-// Webserver for app 'geo tracker'
+// Webserver for app 'snapTrack'
 var dev_config;
 try{
     dev_config = require('./.dev_config/config.json');

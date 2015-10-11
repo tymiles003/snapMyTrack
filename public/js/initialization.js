@@ -31,13 +31,13 @@ function initializeUi(event,userId){     // get user settings and show map
     spinnerOn();
     // get geo point data of user
     if(userId){
-    userIdForShow = userId;
+        userIdForShow = userId;
     }
     else{
-    userIdForShow = $("#userId").val();
+        userIdForShow = $("#userId").val();
     }
     if(!userIdForShow){
-    userIdForShow="allUsers";
+        userIdForShow="allUsers";
     }
     // get user settings and afterwards update map
     getUserSettingsFromServer(userIdForShow, true);
@@ -170,11 +170,55 @@ function sendUserSettingsToServer(userId, mapTypeId) {
     }
 }
 
-window.onload = function() {
+function facebookLoginCallback(response){
+    console.log('facebookLoginCallback: ',response);
+    if (response.status === 'connected') {
+        logInSuccessfull( response.authResponse.userID );
+    }
+}
+
+function facebookLoginStatusCallback(response){
+    console.log('facebookLoginStatusCallback: ',response);
+    if (response.status === 'connected') {
+        logInSuccessfull( response.authResponse.userID );
+    }
+    else {
+        FB.login(facebookLoginCallback);
+    }    
+}
+
+function logInSuccessfull(userId){
     // initial display of map
+    showGeoData( null, userId );    
+}
+
+// Here we run a very simple test of the Graph API after login is
+// successful.  See statusChangeCallback() for when this call is made.
+function testAPI() {
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', function(response) {
+      console.log('Successful login for: ' + response.name);
+      document.getElementById('status').innerHTML =
+        'Thanks for logging in, ' + response.name + '!';
+    });
+}
+
+window.onload = function() {
     var userIdFromUrl = getUserIdFromUrl();
     if(userIdFromUrl!==0){
         $("#userId").val(userIdFromUrl);        
     }
-    showGeoData();
-}
+};
+
+$(document).ready(function() {
+/*    $.ajaxSetup({ cache: true });
+    $.getScript('//connect.facebook.net/en_US/sdk.js', function(){
+        FB.init({
+//          appId: '1685804888318715',  // OpenShift
+          appId: '1685807221651815',    // Koding
+          version: 'v2.5' // or v2.0, v2.1, v2.2, v2.3, v2.4
+        });
+//        $('#loginbutton,#feedbutton').removeAttr('disabled');
+        FB.getLoginStatus(facebookLoginStatusCallback);
+    });   */
+});

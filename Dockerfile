@@ -9,6 +9,6 @@ ADD $app$ /home/user/app/
 RUN sudo chown user:user -R /home/user/app && \
 	cd /home/user/app && sudo npm install express body-parser type-is mongodb sqlite3 http
 CMD cd /home/user/app
-# RUN node geoTracker.js
+# RUN node app.js
 CMD sleep 365d
 # run 'cd /home/user/app' and 'node geoTracker' via terminal (Codenvy)
