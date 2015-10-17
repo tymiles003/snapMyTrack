@@ -1,8 +1,8 @@
 {
-	"name": "SnapTrack",
+	"name": "SnapMyTrack",
 	"description": "Share your track/location, simple and secure",
-	"author": "Michael Biermann (DsingMatters)",
-	"version": "0.1.0",
+	"author": "Michael Biermann (DsignMatters)",
+	"version": "0.9.1",
 	"private": false,
 	"main" : "app.js",
 	"dependencies": {

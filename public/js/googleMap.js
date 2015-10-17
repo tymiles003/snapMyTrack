@@ -1,4 +1,5 @@
 var map;
+var userPaths=[];
 var tooltipMarkers=[];
 var infoWindow;
 var userColor=[];
@@ -23,20 +24,26 @@ function updateGoogleMap( geoPoints, mapTypeId ){
       var latlng = new google.maps.LatLng(geoInfo.centerPoint.lat, geoInfo.centerPoint.lng);
       var zoomRaw = Math.floor(1000*geoInfo.size.width+geoInfo.size.height);
       var mapZoom = mapZoomDefault;
-      if(zoomRaw < 4){
-        mapZoom = 20;
-      }
-      else if(zoomRaw < 6){
+      if(zoomRaw < 3){
         mapZoom = 18;
       }
-      else if(zoomRaw < 8){
+      if(zoomRaw < 4){
+        mapZoom = 17;
+      }
+      if(zoomRaw < 5){
         mapZoom = 16;
       }
-      else if(zoomRaw < 10){
+      else if(zoomRaw < 6){
         mapZoom = 15;
       }
+      else if(zoomRaw < 8){
+        mapZoom = 14;
+      }
+      else if(zoomRaw < 10){
+        mapZoom = 14;
+      }
       else if(zoomRaw < 15){
-        mapZoom = 15;
+        mapZoom = 13;
       }
       else if(zoomRaw < 25){
         mapZoom = 13;
@@ -75,6 +82,23 @@ function updateGoogleMap( geoPoints, mapTypeId ){
   }
 }
 
+function resetMap(){
+    if(map){
+        // markers
+        for(i=0,len=tooltipMarkers.length;i<len;i++){
+            tooltipMarkers[i].marker.setMap(null);
+        }
+        // paths
+        for(i=0,len=userPaths.length;i<len;i++){
+            userPaths[i].setMap(null);
+        }
+    }
+    else{
+        // ToDo
+        // initial load ...
+    }
+}
+
 function getColorOfUser(userId){
   var colorOfUser;
   for(var i=0,len=userColor.length;i<len;i++){
@@ -93,7 +117,10 @@ function getColorOfUser(userId){
 
 function changeMapType(mapTypeId){
     if(map){
+        // change map type
         map.setMapTypeId(mapTypeId);
+        // adjust theme of overlay (title, buttons, ...)
+        // ToDo
     }
 }
 
@@ -107,12 +134,11 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
   };
   map = new google.maps.Map(document.getElementById("GoogleMapsCanvas"), myOptions);
   // listener for click event of map (not called, for clicks on shapes)
-  // map.addListener('click', mapClick);
+  map.addListener('click', mapClick);
   
-  var markers = [];
-  var geoData = [];
-  var previousGeoPoint;
+  userPaths=[];
   var userCoordinates=[];
+  var previousGeoPoint;
   if(geoPoints && geoPoints.length>0){
     for(var i=0,len=geoPoints.length;i<len;i++){
       var latlng = new google.maps.LatLng(geoPoints[i].latitude, geoPoints[i].longitude);
@@ -131,15 +157,16 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
           strokeWeight: 4,
         });
         userPath.setMap(map);
-        ( function(){
-            addListener( userPath, 'click', i, geoPoints[i].userId ); 
+/*        ( function(){
+            addListener(userPath, 'click', i, geoPoints[i].userId, geoPoints[i].displayName); 
         })();
         ( function(){
-            addListener( userPath, 'mouseover', i, geoPoints[i].userId ); 
+            addListener(userPath, 'mouseover', i, geoPoints[i].userId, geoPoints[i].displayName); 
         })();
         ( function(){
-            addListener( userPath, 'mouseout', i, geoPoints[i].userId ); 
-        })();
+            addListener(userPath, 'mouseout', i, geoPoints[i].userId, geoPoints[i].displayName); 
+        })();  */
+        userPaths.push(userPath);
         userCoordinates=[];
       }
       else{
@@ -162,30 +189,33 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
   infoWindow = new google.maps.InfoWindow();
 }
 
-function addListener( userPath, eventName, idx, userId){
+function addListener( userPath, eventName, idx, userId, displayName){
     if(eventName==='click'){
         userPath.addListener('click', function(event){ 
-            pathClick( event, idx, userId ); 
+            pathClick( event, idx, userId, displayName ); 
         });
     }
     else if(eventName==='mouseover'){
         userPath.addListener('mouseover', function(event){ 
-            pathMouseOver( event, idx, userId ); 
+            pathMouseOver( event, idx, userId, displayName ); 
         });
     }
     else if(eventName==='mouseout'){
         userPath.addListener('mouseout', function(event){ 
-            pathMouseOut( event, idx, userId ); 
+            pathMouseOut( event, idx, userId, displayName ); 
         });
     }
 }
 
 function mapClick(event){
-    var contentString = 'M: ' + event.latLng.J +  ', L: ' + event.latLng.M;
+/*    var contentString = 'M: ' + event.latLng.J +  ', L: ' + event.latLng.M;
     infoWindow.setContent(contentString);
     infoWindow.setPosition(event.latLng);
-    
-    infoWindow.open(map);
+    infoWindow.open(map);  */
+    if( document.getElementById('authorizeWithFacebookBtn').style.visibility === ''){
+        resetPasswordLogin();
+    }
+    return false;    // stop event propagation
 }
 
 function createUserLabelClass(className, color){
@@ -205,7 +235,7 @@ function createUserLabelClass(className, color){
     document.getElementsByTagName('head')[0].appendChild(style);
 }
 
-function pathMouseOver(event, pathId, userId){
+function pathMouseOver(event, pathId, userId, displayName){
     var color = getColorOfUser(userId);
     var userLabelClassName = "label_" + userId;
     createUserLabelClass( userLabelClassName, color);
@@ -215,7 +245,7 @@ function pathMouseOver(event, pathId, userId){
         map: map,
 //        draggable: true,
 //        raiseOnDrag: true,
-        labelContent: userId,
+        labelContent: displayName,
         labelAnchor: event.latLng,
         labelClass: userLabelClassName,
         labelInBackground: false,
@@ -223,10 +253,11 @@ function pathMouseOver(event, pathId, userId){
     });
     tooltipMarkers.push({ pathId: pathId,
                           userId: userId,
+                          displayName: displayName,
                           marker: tooltipMarker });
 }
 
-function pathMouseOut(event, pathId, userId){
+function pathMouseOut(event, pathId, userId, displayName){
     for(var i=0, len=tooltipMarkers.length; i<len; i++){
         if(tooltipMarkers[i].pathId === pathId){
             tooltipMarkers[i].marker.setMap(null);
@@ -234,8 +265,8 @@ function pathMouseOut(event, pathId, userId){
     }
 }
 
-function pathClick(event, pathId, userId){
-    contentString = '<div class="pathTooltip">'+userId+'</div>';
+function pathClick(event, pathId, userId, displayName){
+    contentString = '<div class="pathTooltip">'+displayName+'</div>';
     infoWindow.setContent(contentString);
     infoWindow.setPosition(event.latLng);
     infoWindow.open(map);

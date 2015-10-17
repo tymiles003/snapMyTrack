@@ -1,10 +1,11 @@
+<!DOCTYPE html>
 <html>
   <head>
-    <title>Geo-Tracker</title>
+    <title>SnapMyTrack</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="author" content="DsignMatters"/>
-    <meta name="description" content="Simple location tracker"/>
-    <meta name="keywords" content="dsignmatters, simple, location, tracker, tracking, lattitude, longitufe, geo, location, google api, map"/>
+    <meta name="description" content="Share track / location, simple and secure"/>
+    <meta name="keywords" content="dsignmatters, simple, location, snap, share, tracker, tracking, lattitude, longitufe, geo, location, google api, map"/>
     <link rel="shortcut icon" href="public/icon/dsignmatters_icon_round.ico" type="image/x-icon"/>
     <link rel="shortcut icon" sizes="196x196" href="public/icon/dsignmatters_icon_round_196.png"/>
     <link rel="shortcut icon" sizes="128x128" href="public/icon/dsignmatters_icon_round_128.png"/>
@@ -19,10 +20,37 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js"></script>
   </head>
-  <body class="body">
+  <body>
     <!-- messages popin -->
 	<div id='messageLogPopin' class='popin popinMessageLog boxShadowPopover isInvisible'>
         <div id="messageArea" class="messageArea"></div>
+	</div>
+	<!-- user account popin -->
+	<div id='userAccountPopin' class='popin userAccountPopin boxShadowPopover isInvisible'>
+        <div id="userAccountCloseBtn" class="buttonUserAccountClose"></div>
+        <div id="userAccountPicture" class="userAccountPicture userImage"></div>
+        <div id="userAccountDisplayName" class="userAccountDisplayName">displ. name</div>
+        <div id="userAccountAccountType" class="userAccountAccountType">account type</div>
+        <div id="userAccountLogout" class="userAccountLogout">Sign Out</div>
+	</div>
+	<!-- publish popin -->
+	<div id='publishPopin' class='popin publishPopin boxShadowPopover isInvisible'>
+        <div id="publishCloseBtn" class="buttonPublishClose"></div>
+        <div class="popinLongtextBig">We will send an email with a link.</div>
+        <div>
+            <input id="publishEmailInput" class="emailInput publishInput" placeholder="E-Mail" type="email">
+        </div>
+        <div class="popinLongtextBig">For how long to publish?</div>
+        <select id="publishPeriodSelect" class="mySelect">
+            <option value="snap" selected>Snap (Display Once)</option>
+            <option value="oneHour">One Hour</option>
+            <option value="oneDay">One Day</option>
+            <option value="oneWeek">One Week</option>
+            <option value="oneMonth">One Month</option>
+            <option value="unlimited">Unlimited</option>
+        </select>
+        <div id="publishSend" class="publishSend">Send</div>
+        <div class="popinLongtextVerySmall">Not a SnapMyTrack user yet? ... they can also see your track.</div>
 	</div>
 	<!-- settings popin -->
 	<div id='settingsPopin' class='popin popinUserSetting boxShadowPopover isInvisible'>
@@ -30,31 +58,69 @@
             <div id="userSettingsCloseBtn" class="buttonUserSettingsClose"></div>
             <div id="mapTypeLabel" class="popinLabel">Map Type:</div>
             <select id="mapTypeSelect" class="mySelect">
-                <option value="roadmap" selected>Roadmap</option>      <!-- mapTypeId: google.maps.MapTypeId.ROADMAP -->
-                <option value="satellite">Satellite</option>            <!-- mapTypeId: google.maps.MapTypeId.SATELLITE -->
+                <option value="roadmap" selected>Roadmap</option> <!-- mapTypeId: google.maps.MapTypeId.ROADMAP -->
+                <option value="satellite">Satellite</option>      <!-- mapTypeId: google.maps.MapTypeId.SATELLITE -->
                 <option value="hybrid">Hybrid</option>            <!-- mapTypeId: google.maps.MapTypeId.HYBRID -->
-                <option value="terrain">Terrain</option>            <!-- mapTypeId: google.maps.MapTypeId.TERRAIN -->
+                <option value="terrain">Terrain</option>          <!-- mapTypeId: google.maps.MapTypeId.TERRAIN -->
             </select>
         </div>
 	</div>
-    <!-- title / settings -->
-    <div id="titleBar" class="horizontalContainer">
-        <div class="appTitle">Geo Tracker</div>
-        <div id="userSettingsBtn" class="buttonUserSettings"></div>
-    </div>
-    <!-- set userId value to 'allUsers' to display geo-data of all users -->
-    <div id="TopFrame" class="horizontalContainer">
-        <div id="userBar" class="horizontalContainer">
-            <input id="userId" class="userInput" value="" placeholder="User Id">
-            <div id="showMyGeoData" class="buttonShow">Show</div>
-        </div>
-        <div id="trackLocationBar" class="horizontalContainer">
-            <div id="trackLocation" class="button buttonWidthStatus">Track my Location</div>
-            <div id="trackLocationStatus" class="statusOff"></div>
-            <div id="sendSnapLocLink" class="sendSnapLocLink"></div>
-        </div>
-    </div>
+	<!-- password forgotten popin -->
+	<div id='passwordForgottenPopin' class='popin popinPasswordForgotten boxShadowPopover isInvisible'>
+        <div id="passwordForgottenCloseBtn" class="buttonPasswordForgottenClose"></div>
+        <div id="passwordForgottenTitle" class="popinLabelSmall">Reset Password</div>
+        <div id="passwordForgottenDescription" class="popinLongtext">To reset your password, enter the email address associated with your account and we'll send you instructions for resetting your SnapMyTrack password.</div>
+        <input id="passwordForgottenEmail" class="passwordForgottenEmail userInputSmall" placeholder="Email Address" type="email">
+        <div id="passwordForgottenSendBtn" class="passwordForgottenSendBtn">Send</div>
+	</div>
+
+    <!-- Google Maps -->
     <div id="GoogleMapsCanvas" class="map"></div>
+    
+    <div id="overlay" class="overlay">
+        <!-- title / settings -->
+        <div id="titleBar" class="titleBar horizontalContainer">
+            <div class="appTitle">SnapMyTrack</div>
+            <div id="publish" class="publishBtn isInvisible"></div>
+            <div id="userSettingsBtn" z-index='3000' class="buttonUserSettings isInvisible"></div>
+            <div id="loginUser" z-index='3000' class="loginUser isInvisible"></div>
+<!--            <div id="login" class="login buttonSmall isInvisible">Log In</div>   -->
+        </div>
+        <div id="topFrame" class="horizontalContainerFlex isInvisible">
+            <div id="trackLocationBar" class="horizontalContainerFlex">
+                <div id="trackLocation" class="button buttonWidthStatus">Recording On/Off</div>
+                <div id="trackLocationStatus" class="statusOff"></div>
+            </div>
+        </div>
+        
+        <!-- Login -->
+        <div id="authorizeFrame" class="authorizeFrame">
+            <div id="authorizeWithFacebookBtn" class="authorizeWithFacebookBtn"></div>
+            <div id="authorizeWithGoogleBtn" class="authorizeWithGoogleBtn"></div>
+            <div id="authorizeWithWindowsBtn" class="authorizeWithWindowsBtn horizontalContainer">
+                <div id="authorizeWithWindowsBtnImg" class="authorizeWithWindowsBtnImg"></div>
+                <div>
+                    <p id="authorizeWithWindowsBtnLabel" class="authorizeWithWindowsBtnLabel">Sign in with Windows</p>
+                </div>
+            </div>
+            <div id="passwordFrame" class="passwordFrame isInvisible">
+                <div>
+                    <input id="emailInput" class="emailInput isInvisible" placeholder="E-Mail" type="email">
+                </div>
+                <div>
+                    <input id="passwordInput" class="passwordInput isInvisible" placeholder="Password" type="password">
+                    <div id='passwordForgottenFrame' class='passwordForgottenFrame'>
+                        <a id='passwordForgotten' class='passwordForgotten' href=''>Password forgotten?</a>
+                    </div>
+                </div>
+                <div id="passwordSend" class="passwordSend isInvisible">Send</div>
+            </div>
+                <div id="authorizeWithMailPassword" class="authorizeWithMailPassword">Sign in with Password</div>
+        </div>
+    </div>
+    
+    <!-- link to SnapMyTrack homepage -->
+    <div id="homePageLink" class="homePageLink">SnapMyTrack</div>
 
     <!-- footer -->
 	<div>
@@ -82,15 +148,18 @@
 						   href="http://dsignmatters.com">
 						<img class="designMattersImage" src="public/icon/dsignmatters_icon_round_50.png">DsignMatters</a> , Germany 69190 Walldorf, Zum Brühl 33, Phone: +49-6227-890723, E-Mail: <a class="mailLink" href='mailto://dsignmatters@outlook.com' tabindex=9000>info@dsignmatters.com</a>
 			</div>
-		<div class="footerLine">Last-Updated: October 2nd 2015, 10:07 pm</div>
+		<div class="footerLine">Last-Updated: October 17th 2015, 09:34 am</div>
 		</div>
 	</div>
+
     <!-- initialization -->
     <script type="text/javascript" src="public/js/uiHelper.js"></script>
+    <script type="text/javascript" src="public/js/signIn.js"></script>
     <script type="text/javascript" src="public/js/publishHelper.js"></script>
     <script type="text/javascript" src="public/js/messageLog.js"></script>
     <script type="text/javascript" src="public/js/settings.js"></script>
     <script type="text/javascript" src="public/js/initialization.js"></script>
+    <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleGoogleClientLoad"></script>
     <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerwithlabel/src/markerwithlabel.js"></script>
     <script type="text/javascript" src="public/js/googleMap.js"></script>
   </body>

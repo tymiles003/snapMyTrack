@@ -1,28 +1,42 @@
-// Webserver for app 'snapTrack'
+// Webserver for app 'snapMyTrack'
 var dev_config;
 try{
     dev_config = require('./.dev_config/config.json');
 }
 catch(err){
     if(!process.env.OPENSHIFT_MONGODB_DB_URL){
-      console.log('mongodbUrl: process.env.OPENSHIFT_MONGODB_DB_URL AND ./.dev_config/config.json not available');  // deactivate later
+        console.log('mongodbUrl: process.env.OPENSHIFT_MONGODB_DB_URL AND ./.dev_config/config.json not available');  // deactivate later
     }
 }
 var getHandler = require('./lib/getHandler');
-var postHandler = require('./lib/postHandler');
-var http = require('http');
+var postHandlerSignIn = require('./lib/postHandler/postHandlerSignIn');
+var postHandlerSettings = require('./lib/postHandler/postHandlerSettings');
+var postHandlerGeodata = require('./lib/postHandler/postHandlerGeodata');
+var postHandlerPublish = require('./lib/postHandler/postHandlerPublish');
+// var http = require('http');
 var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
+var router = express.Router([]);
 var ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || '0.0.0.0';
 // var port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8081;   // def: 8081->Codenvy, 3000->Nitrous
 var port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3000;   // def: 8081->Codenvy, 3000->Nitrous
 var mongodb_db_url;
 
+// router
+// - '/userAccountConfirm' -> '/public/userAccountConfirm/index.html'
+router.get('/accountConfirm', function(req, res){
+    res.status(200).sendFile(__dirname + '/private/userAccount/accountConfirmed.html');
+});
+router.get('/passwordReset', function(req, res){
+    res.status(200).sendFile(__dirname + '/private/userAccount/setNewPassword.html');
+});
+
 app.set('ip', ipaddress);
 app.set('port', port);
 app.use('/', express.static(__dirname));
 app.use('/public', express.static(__dirname));
+app.use('/account', router);
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 //console.log('register GET handlers');
@@ -32,10 +46,13 @@ app.get('/*', function(req, res) {
     res.status(404).sendFile(__dirname + '/error.html');
 });
 //console.log('register POST handlers');
-postHandler.registerHandlerUserSettingsPost(app);
-postHandler.registerHandlerGeodataPost(app);
-postHandler.registerHandlerPublish(app);
-// debugger;
+postHandlerSignIn.registerHandlerSignInPost(app);
+postHandlerSignIn.registerHandlerConfirmAccountPost(app);
+postHandlerSignIn.registerHandlerPasswordResetPost(app);
+postHandlerSignIn.registerHandlerSetNewPasswordPost(app);
+postHandlerSettings.registerHandlerUserSettingsPost(app);
+postHandlerGeodata.registerHandlerGeodataPost(app);
+postHandlerPublish.registerHandlerPublishPost(app);
 
 console.log('ip:'+ipaddress);
 console.log('port:'+port);

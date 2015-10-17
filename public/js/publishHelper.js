@@ -1,18 +1,38 @@
-function snapLoc(event){
-    var userId = $("#userId").val();
-    if(userId){
-        sendPublishDataToServer(userId);
+function togglePublish(){
+    if($('#publishPopin').hasClass('isInvisible')){
+        $('#publishPopin').removeClass('isInvisible');
+    }
+    else{
+        $('#publishPopin').addClass('isInvisible');
+    }
+}
+
+function publish(event){
+    if(signedInUserId){
+        var sendToEmail = document.getElementById('publishEmailInput').value;
+        var publishPeriod = $('#publishPeriodSelect').val();
+        sendPublishDataToServer(userAccountType, signedInUserId, userDisplayName, null, null, null, publishPeriod, sendToEmail);
     }
     else{
         $("#messageArea").text('provide a unique user Id');
         showMessageLog(true);
     }
+    togglePublish();
 }
 
-function sendPublishDataToServer( publishLocationOfuserId ){
-    var publishTo = "michael.biermann@dsignmatters.com";
-    var publishData = {  userId: publishLocationOfuserId,
-                         to: publishTo };
+function sendPublishDataToServer( publisherAccountType, publisherUserId, publisherDisplayName,
+                                  publishedForAccountType, publishedForUserId, publishedForDisplayName,
+                                  publishPeriod,
+                                  sendToEmail){
+    var publishTo = sendToEmail;
+    var publishData = { publisherAccountType: publisherAccountType,
+                        publisherUserId: publisherUserId,
+                        publisherDisplayName: publisherDisplayName,
+                        publishedForAccountType: publishedForAccountType,
+                        publishedForUserId: publishedForUserId,
+                        publishedForDisplayName: publishedForDisplayName,
+                        publishPeriod: publishPeriod,
+                        sendToEmail: sendToEmail};
     $.post('/publish',publishData)
     .done(function(msg){
         var messageText = msg.success;
@@ -27,7 +47,7 @@ function sendPublishDataToServer( publishLocationOfuserId ){
         $("#messageArea").text(messageText);
     });
     
-    var messageText = 'Publish location data of user ' + publishLocationOfuserId + ' for ' + publishTo;
+    var messageText = 'Publish location data of user ' + publisherDisplayName + ' to ' + sendToEmail;
     $("#messageArea").text(messageText);
     if(isDevelopment_mode){
         showMessageLog(true);

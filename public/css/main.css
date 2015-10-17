@@ -1,38 +1,252 @@
-.body{
+body{
     color:#BFBFBF;
     background:#363636;
+    margin:0;
+    padding:0;
+}
+.map{
+    position: absolute; 
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+}
+.overlay{
+    position: absolute; 
+    z-index: 1000;
+    margin-left: 1.2em;
 }
 .appTitle{
     font-size: 250%;
 }
-.buttonUserSettings{
+.titleBar{
+    width: calc( 100vw - 1.5em );
+}
+.publishPopin{
+    font-size: 135%;
+    padding: 1.5em;
+    height: 20.0em;
+    width: 23.0em;
+    top: calc( 50vh - ( (20.0em)/2 ) );
+    left: calc( 50vw - ( (23.0em)/2 ) );
+}
+.buttonPublishClose{
     width: 2em;
-    content: url('../icon/icon_gear_settings.png');
+    height: 2em;
+    background: url('../icon/icon_close.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
     float: right;
+}
+.publishBtn{
+    position: absolute; 
+    width: 2em;
+    height: 2em;
+    background: url('../icon/icon_publish.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    right: 5.3em;
+    margin-top: 0.3em;
+}
+.publishInput{
+    margin-top:0.5em;
+}
+.publishSend{
+    width: 12.4em;
+    background: #ffc93b;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    color:#ffffff;
+    font-size: 150%;
+    padding-top: 0.3em;
+    padding-bottom: 0.30em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: center;
+    border: 1px solid #ffc93b;
+    border-radius: 2.5px;
+    margin-top: 2.0em;
+    margin-bottom: 0.3em;
+}
+.userAccountLogout{
+    width: 8.0em;
+    background: #ffc93b;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    color:#ffffff;
+    font-size: 150%;
+    padding-top: 0.3em;
+    padding-bottom: 0.30em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: center;
+    border: 1px solid #ffc93b;
+    border-radius: 2.5px;
+    margin-top: 2.0em;
+    margin-bottom: 0.3em;
+}
+.buttonUserSettings{
+    position: absolute; 
+    width: 2em;
+    height: 2em;
+    background: url('../icon/icon_gear_settings.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    right: 3.0em;
+    margin-top:0.3em;
+}
+.loginUser{
+    position: absolute; 
+    right: 0.15em;
+    margin-top: 0.3em;
+}
+.userImage{
+    border: 1px solid #E9E9E9;
+    border-radius: 2.5px;
+}
+.login{
+    position: absolute; 
+    right: 4.5em;
+    margin-top: 0.3em;
+}
+.userAccountPicture{
+    width:3.2em;
+    height:3.2em;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+.userAccountAccountType{
+    margin-top:0.2em;
+    font-size: 30%;
+}
+.buttonUserAccountClose{
+    width: 2em;
+    height: 2em;
+    background: url('../icon/icon_close.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    float: right;
+    margin-top:-1.0em;
+    margin-right:-1.0em;
 }
 .buttonUserSettingsClose{
     width: 2em;
-    content: url('../icon/icon_close.png');
+    height: 2em;
+    background: url('../icon/icon_close.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
     float: right;
+}
+.buttonPasswordForgottenClose{
+    width: 2em;
+    height: 2em;
+    background: url('../icon/icon_close.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    float: right;
+    margin-top:-1.0em;
+    margin-right:-1.0em;
 }
 .buttonShow{
     margin-top: 0.5em;
     margin-right: 0.75em;
     width: 2em;
-    content: url('../icon/icon_show.png');
+    height: 2em;
+    background: url('../icon/icon_show.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
 }
-.sendSnapLocLink{
-    margin-top: 0.5em;
-    margin-right: 0.75em;
-    width: 2em;
-    content: url('../icon/icon_publish.png');
+.authorizeFrame{
+    margin-top:2.0em;
 }
-.popinLabel{
+.authorizeWithFacebookBtn{
+    width: 20.3em;
+    height: 3.20em;
+    margin-left: 0.34em;
+    background: url('../icon/signIn/facebookSignIn.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+/* .authorizeWithFacebookBtn:hover,
+.authorizeWithFacebookBtn:active{
+	background: #b8b8b8;
+	border: 1px solid #b8b8b8;
+    transition: background-color 0.3s ease-in, color 0.3s ease-in;
+} */
+.authorizeWithGoogleBtn{
+    width: 21.2em;
+    height: 4.00em;
+    margin-left: 0;
+    background: url('../icon/signIn/btn_google+_signin_dark_normal_web.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+/*.authorizeWithGoogleBtn:hover,
+.authorizeWithGoogleBtn:active{
+	background: #b8b8b8;
+	border: 1px solid #b8b8b8;
+    transition: background-color 0.3s ease-in, color 0.3s ease-in;
+} */
+.authorizeWithWindowsBtn{
+    width: 20.25em;
+    height: 3.20em;
+    margin-left: 0.345em;
+    margin-bottom: 0.35em;
+    background: #6a797e;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    border: 1px solid #6a797e;
+    border-radius: 2.5px;
+}
+/* .authorizeWithWindowsBtn:hover,
+.authorizeWithWindowsBtn:active{
+	background: #b8b8b8;
+	border: 1px solid #b8b8b8;
+    transition: background-color 0.3s ease-in, color 0.3s ease-in;
+} */
+.authorizeWithWindowsBtnImg{
+    width: 2.10em;
+    height: 2.10em;
+    background: url('../icon/signIn/windows.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    margin-left:0.43em;
+    margin-right:0.50em;
+    margin-top:0.50em;
+}
+.authorizeWithWindowsBtnLabel{
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 145%;
+    color: #FFFFFF;
+}
+.authorizeWithMailPassword{
+    width: 13.82em;
+    height: 1.35em;
+    background: #ffc93b;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
     color:#FFFFFF;
-    font-size: 220%;
+    font-size: 145%;
+    margin-left:0.2em;
+    padding-top: 0.60em;
+    padding-bottom: 0.45em;
+    padding-left: 0.10em;
+    padding-right: 0.10em;
+    text-align: center;
+    border: 1px solid #ffc93b;
+    border-radius: 2.5px;
 }
-.userInput{
-    width: 12em;
+.passwordFrame{
+    width: 19.20em;
+    background: #c1c1c1;
+    margin-left: 0.34em;
+    margin-top: 0.3em;
+    padding: 0.5em;
+    border: 1px solid #c1c1c1;
+    border-radius: 2.5px;
+}
+.emailInput, .passwordInput{
+    width: 12.29em;
     font-size: 150%;
     margin-bottom: 0.3em;
     margin-right: 0;
@@ -41,34 +255,143 @@
     padding-left: 0.15em;
     padding-right: 0.15em;
     text-align: center;
-    border: 1px solid #ffffff;
+    border: 1px solid #FFFFFF;
     border-radius: 4.5px;
 }
-.buttonWidthSmall{
-    width: 4em;
+.passwordInputSmall{
+    width: 16.0em;
+    font-size: 100%;
+    margin-bottom: 0.3em;
+    margin-right: 0;
+    padding-top: 0.3em;
+    padding-bottom: 0.45em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: center;
+    border: 1px solid #FFFFFF;
+    border-radius: 4.5px;
+}
+.passwordSend{
+    width: 12.4em;
+    background: #ffc93b;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    color:#ffffff;
+    font-size: 150%;
+    padding-top: 0.3em;
+    padding-bottom: 0.30em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: center;
+    border: 1px solid #ffc93b;
+    border-radius: 2.5px;
+}
+.passwordForgottenFrame{
+    margin-left: 8.0em;
+    padding-bottom: 0.5em;
+}
+.buttonPaddingTop{
+    margin-top:1.50em;    
+}
+.navigateButton{
+    width: 12.4em;
+    background: #ffc93b;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    color:#ffffff;
+    font-size: 150%;
+    padding-top: 0.3em;
+    padding-bottom: 0.30em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: center;
+    border: 1px solid #ffc93b;
+    border-radius: 2.5px;
+}
+/* .authorizeWithMailPassword:hover,
+.authorizeWithMailPassword:active{
+	background: #b8b8b8;
+	border: 1px solid #b8b8b8;
+    transition: background-color 0.3s ease-in, color 0.3s ease-in;
+} */
+.popinLabel{
+    color:#FFFFFF;
+    font-size: 220%;
+}
+.popinLabelSmall{
+    color:#FFFFFF;
+    font-size: 145%;
+}
+.userInput{
+    width: 12em;
+    font-size: 125%;
+    margin-bottom: 0.3em;
+    margin-right: 0;
+    padding-top: 0.3em;
+    padding-bottom: 0.45em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: center;
+    border: 1px solid #FFFFFF;
+    border-radius: 4.5px;
+}
+.userInputSmall{
+    width: 12.00em;
+    font-size: 135%;
+    margin-bottom: 0.3em;
+    margin-right: 0;
+    padding-top: 0.3em;
+    padding-bottom: 0.45em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: center;
+    border: 1px solid #FFFFFF;
+    border-radius: 4.5px;
 }
 .buttonWidthStandard{
     width: 11em;
 }
 .buttonWithStatus{
-    width: 10em;
+    width: 14em;
+    margin-left: 1.5em;
 }
 .button{
+    background: #E9E9E9;
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    color:#FFFFFF;
+    color:#363636;
     font-size: 150%;
     padding-top: 0.3em;
     padding-bottom: 0.45em;
     padding-left: 0.15em;
     padding-right: 0.15em;
     text-align: center;
-    border: 1px solid #ffffff;
-    border-radius: 4.5px;
+    border: 1px solid #E9E9E9;
+    border-radius: 2.5px;
     margin-bottom:10px;
 }
 .button:hover,
 .button:active{
+	background: #b8b8b8;
+	border: 1px solid #b8b8b8;
+    transition: background-color 0.3s ease-in, color 0.3s ease-in;
+}
+.buttonSmall{
+    background: #E9E9E9;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    color:#363636;
+    font-size: 135%;
+    padding-top: 0.1em;
+    padding-bottom: 0.15em;
+    padding-left: 0.05em;
+    padding-right: 0.05em;
+    text-align: center;
+    border: 1px solid #E9E9E9;
+    border-radius: 2.5px;
+}
+.buttonSmall:hover,
+.buttonSmall:active{
 	background: #b8b8b8;
 	border: 1px solid #b8b8b8;
     transition: background-color 0.3s ease-in, color 0.3s ease-in;
@@ -86,30 +409,46 @@
     border: 1px solid #ffffff;
     border-radius: 4.5px;
 }
-.map{
-    width: 100%;
-    height: 65%;
-}
 .statusOn{
     background-color: #34FF34;
-    height: 30px;
-    -moz-border-radius: 40px;
-    -webkit-border-radius: 40px;
-    width: 15px;
+    height: 2.5em;
+    width: 2.5em;
+    margin-left:0.5em;
+    margin-top:0.2em;
+    -moz-border-radius: 2.5em;
+    -webkit-border-radius: 2.5em;
+    border-radius: 2.5em;
 }
 .statusOff{
     background-color: #EE1010;
-    height: 30px;
-    -moz-border-radius: 40px;
-    -webkit-border-radius: 40px;
-    width: 15px;
+    height: 2.5em;
+    width: 2.5em;
+    margin-left:0.5em;
+    margin-top:0.2em;
+    -moz-border-radius: 2.5em;
+    -webkit-border-radius: 2.5em;
+    border-radius: 2.5em;
 }
 .horizontalContainer>div{
     display: inline-block;
 }
+.horizontalContainerFlex>div{
+    display: inline-flex;
+}
+.homePageLink{
+    position: absolute;
+    bottom:1.8em;
+    right:4.0em;
+    z-index:1100;
+    font-size: 85%;
+}
 .homeFooter{
+    position: absolute;
+    bottom:0; 
+    z-index: 1200;
     display: -moz-box;  display: -webkit-box; display: -ms-flexbox;
 	-moz-box-orient: vertical; -webkit-box-orient: vertical; -ms-flex-direction: column;
+    width:100%;
     color:#494949;
     background: #868686;
     font-size: 50%;
@@ -161,10 +500,62 @@
     font-size: 110%;
 }
 .popinUserSetting{
-    height: 20em;
+    height: 7em;
     width: 15em;
-    top: calc( 50vh - ( 20em / 2 ) );
+    top: calc( 50vh - ( 7em / 2 ) );
     left: calc( 50vw - ( 15em / 2 ) );
+}
+.popinLongtext{
+    margin-top:0.5em;
+}
+.popinLongtextBig{
+    margin-top:0.5em;
+    font-size: 135%;
+}
+.popinLongtextVerySmall{
+    margin-top:0.5em;
+    font-size: 70%;
+}
+.pageLongtext{
+    margin-top:0.5em;
+    font-size: 135%;
+}
+.userAccountPopin{
+    font-size: 135%;
+    padding: 1.5em;
+    height: 12.0em;
+    width: 13.0em;
+    top: calc( 50vh - ( (12.0em)/2 ) );
+    left: calc( 50vw - ( (13.0em)/2 ) );
+}
+.userAccountDisplayName{
+    margin-top:1.0em;
+}
+.popinPasswordForgotten{
+    padding: 1.5em;
+    height: 20em;
+    width: 16em;
+    top: calc( 50vh - ( (20em)/2 ) );
+    left: calc( 50vw - ( (16em)/2 ) );
+}
+.passwordForgottenEmail{
+    margin-top:1.0em;
+}
+.passwordForgottenSendBtn{
+    width: 9.5em;
+    background: #ffc93b;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    color:#ffffff;
+    font-size: 135%;
+    padding-top: 0.3em;
+    padding-bottom: 0.30em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: center;
+    border: 1px solid #ffc93b;
+    border-radius: 2.5px;
+    margin-top:1.0em;
 }
 .popinMessageLog{
     font-size:175%;
@@ -181,12 +572,20 @@
     white-space: pre-line;
 }
 .isInvisible{
+    display: none;
     visibility: hidden;
 }
 .mapLabel{
     font-size: 150%;
 }
-
+.label{
+    padding-top: 0.30em;
+    padding-bottom: 0.15em;
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 145%;
+    color: #FFFFFF;
+}
 .spinner{
     -webkit-animation-name: spin;
     -webkit-animation-duration: 2000ms;
