@@ -628,8 +628,6 @@ $(document).ready(function() {
             scope: "wl.signin", 
             response_type: "token",
         });
-        WL.getLoginStatus(windowsLiveLoginStatusCallback, function(response){
-            console.log('WL.getLoginStatus error: ', response);
-        });
+        WL.getLoginStatus(windowsLiveLoginStatusCallback);
     });
 });    
