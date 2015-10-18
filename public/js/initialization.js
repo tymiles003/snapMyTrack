@@ -2,12 +2,13 @@
 
 var isDevelopment_mode=false;   // Add some dev. info ( success/error messages )
 var trackingIsActive=false;
+var serverLoginRunning=false;
 var userIsSignedIn=false;
 var userAccountType;
-var accessTokenFromUrl;
 var signedInUserId;
 var userDisplayName;
 var userPictureUrl;
+var accessTokenFromUrl;
 
 // 1) assign click events
 $('#userSettingsBtn').click(toggleSettings);
@@ -19,6 +20,7 @@ $('#publishSend').click(publish);
 $('#publishCloseBtn').click(togglePublish);
 $('#showMyGeoData').click(showGeoData);
 $('#trackLocation').click(sendLocationPeriodically);
+$('#trackLocationStatus').click(sendLocationPeriodically);
 $('#authorizeWithMailPassword').click(passwordLoginButtonClick);
 $('body').click(resetPasswordLogin);
 $('#emailInput').click(function(){return false});    // stop propagation of click event to 'body'
@@ -32,7 +34,7 @@ document.getElementById('passwordForgottenEmail').onkeydown=resetPasswordEnter;
     if (!event) event = window.event;
     var keyCode = event.keyCode || event.which;
     if (keyCode == '13'){    // ENTER
-        initializeUi(event);
+        initializeUi(event, accountType, userId);
         return false;
     }
 } */
@@ -80,22 +82,32 @@ function getAccessTokenFromUrl(){
     return params[1] || 0;
 }
 
-function showGeoData(event,userId){     // get user settings and show map
+function showGeoData(event, accountType, userId){     // get user settings and show map
     hideMessageLog();
-    initializeUi(event,userId);
+    initializeUi(event, accountType, userId);
 }
 
-function initializeUi(event,userId){     // get user settings and show map
-    spinnerOn();
+function initializeUi(event, accountType, userId){     // get user settings and show map
     // get geo point data of user
+    spinnerOn();
+    // account type
+    var accountTypeForShow;
+    if(accountType){
+        accountTypeForShow = accountType;
+    }
+    else{
+        accountTypeForShow = userAccountType;
+    }
+    // user id
+    var userIdForShow;
     if(userId){
-        userIdForShow = userId;    // ToDo -> use access token
+        userIdForShow = userId;
     }
     else{
         userIdForShow = signedInUserId;
     }
     // get user settings and afterwards update map
-    getUserSettingsFromServer(userIdForShow, userAccountType, true);
+    getUserSettingsFromServer(userIdForShow, accountTypeForShow, true);
 }
 
 function sendLocationPeriodically(event, doNotTogglePeriodicSend){
@@ -110,13 +122,13 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
     }
     
     if(trackingIsActive && !doNotTogglePeriodicSend){
-    trackingIsActive=false;
+    trackingIsActive = false;
     $("#trackLocationStatus").addClass("statusOff");
     $("#trackLocationStatus").removeClass("statusOn");
     }
     else{
     if(trackingIsActive || (!doNotTogglePeriodicSend&&!trackingIsActive) ){
-      trackingIsActive=true;
+      trackingIsActive = true;
       $("#trackLocationStatus").addClass("statusOn");
       $("#trackLocationStatus").removeClass("statusOff");
       sendLocation();
@@ -235,19 +247,30 @@ function toggleUserAccountPopin(){
     else{
         $('#userAccountPopin').addClass('isInvisible');
     }
+    return false;
 }
 
 function userAccountClick(){
     toggleUserAccountPopin();
 }
 
-function fillLogInUserFrame( displayName, imageUrl ){
+function fillLogInUserFrame( userId, displayName, imageUrl ){
     userPictureUrl = imageUrl;
     userDisplayName = displayName;
-    var heading = document.createElement('div');
+    var heading;
+    var headingIsNew = false;
+    if(document.getElementById('userAccountFrame')){
+        heading = document.getElementById('userAccountFrame');
+    }
+    else{
+        heading = document.createElement('div');
+        headingIsNew = true;
+        heading.id = 'userAccountFrame';
+    }
     if(imageUrl){
         if(document.getElementById('userAccountImage')){
             document.getElementById('userAccountImage').src=imageUrl;
+            $('#userAccountImage').removeClass('isInvisible');
         }
         else{
             var image = document.createElement('img');
@@ -256,22 +279,37 @@ function fillLogInUserFrame( displayName, imageUrl ){
             image.height = '30';
             image.classList.add('userImage');
             heading.appendChild(image);
-            heading.onclick=userAccountClick;
+            heading.onclick = userAccountClick;
+            if(document.getElementById('userDisplayName')){
+                document.getElementById('userDisplayName').style.visibility='hidden';
+            }
+            document.getElementById('loginUser').appendChild(heading);
         }
     }
     else if(displayName){
-//        heading.style.marginRight = '8.0em';
-        var displayNameDiv=document.createElement('div');
-        displayNameDiv.style.position='absolute';
-        displayNameDiv.style.right='8.0em';
-        displayNameDiv.style.zIndex='3000';
-        displayNameDiv.classList.add('userDisplayName');
-        var textNode = document.createTextNode(displayName);
-        displayNameDiv.appendChild(textNode);
-        heading.appendChild(displayNameDiv);
-        heading.onclick=userAccountClick;
+        if(document.getElementById('userAccountImage')){
+//            document.getElementById('userAccountImage').style.visibility='gone';
+            $('#userAccountImage').addClass('isInvisible');
+        }
+        if(!document.getElementById('userDisplayName')){
+            var displayNameDiv = document.createElement('div');
+            displayNameDiv.id = 'userDisplayName';
+            displayNameDiv.style.position = 'absolute';
+            displayNameDiv.style.right = '8.0em';
+            displayNameDiv.style.zIndex = '3000';
+            displayNameDiv.classList.add('userDisplayName');
+            heading.appendChild(displayNameDiv);
+            $('#userDisplayName').text(displayName);
+            if(headingIsNew){
+                heading.onclick = userAccountClick;
+                document.getElementById('loginUser').appendChild(heading);
+            }
+        }
+        else{
+            document.getElementById('userDisplayName').style.visibility='';
+            $('#userDisplayName').text(displayName);
+        }
     }
-    document.getElementById('loginUser').appendChild(heading);
 }
 
 /* function resetLogInUserFrame( displayName, imageUrl ){
@@ -284,12 +322,10 @@ function makeGoogleApiCall() {
         'userId': 'me'
         });
         request.then(function(resp) {
-            signedInUserId = resp.result.id;
-            userDisplayName = resp.result.displayName;
-            userPictureUrl = resp.result.image.url;
-            fillLogInUserFrame(userDisplayName, userPictureUrl);
-            // log-in SnapTrack server
-            oAuthLoginSend( 'GOOGLE', signedInUserId, userDisplayName);
+            if(!userIsSignedIn){    // make sure we not already looged in with GOOGLE, WINDOWSLIVE, ...
+                // log-in SnapMyTrack server
+                serverLoginSend( 'GOOGLE', resp.result.id, resp.result.displayName, resp.result.image.url);
+            }
         }, function(reason) {
             console.log('Error: ' + reason.result.error.message);
         });
@@ -307,23 +343,31 @@ function googelLoginButtonClick(event){
                         handleGoogleAuthResult);
 }
 
-// oAuth Log-In (Facebook, Google, Windows Live)
-function logInSuccessfull(userId){
-    userIsSignedIn=true;
-    signedInUserId=userId;
-    document.getElementById('authorizeWithWindowsBtn').style.visibility = 'hidden';
-    document.getElementById('authorizeWithFacebookBtn').style.visibility = 'hidden';
-    document.getElementById('authorizeWithGoogleBtn').style.visibility = 'hidden';
-    document.getElementById('authorizeWithMailPassword').style.visibility = 'hidden';
+// server Log-In
+function serverLogInSuccessfull(accountType, userId){
+    userIsSignedIn = true;
+    signedInUserId = userId;
     $('#userSettingsBtn').removeClass('isInvisible');
     $('#loginUser').removeClass('isInvisible');
     // initial display of map
-    showGeoData( null, userId );    
+    showGeoData( null, accountType, userId );    
 }
 
 // Facebook Log-In
 function facebookLoginButtonClick(){
-    FB.login(facebookLoginCallback);
+    FB.getLoginStatus(facebookLoginStatusCallbackForManualLogon);
+}
+
+function facebookLoginStatusCallbackForManualLogon(response) {
+    console.log('facebookLoginStatusCallbackForManualLogon: ',response);
+    if(!userIsSignedIn){
+        if (response.status === 'connected') {
+            facebookLoginCallback(response);
+        }
+        else{
+            FB.login(facebookLoginCallback);
+        }
+    }
 }
 
 function makeFacebookApiCall() {
@@ -331,10 +375,11 @@ function makeFacebookApiCall() {
         var displayName = response.name;
         var userId = response.id;
         FB.api('/me/picture', function(response) {
-            fillLogInUserFrame( displayName, response.data.url);
+            if(!userIsSignedIn){    // make sure we not already looged in with GOOGLE, WINDOWSLIVE, ...
+                // log-in SnapMyTrack server
+                serverLoginSend( 'FACEBOOK', userId, displayName, response.data.url);
+            }
         });
-        // log-in SnapTrack server
-        oAuthLoginSend( 'FACEBOOK', userId, displayName);
     });
 }
 
@@ -376,22 +421,24 @@ function makeWindowsLiveApiCall() {
         method: "GET"
     }).then(
         function (response){
-            signedInUserId = response.id;
-            userDisplayName = response.name;    //  response.first_name, response.last_name
+            var userId = response.id;
+            var displayName = response.name;    //  response.first_name, response.last_name
             WL.api({
                 path: "me/picture",
                 method: "GET"
             }).then(
                 function(pictureResponse){
-                    fillLogInUserFrame(userDisplayName, pictureResponse.location);
-                    // log-in SnapTrack server
-                    oAuthLoginSend( 'WINDOWSLIVE', signedInUserId, userDisplayName);
+                    if(!userIsSignedIn){    // make sure we not already looged in with GOOGLE, WINDOWSLIVE, ...
+                        // log-in SnapMyTrack server
+                        serverLoginSend( 'WINDOWSLIVE', userId, displayName, pictureResponse.location);
+                    }
                 },
                 function(pictureResponseFailed){
-                    console.log('WL.api(me/picture) error: ', responseFailed);
-                    fillLogInUserFrame(userDisplayName, null);
-                    // log-in SnapTrack server
-                    oAuthLoginSend( 'WINDOWSLIVE', signedInUserId, userDisplayName);
+                    if(!userIsSignedIn){    // make sure we not already looged in with GOOGLE, WINDOWSLIVE, ...
+                        console.log('WL.api(me/picture) error: ', responseFailed);
+                        // log-in SnapMyTrack server
+                        serverLoginSend( 'WINDOWSLIVE', userId, displayName, null);
+                    }
                 }
             );
         },
@@ -433,7 +480,6 @@ function logOut(){
     userIsSignedIn=false;
     prepareForSignIn();
     toggleUserAccountPopin();
-
 /*    if(userAccountType === 'FACEBOOK'){
         FB.logout(function(response) {
             // ToDo -> error handling
@@ -472,9 +518,16 @@ function logOut(){
 
 function prepareForSignIn(){
     // show sign-in buttons
+    // FACEBOOK
     document.getElementById('authorizeWithFacebookBtn').style.visibility = '';
+    document.getElementById('authorizeWithFacebookBtn').onclick = facebookLoginButtonClick;
+    // GOOGLE
     document.getElementById('authorizeWithGoogleBtn').style.visibility = '';
+    document.getElementById('authorizeWithGoogleBtn').onclick = googelLoginButtonClick;
+    // WINDOWSLIVE
     document.getElementById('authorizeWithWindowsBtn').style.visibility = '';
+    document.getElementById('authorizeWithWindowsBtn').onclick = windowsLiveLoginButtonClick;
+    // PASSWORD
     document.getElementById('authorizeWithMailPassword').style.visibility = '';
     // remove all tracks from map
     resetMap();
@@ -550,22 +603,16 @@ function resetPasswordLogin(){
     }
 }
 
-function loginCallback(response){
+function serverLoginCallback(response){
     // status
     //  - connected
     //  - auth_failed
     //  - user_creation_failed
-    if(!userIsSignedIn){
+
+    if(serverLoginRunning){
+        serverLoginRunning = false;
         if(response.status === 'connected'){
-            if(response.data.displayName){
-                userDisplayName = response.data.displayName;
-            }
-            else{
-                userDisplayName = response.data.userId;
-            }
-            userAccountType = response.data.accountType;
-            fillLogInUserFrame( userDisplayName, null);
-            logInSuccessfull( response.data.userId );
+            serverLogInSuccessfull( response.data.accountType, response.data.userId );
         }
         else{
             var messageText = 'Sign-In has failed, check user Id and password';
@@ -575,16 +622,30 @@ function loginCallback(response){
     }
 }
 
-function oAuthLoginSend(accountType, userId, displayName){
-    sendLogonDataToServer(accountType, userId, displayName, null, loginCallback );
+function serverLoginSend(accountType, userId, displayName, pictureUrl){
+    if(!serverLoginRunning){
+        fillLogInUserFrame(userId, displayName, pictureUrl);
+
+        document.getElementById('authorizeWithWindowsBtn').style.visibility = 'hidden';
+        document.getElementById('authorizeWithFacebookBtn').style.visibility = 'hidden';
+        document.getElementById('authorizeWithGoogleBtn').style.visibility = 'hidden';
+        document.getElementById('authorizeWithMailPassword').style.visibility = 'hidden';
+
+        serverLoginRunning = true;
+        sendLogonDataToServer(accountType, userId, displayName, null, serverLoginCallback );
+    }
 }
 
 function passwordLoginSend(){
-    var accountType = 'PASSWORD';
-    var userId = document.getElementById('emailInput').value;
-    var displayName = "";   // can be added later on (account pop-in)
-    var password = document.getElementById('passwordInput').value;
-    sendLogonDataToServer(accountType, userId, displayName, password, loginCallback );
+    if(!serverLoginRunning){
+        var accountType = 'PASSWORD';
+        var userId = document.getElementById('emailInput').value;
+        var displayName = "";   // can be added later on (account pop-in)
+        var password = document.getElementById('passwordInput').value;
+        fillLogInUserFrame(userId, displayName, null);
+        serverLoginRunning = true;
+        sendLogonDataToServer(accountType, userId, displayName, password, serverLoginCallback );
+    }
     return false;    // stop event propagation
 }
 
