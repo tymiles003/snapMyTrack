@@ -1,6 +1,6 @@
 // initialization
 
-var isDevelopment_mode=true;   // Add some dev. info ( success/error messages )
+var isDevelopment_mode=false;   // Add some dev. info ( success/error messages )
 var trackingIsActive=false;
 var userIsSignedIn=false;
 var userAccountType;
