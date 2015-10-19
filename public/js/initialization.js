@@ -230,8 +230,9 @@ function handleGoogleAuthResult(authResult) {
         userAccountType = 'GOOGLE';
         makeGoogleApiCall();
     } else {
-        if(!userIsSignedIn){
+        if(!userIsSignedIn && !serverLoginRunning){
             authorizeWithGoogleButton.onclick = googelLoginButtonClick;
+            authorizeWithGoogleButton.style.visibility = '';
         }
     }
 }
@@ -402,10 +403,12 @@ function facebookLoginStatusCallback(response){
         }
         else {
             var authorizeWithFacebookButton = document.getElementById('authorizeWithFacebookBtn');
-            if(!userIsSignedIn){
-                authorizeWithFacebookButton.style.visibility = '';
-                authorizeWithFacebookButton.onclick = facebookLoginButtonClick;
-            }
+            setTimeout( function(){
+                if(!userIsSignedIn && !serverLoginRunning){
+                    authorizeWithFacebookButton.style.visibility = '';
+                    authorizeWithFacebookButton.onclick = facebookLoginButtonClick;
+                }
+            }, 250);        // ToDo, make more robust, other oAuth callbacks might be slow
         }
     }
 }
@@ -466,7 +469,7 @@ function windowsLiveLoginStatusCallback(response){
         }
         else {
             var authorizeWithWindowsButton = document.getElementById('authorizeWithWindowsBtn');
-            if(!userIsSignedIn){
+            if(!userIsSignedIn && !serverLoginRunning){
                 authorizeWithWindowsButton.style.visibility = '';
                 authorizeWithWindowsButton.onclick = windowsLiveLoginButtonClick;
             }
