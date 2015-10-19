@@ -1,6 +1,6 @@
 // initialization
 
-var isDevelopment_mode=false;   // Add some dev. info ( success/error messages )
+var isDevelopment_mode=true;   // Add some dev. info ( success/error messages )
 var trackingIsActive=false;
 var serverLoginRunning=false;
 var userIsSignedIn=false;
@@ -74,7 +74,7 @@ function resetPasswordEnter(event) {
 } */
 
 function navigateToHomepagePage(){
-    window.location = 'http://dsignmatters.com/snapmytrack';
+    window.open('http://dsignmatters.com/snapmytrack');
 }
 
 function getAccessTokenFromUrl(){
@@ -120,7 +120,7 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
     else{
     hideMessageLog();
     }
-    
+
     if(trackingIsActive && !doNotTogglePeriodicSend){
     trackingIsActive = false;
     $("#trackLocationStatus").addClass("statusOff");
@@ -350,7 +350,7 @@ function serverLogInSuccessfull(accountType, userId){
     $('#userSettingsBtn').removeClass('isInvisible');
     $('#loginUser').removeClass('isInvisible');
     // initial display of map
-    showGeoData( null, accountType, userId );    
+    showGeoData( null, accountType, userId );
 }
 
 // Facebook Log-In
@@ -476,7 +476,7 @@ function windowsLiveLoginStatusCallback(response){
 
 function logOut(){
     // we do not provide a log out
-    // -> show 'sign in' buttons instead 
+    // -> show 'sign in' buttons instead
     userIsSignedIn=false;
     prepareForSignIn();
     toggleUserAccountPopin();
@@ -485,7 +485,7 @@ function logOut(){
             // ToDo -> error handling
             console.log(userAccountType + '-logout:'+response);
         });
-    }    
+    }
     else if (userAccountType === 'GOOGLE'){
         gapi.auth.signOut(function(response) {
             // ToDo -> error handling
@@ -547,7 +547,7 @@ function hideFooter( showTopFrame ){
                 $('#topFrame').removeClass('isInvisible');
                 $('#publish').removeClass('isInvisible');
             }
-        }     
+        }
     );
 }
 
@@ -559,7 +559,7 @@ function showFooter( hideTopFrame ){
                 $('#topFrame').addClass('isInvisible');
                 $('#publish').addClass('isInvisible');
             }
-        }     
+        }
     );
 }
 
@@ -581,7 +581,7 @@ function passwordLoginButtonClick(){
 }
 
 function passwordForgotten(){
-    // launch pop-in to reset password and send link to create new password via e-mail  
+    // launch pop-in to reset password and send link to create new password via e-mail
     $('#passwordForgottenPopin').removeClass('isInvisible');
     return false;    // stop event propagation
 }
@@ -655,40 +655,35 @@ window.onload = function() {
 
 $(document).ready(function() {
     $.ajaxSetup({ cache: true });
-    
+
 //  oAuth Log-In
 
 //  Facebook
     $.getScript('//connect.facebook.net/en_US/sdk.js', function(){
         var appId;
-        if(isDevelopment_mode){
-            appId = '1685804888318715';     // redirect to OpenShift
-//            appId = '1685807221651815';     // test app, redirect to KODING
-        }
-        else{
-            appId = '1685804888318715';     // redirect to OpenShift
-        }
+        appId = '1685804888318715';
         FB.init({
           appId: appId,
           version: 'v2.5' // or v2.0, v2.1, v2.2, v2.3, v2.4
         });
         FB.getLoginStatus(facebookLoginStatusCallback);
     });
-    
+
 //  Windows Live
     $.getScript('//js.live.net/v5.0/wl.js', function(){
         var client_id;
         if(isDevelopment_mode){
             client_id = '000000004817115C';     // test app, redirect to KODING
+//            client_id = '000000004017020D';     // test app, redirect to CODENVY
         }
         else{
             client_id = '000000004C16A334';     // redirect to OpenShift
         }
         WL.init({
             client_id: client_id,
-            scope: "wl.signin", 
+            scope: "wl.signin",
             response_type: "token",
         });
         WL.getLoginStatus(windowsLiveLoginStatusCallback);
     });
-});    
+});
