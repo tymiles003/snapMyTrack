@@ -1,4 +1,4 @@
-# snapMyTrack (beta)
+# snapMyTrack (alpha)
 *Share your track / location, simple and secure (Web app)*
 
 On the one hand, **'SnapMyTrack'** is a location sharing app (pure html/Javascript),
