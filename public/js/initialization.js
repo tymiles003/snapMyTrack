@@ -21,13 +21,15 @@ $('#publishSend').click(publish);
 $('#publishCloseBtn').click(togglePublish);
 $('#trackLocation').click(sendLocationPeriodically);
 $('#trackLocationStatus').click(sendLocationPeriodically);
-$('#authorizeWithMailPassword').click(passwordLoginButtonClick);
+$('#authorizeWithMailPasswordBtn').click(passwordLoginButtonClick);
 $('body').click(resetPasswordLogin);
 $('#emailInput').click(function(){return false});    // stop propagation of click event to 'body'
 $('#passwordInput').click(function(){return false});    // stop propagation of click event to 'body'
 $('#userAccountLogout').click(logOut);
 $('#homePageLink').click(navigateToHomepagePage);
 $('#userAccountDisplayName').click(toggleDisplayName);
+$('#userAccountPopin').click(toggleDisplayName);
+$('#userAccountChangeNameInput').click(function(){return false});   // stop event propagation
 document.getElementById('passwordInput').onkeydown=passwordEnter;
 document.getElementById('passwordForgottenEmail').onkeydown=resetPasswordEnter;
 document.getElementById('userAccountChangeNameInput').onkeydown=displayNameEnter;
@@ -126,31 +128,32 @@ function initializeUi(event, accountType, userId){     // get user settings and 
 }
 
 function sendLocationPeriodically(event, doNotTogglePeriodicSend){
-    var frequencySeconds = 5;   // send every 5 seconds
+    var frequencySeconds = 4;   // send every 4 seconds
     if(!signedInUserId){
-    $("#messageArea").text('Add "User Id" for tracking.\nThe user id can be any sequence of characters.');
-    showMessageLog(true);
-    return;
+        $("#messageArea").text('Add "User Id" for tracking.\nThe user id can be any sequence of characters.');
+        showMessageLog(true);
+        return;
     }
     else{
-    hideMessageLog();
+        hideMessageLog();
     }
 
     if(trackingIsActive && !doNotTogglePeriodicSend){
-    trackingIsActive = false;
-    $("#trackLocationStatus").addClass("statusOff");
-    $("#trackLocationStatus").removeClass("statusOn");
+        trackingIsActive = false;
+        $("#trackLocationStatus").addClass("statusOff");
+        $("#trackLocationStatus").removeClass("statusOn");
     }
     else{
     if(trackingIsActive || (!doNotTogglePeriodicSend&&!trackingIsActive) ){
-      trackingIsActive = true;
-      $("#trackLocationStatus").addClass("statusOn");
-      $("#trackLocationStatus").removeClass("statusOff");
-      sendLocation();
-      setTimeout( function(){
-        sendLocationPeriodically( null, true );
-      },
-      frequencySeconds*1000);
+        trackingIsActive = true;
+        $("#trackLocationStatus").addClass("statusOn");
+        $("#trackLocationStatus").removeClass("statusOff");
+        navigator.geolocation.watchPosition(updateCurrentLocationOnMap);
+        sendLocation();
+        setTimeout( function(){
+                sendLocationPeriodically( null, true );
+        },
+        frequencySeconds*1000);
     }
     else{
       return;    // periodic tracking has been switched off
@@ -515,10 +518,10 @@ function windowsLiveLoginStatusCallback(response){
             makeWindowsLiveApiCall();
         }
         else {
-            var authorizeWithWindowsButton = document.getElementById('authorizeWithWindowsBtn');
             if(!userIsSignedIn && !serverLoginRunning){
-                authorizeWithWindowsButton.style.visibility = '';
-                authorizeWithWindowsButton.onclick = windowsLiveLoginButtonClick;
+                document.getElementById('authorizeWithWindowsBtn').style.visibility = '';
+                $('#authorizeWithWindowsBtn').click(windowsLiveLoginButtonClick);
+                $('#authorizeWithWindowsBtnLabel').click(windowsLiveLoginButtonClick);
             }
         }
     }
@@ -577,8 +580,9 @@ function prepareForSignIn(){
     // WINDOWSLIVE
     document.getElementById('authorizeWithWindowsBtn').style.visibility = '';
     document.getElementById('authorizeWithWindowsBtn').onclick = windowsLiveLoginButtonClick;
+    document.getElementById('authorizeWithWindowsBtnLabel').onclick = windowsLiveLoginButtonClick;
     // PASSWORD
-    document.getElementById('authorizeWithMailPassword').style.visibility = '';
+    document.getElementById('authorizeWithMailPasswordBtn').style.visibility = '';
     // remove all tracks from map
     resetMap();
     // reset overlay/footer
@@ -626,7 +630,7 @@ function passwordLoginButtonClick(){
     $('#passwordSend').removeClass('isInvisible');
     document.getElementById('passwordFrame').style.visibility = '';
     $('#passwordFrame').removeClass('isInvisible');
-    document.getElementById('authorizeWithMailPassword').style.visibility = 'hidden';
+    document.getElementById('authorizeWithMailPasswordBtn').style.visibility = 'hidden';
     document.getElementById('passwordForgotten').onclick = passwordForgotten;
     document.getElementById('passwordSend').onclick = passwordLoginSend;
     hideFooter();
@@ -645,7 +649,9 @@ function resetPasswordLogin(){
         return;
     }
     if(document.getElementById('passwordFrame').style.visibility === ''){
-        document.getElementById('authorizeWithMailPassword').style.visibility = '';
+        if(!serverLoginRunning){
+            document.getElementById('authorizeWithMailPasswordBtn').style.visibility = '';
+        }
         document.getElementById('emailInput').style.visibility = 'hidden';
         document.getElementById('passwordInput').style.visibility = 'hidden';
         document.getElementById('passwordSend').style.visibility = 'hidden';
@@ -687,7 +693,7 @@ function serverLoginSend(accountType, userId, displayName, pictureUrl){
         document.getElementById('authorizeWithWindowsBtn').style.visibility = 'hidden';
         document.getElementById('authorizeWithFacebookBtn').style.visibility = 'hidden';
         document.getElementById('authorizeWithGoogleBtn').style.visibility = 'hidden';
-        document.getElementById('authorizeWithMailPassword').style.visibility = 'hidden';
+        document.getElementById('authorizeWithMailPasswordBtn').style.visibility = 'hidden';
 
         // log on to server
         serverLoginRunning = true;
@@ -702,6 +708,12 @@ function passwordLoginSend(){
         userAccountType = 'PASSWORD';
         serverLoginUserId = userId;    //  user for which latest login request has been sent to server (currently only needed to debugging)
         fillLogInUserFrame(userId, getFormattedUserDisplayName(userId), null);
+
+        // hide authorization buttons
+        document.getElementById('authorizeWithWindowsBtn').style.visibility = 'hidden';
+        document.getElementById('authorizeWithFacebookBtn').style.visibility = 'hidden';
+        document.getElementById('authorizeWithGoogleBtn').style.visibility = 'hidden';
+        document.getElementById('authorizeWithMailPasswordBtn').style.visibility = 'hidden';
 
         // log on to server
         serverLoginRunning = true;
@@ -745,20 +757,28 @@ window.onload = function() {
 $(document).ready(function() {
     $.ajaxSetup({ cache: true });
 
-//  oAuth Log-In
+    // check if browser supports geo-location
+    if(!navigator.geolocation) {
+        alert('Your browser does not support geo-location dervices. You will not be able to records tracks.');
+    }
 
-//  Facebook
+    //  oAuth Log-In
+
+    //  Facebook
     $.getScript('//connect.facebook.net/en_US/sdk.js', function(){
         var appId;
         appId = '1685804888318715';
         FB.init({
-          appId: appId,
-          version: 'v2.5' // or v2.0, v2.1, v2.2, v2.3, v2.4
+            appId: appId,
+            status: true,
+//            cookie: true,
+//            xfbml: true,
+            version: 'v2.5' // or v2.0, v2.1, v2.2, v2.3, v2.4
         });
         FB.getLoginStatus(facebookLoginStatusCallback);
     });
 
-//  Windows Live
+    //  Windows Live
     $.getScript('//js.live.net/v5.0/wl.js', function(){
         var client_id;
         if(isDevelopment_mode){
@@ -772,6 +792,7 @@ $(document).ready(function() {
             client_id: client_id,
             scope: "wl.signin",
             response_type: "token",
+//            redirect_uri: 'https://login.live.com/oauth20_desktop.srf'      // Safari workaround: redirect_uri is required but has default value 'current page' -> see WL.init docu
         });
         WL.getLoginStatus(windowsLiveLoginStatusCallback);
     });

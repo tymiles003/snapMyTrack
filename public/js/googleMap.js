@@ -1,6 +1,7 @@
 var map;
 var userPaths=[];
 var tooltipMarkers=[];
+var markerCurrentPosition;
 var infoWindow;
 var userColor=[];
 var colorPalette=[
@@ -17,69 +18,83 @@ var colorPalette=[
   ];
 var mapZoomDefault = 15;
 
-function updateGoogleMap( geoPoints, mapTypeId ){
-  if(geoPoints.length>0){
-    navigator.geolocation.getCurrentPosition(function(position) {
-      var geoInfo = getGeoInfo(geoPoints);
-      var latlng = new google.maps.LatLng(geoInfo.centerPoint.lat, geoInfo.centerPoint.lng);
-      var zoomRaw = Math.floor(1000*geoInfo.size.width+geoInfo.size.height);
-      var mapZoom = mapZoomDefault;
-      if(zoomRaw < 3){
+function displayGeopointsOnMap(geoPoints, currentPosition, mapTypeId){
+    var geoInfo = getGeoInfo(geoPoints);
+    var latlng = new google.maps.LatLng(geoInfo.centerPoint.lat, geoInfo.centerPoint.lng);
+    var zoomRaw = Math.floor(1000*geoInfo.size.width+geoInfo.size.height);
+    var mapZoom = mapZoomDefault;
+    if(zoomRaw < 3){
         mapZoom = 18;
-      }
-      if(zoomRaw < 4){
+    }
+    if(zoomRaw < 4){
         mapZoom = 17;
-      }
-      if(zoomRaw < 5){
+    }
+    if(zoomRaw < 5){
         mapZoom = 16;
-      }
-      else if(zoomRaw < 6){
+    }
+    else if(zoomRaw < 6){
         mapZoom = 15;
-      }
-      else if(zoomRaw < 8){
+    }
+    else if(zoomRaw < 8){
         mapZoom = 14;
-      }
-      else if(zoomRaw < 10){
+    }
+    else if(zoomRaw < 10){
         mapZoom = 14;
-      }
-      else if(zoomRaw < 15){
+    }
+    else if(zoomRaw < 15){
         mapZoom = 13;
-      }
-      else if(zoomRaw < 25){
+    }
+    else if(zoomRaw < 25){
         mapZoom = 13;
-      }
-      else if(zoomRaw < 50){
+    }
+    else if(zoomRaw < 50){
         mapZoom = 12;
-      }
-      else if(zoomRaw < 200){
+    }
+    else if(zoomRaw < 200){
         mapZoom = 10;
-      }
-      else{
+    }
+    else{
         mapZoom = 9;
-      }
-      renderMap(latlng, position, geoPoints, mapZoom, mapTypeId);
-      }, function(err){
-          if (err.code == 1) {
-              // user did not allow
-              return;
-          }
-      },
-      { enableHighAccuracy: true}
-    );
-  }
-  else{
-    navigator.geolocation.getCurrentPosition(function(position) {
-      var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-      renderMap(latlng, position, geoPoints, mapZoomDefault, mapTypeId);
-      }, function(err){
-          if (err.code == 1) {
-              // user did not allow
-              return;
-          }
-      },
-      { enableHighAccuracy: true}
-    );
-  }
+    }
+    renderMap(latlng, currentPosition, geoPoints, mapZoom, mapTypeId);
+}
+
+function updateGoogleMap( geoPoints, mapTypeId ){
+    if(geoPoints.length>0){
+        navigator.geolocation.getCurrentPosition(function(position) {
+                displayGeopointsOnMap(geoPoints, position, mapTypeId);
+            }, function(err){
+                if (err.code == 1) {
+                    // user did not allow
+                    if(isDevelopment_mode){
+                        $("#messageArea").text(err.message);
+                        showMessageLog(true);
+                    }
+                }
+                displayGeopointsOnMap(geoPoints, null, mapTypeId);
+            },
+            { enableHighAccuracy: true}
+        );
+    }
+    else{
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                renderMap(latlng, position, geoPoints, mapZoomDefault, mapTypeId);
+            },
+            function(err){
+                if (err.code == 1) {
+                    // user did not allow
+                    if(isDevelopment_mode){
+                        $("#messageArea").text(err.message);
+                        showMessageLog(true);
+                    }
+                    return;
+                }
+            },
+            { enableHighAccuracy: true}
+        );
+    }
 }
 
 function resetMap(){
@@ -124,69 +139,77 @@ function changeMapType(mapTypeId){
     }
 }
 
+function updateCurrentLocationOnMap( currentPosition ){
+    var currentlatlng = new google.maps.LatLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
+    if (markerCurrentPosition){
+        markerCurrentPosition.position = currentlatlng;
+    }
+}
+
 function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
-  var myOptions = {
+    var myOptions = {
       zoom: mapZoom,
       center: center,
       mapTypeControl: false,
       navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
       mapTypeId: mapTypeId,
-  };
-  map = new google.maps.Map(document.getElementById("GoogleMapsCanvas"), myOptions);
-  // listener for click event of map (not called, for clicks on shapes)
-  map.addListener('click', mapClick);
-  
-  userPaths=[];
-  var userCoordinates=[];
-  var previousGeoPoint;
-  if(geoPoints && geoPoints.length>0){
-    for(var i=0,len=geoPoints.length;i<len;i++){
-      var latlng = new google.maps.LatLng(geoPoints[i].latitude, geoPoints[i].longitude);
-      if( (previousGeoPoint && (previousGeoPoint.userId !== geoPoints[i].userId)) || geoPoints[i].isFirstPointOfTrack || i+1 === geoPoints.length ){
-        if( i+1 === geoPoints.length ){
-          userCoordinates.push( {
-            lat: parseFloat(geoPoints[i].latitude),
-            lng: parseFloat(geoPoints[i].longitude)
-          });
+    };
+    map = new google.maps.Map(document.getElementById("GoogleMapsCanvas"), myOptions);
+    // listener for click event of map (not called, for clicks on shapes)
+    map.addListener('click', mapClick);
+    
+    userPaths=[];
+    var userCoordinates=[];
+    var previousGeoPoint;
+    if(geoPoints && geoPoints.length>0){
+        for(var i=0,len=geoPoints.length;i<len;i++){
+            var latlng = new google.maps.LatLng(geoPoints[i].latitude, geoPoints[i].longitude);
+            if( (previousGeoPoint && (previousGeoPoint.userId !== geoPoints[i].userId)) || geoPoints[i].isFirstPointOfTrack || i+1 === geoPoints.length ){
+                if( i+1 === geoPoints.length ){
+                  userCoordinates.push( {
+                    lat: parseFloat(geoPoints[i].latitude),
+                    lng: parseFloat(geoPoints[i].longitude)
+                  });
+                }
+                var userPath = new google.maps.Polyline({
+                  path: userCoordinates,
+                  geodesic: true,
+                  strokeColor: getColorOfUser(geoPoints[i].userId),
+                  strokeOpacity: 1.0,
+                  strokeWeight: 4,
+                });
+                userPath.setMap(map);
+            /*        ( function(){
+                    addListener(userPath, 'click', i, geoPoints[i].userId, geoPoints[i].displayName); 
+                })();
+                ( function(){
+                    addListener(userPath, 'mouseover', i, geoPoints[i].userId, geoPoints[i].displayName); 
+                })();
+                ( function(){
+                    addListener(userPath, 'mouseout', i, geoPoints[i].userId, geoPoints[i].displayName); 
+                })();  */
+                userPaths.push(userPath);
+                userCoordinates=[];
+            }
+            else{
+                userCoordinates.push( {
+                  lat: parseFloat(geoPoints[i].latitude),
+                  lng: parseFloat(geoPoints[i].longitude)
+                });
+            }
+            previousGeoPoint=geoPoints[i];
         }
-        var userPath = new google.maps.Polyline({
-          path: userCoordinates,
-          geodesic: true,
-          strokeColor: getColorOfUser(geoPoints[i].userId),
-          strokeOpacity: 1.0,
-          strokeWeight: 4,
-        });
-        userPath.setMap(map);
-/*        ( function(){
-            addListener(userPath, 'click', i, geoPoints[i].userId, geoPoints[i].displayName); 
-        })();
-        ( function(){
-            addListener(userPath, 'mouseover', i, geoPoints[i].userId, geoPoints[i].displayName); 
-        })();
-        ( function(){
-            addListener(userPath, 'mouseout', i, geoPoints[i].userId, geoPoints[i].displayName); 
-        })();  */
-        userPaths.push(userPath);
-        userCoordinates=[];
-      }
-      else{
-        userCoordinates.push( {
-          lat: parseFloat(geoPoints[i].latitude),
-          lng: parseFloat(geoPoints[i].longitude)
-        });
-      }
-      previousGeoPoint=geoPoints[i];
     }
-  }
 
-  var currentlatlng = new google.maps.LatLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
-  var markerCurrentPosition = new google.maps.Marker({
-    position: currentlatlng,
-    map: map,
-    title:"You are here! (at least within a "+currentPosition.coords.accuracy+" meter radius)"
-  });
-
-  infoWindow = new google.maps.InfoWindow();
+    if(currentPosition){
+        var currentlatlng = new google.maps.LatLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
+        markerCurrentPosition = new google.maps.Marker({
+            position: currentlatlng,
+            map: map,
+//            title:"You are here! (at least within a "+currentPosition.coords.accuracy+" meter radius)"
+        });
+    }
+    infoWindow = new google.maps.InfoWindow();
 }
 
 function addListener( userPath, eventName, idx, userId, displayName){
