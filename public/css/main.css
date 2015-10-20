@@ -520,6 +520,10 @@ body{
     margin-top:0.5em;
     font-size: 135%;
 }
+.userDisplayName{
+    width: 9.00em;
+    text-align: right;
+}
 .userAccountPopin{
     font-size: 135%;
     padding: 1.5em;
@@ -530,6 +534,20 @@ body{
 }
 .userAccountDisplayName{
     margin-top:1.0em;
+}
+.userAccountChangeNameInput{
+    margin-top:1.0em;
+    width: 10.00em;
+    font-size: 100%;
+    margin-bottom: 0.3em;
+    margin-right: 0;
+    padding-top: 0.3em;
+    padding-bottom: 0.45em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: center;
+    border: 1px solid #FFFFFF;
+    border-radius: 4.5px;
 }
 .popinPasswordForgotten{
     padding: 1.5em;

@@ -1,8 +1,9 @@
 // initialization
 
-var isDevelopment_mode=false;   // Add some dev. info ( success/error messages )
+var isDevelopment_mode=false;   // add some dev. info ( success/error messages )
 var trackingIsActive=false;
 var serverLoginRunning=false;
+var serverLoginUserId;   // user for which latest login request has been sent to server (currently only needed to debugging)
 var userIsSignedIn=false;
 var userAccountType;
 var signedInUserId;
@@ -18,7 +19,6 @@ $('#passwordForgottenSendBtn').click(sendPasswordForgottenEmail);
 $('#publish').click(togglePublish);
 $('#publishSend').click(publish);
 $('#publishCloseBtn').click(togglePublish);
-$('#showMyGeoData').click(showGeoData);
 $('#trackLocation').click(sendLocationPeriodically);
 $('#trackLocationStatus').click(sendLocationPeriodically);
 $('#authorizeWithMailPassword').click(passwordLoginButtonClick);
@@ -27,17 +27,41 @@ $('#emailInput').click(function(){return false});    // stop propagation of clic
 $('#passwordInput').click(function(){return false});    // stop propagation of click event to 'body'
 $('#userAccountLogout').click(logOut);
 $('#homePageLink').click(navigateToHomepagePage);
+$('#userAccountDisplayName').click(toggleDisplayName);
 document.getElementById('passwordInput').onkeydown=passwordEnter;
 document.getElementById('passwordForgottenEmail').onkeydown=resetPasswordEnter;
+document.getElementById('userAccountChangeNameInput').onkeydown=displayNameEnter;
 
-/* function userIdUpdate(event) {
+
+function toggleDisplayName(){
+    if(document.getElementById('userAccountChangeNameInput').style.visibility === 'hidden' || $('#userAccountChangeNameInput').hasClass('isInvisible')){
+        // show input box
+        $('#userAccountChangeNameInput').val($('#userAccountDisplayName').text());
+        document.getElementById('userAccountChangeNameInput').setSelectionRange(0, document.getElementById('userAccountChangeNameInput').value.length);
+        $('#userAccountDisplayName').addClass('isInvisible');
+        document.getElementById('userAccountDisplayName').style.visibility = 'hidden';
+        $('#userAccountChangeNameInput').removeClass('isInvisible');
+        document.getElementById('userAccountChangeNameInput').style.visibility = '';
+    }
+    else{
+        // hide input box
+        $('#userAccountDisplayName').text($('#userAccountChangeNameInput').val());
+        $('#userAccountDisplayName').removeClass('isInvisible');
+        document.getElementById('userAccountDisplayName').style.visibility = '';
+        $('#userAccountChangeNameInput').addClass('isInvisible');
+        document.getElementById('userAccountChangeNameInput').style.visibility = 'hidden';
+    }
+    return false;
+}
+
+function displayNameEnter(event) {
     if (!event) event = window.event;
     var keyCode = event.keyCode || event.which;
     if (keyCode == '13'){    // ENTER
-        initializeUi(event, accountType, userId);
+        passwordUserChange();
         return false;
     }
-} */
+}
 
 function passwordEnter(event) {
     if (!event) event = window.event;
@@ -63,15 +87,6 @@ function resetPasswordEnter(event) {
         }
     }
 }
-
-/* function userAccountDisplayNameUpdate(event) {
-    if (!event) event = window.event;
-    var keyCode = event.keyCode || event.which;
-    if (keyCode == '13'){    // ENTER
-
-        return false;
-    }
-} */
 
 function navigateToHomepagePage(){
     window.open('http://dsignmatters.com/snapmytrack');
@@ -242,13 +257,37 @@ function toggleUserAccountPopin(){
         $('#userAccountPopin').removeClass('isInvisible');
         $('#userAccountCloseBtn').click(toggleUserAccountPopin);
         document.getElementById('userAccountPicture').style.backgroundImage = "url('"+userPictureUrl+"')";
-        $('#userAccountDisplayName').text(userDisplayName);
         $('#userAccountAccountType').text(userAccountType);
+        $('#userAccountDisplayName').text( getFormattedUserDisplayName() );
     }
     else{
         $('#userAccountPopin').addClass('isInvisible');
     }
     return false;
+}
+
+function getFormattedUserDisplayName(userId){
+    var displayNameLocal, displayNameParts;
+    var displayName;
+    if(userId){
+        displayNameLocal = userId;
+    }
+    else{
+        displayNameLocal = userDisplayName;
+    }
+    if( userAccountType === 'PASSWORD' ){
+        displayNameParts = displayNameLocal.split('@');
+        if( !displayNameParts.length || displayNameParts.length === 0){
+            displayName = displayNameLocal;
+        }
+        else{
+            displayName = displayNameParts[0];
+        }
+    }
+    else{
+        displayName = displayNameLocal;
+    }
+    return displayName;
 }
 
 function userAccountClick(){
@@ -272,6 +311,7 @@ function fillLogInUserFrame( userId, displayName, imageUrl ){
         if(document.getElementById('userAccountImage')){
             document.getElementById('userAccountImage').src=imageUrl;
             $('#userAccountImage').removeClass('isInvisible');
+            document.getElementById('userAccountImage').style.visibility = '';
         }
         else{
             var image = document.createElement('img');
@@ -299,8 +339,8 @@ function fillLogInUserFrame( userId, displayName, imageUrl ){
             displayNameDiv.style.right = '8.0em';
             displayNameDiv.style.zIndex = '3000';
             displayNameDiv.classList.add('userDisplayName');
+            displayNameDiv.innerHTML = displayName;
             heading.appendChild(displayNameDiv);
-            $('#userDisplayName').text(displayName);
             if(headingIsNew){
                 heading.onclick = userAccountClick;
                 document.getElementById('loginUser').appendChild(heading);
@@ -345,13 +385,20 @@ function googelLoginButtonClick(event){
 }
 
 // server Log-In
-function serverLogInSuccessfull(accountType, userId){
+function serverLogInSuccessfull(appUser){
     userIsSignedIn = true;
-    signedInUserId = userId;
+    signedInUserId = appUser.userId;
     $('#userSettingsBtn').removeClass('isInvisible');
+    document.getElementById('userSettingsBtn').style.visibility = '';
     $('#loginUser').removeClass('isInvisible');
+    document.getElementById('loginUser').style.visibility = '';
+    
+    if(appUser.accountType === "PASSWORD"){
+        // update user admin data (display name, picture url)
+        fillLogInUserFrame(appUser.userId, appUser.displayName, appUser.pictureUrl);
+    }
     // initial display of map
-    showGeoData( null, accountType, userId );
+    showGeoData( null, appUser.accountType, appUser.userId );
 }
 
 // Facebook Log-In
@@ -548,7 +595,9 @@ function hideFooter( showTopFrame ){
             $('#homeFooter').css({opacity:1.0});
             if(showTopFrame){
                 $('#topFrame').removeClass('isInvisible');
+                document.getElementById('topFrame').style.visibility = '';
                 $('#publish').removeClass('isInvisible');
+                document.getElementById('publish').style.visibility = '';
             }
         }
     );
@@ -557,6 +606,7 @@ function hideFooter( showTopFrame ){
 function showFooter( hideTopFrame ){
     $('#homeFooter').animate({opacity:1.00}, 1250, function(){
             $('#homeFooter').removeClass('isInvisible');
+            document.getElementById('homeFooter').style.visibility = '';
             $('#homeFooter').css({opacity:1.0});
             if(hideTopFrame){
                 $('#topFrame').addClass('isInvisible');
@@ -586,6 +636,7 @@ function passwordLoginButtonClick(){
 function passwordForgotten(){
     // launch pop-in to reset password and send link to create new password via e-mail
     $('#passwordForgottenPopin').removeClass('isInvisible');
+    document.getElementById('passwordForgottenPopin').style.visibility = '';
     return false;    // stop event propagation
 }
 
@@ -615,7 +666,7 @@ function serverLoginCallback(response){
     if(serverLoginRunning){
         serverLoginRunning = false;
         if(response.status === 'connected'){
-            serverLogInSuccessfull( response.data.accountType, response.data.userId );
+            serverLogInSuccessfull( response.data );     // response.date = 'appUser'
         }
         else{
             var messageText = 'Sign-In has failed, check user Id and password';
@@ -627,28 +678,63 @@ function serverLoginCallback(response){
 
 function serverLoginSend(accountType, userId, displayName, pictureUrl){
     if(!serverLoginRunning){
+        // show user data
+        userAccountType = accountType;
+        serverLoginUserId = userId;    //  user for which latest login request has been sent to server (currently only needed to debugging)
         fillLogInUserFrame(userId, displayName, pictureUrl);
 
+        // hide authorization buttons
         document.getElementById('authorizeWithWindowsBtn').style.visibility = 'hidden';
         document.getElementById('authorizeWithFacebookBtn').style.visibility = 'hidden';
         document.getElementById('authorizeWithGoogleBtn').style.visibility = 'hidden';
         document.getElementById('authorizeWithMailPassword').style.visibility = 'hidden';
 
+        // log on to server
         serverLoginRunning = true;
-        sendLogonDataToServer(accountType, userId, displayName, null, serverLoginCallback );
+        sendLogonDataToServer(accountType, userId, null, serverLoginCallback );
     }
 }
 
 function passwordLoginSend(){
     if(!serverLoginRunning){
-        var accountType = 'PASSWORD';
         var userId = document.getElementById('emailInput').value;
-        var displayName = "";   // can be added later on (account pop-in)
-        var password = document.getElementById('passwordInput').value;
-        fillLogInUserFrame(userId, displayName, null);
+        // show user data
+        userAccountType = 'PASSWORD';
+        serverLoginUserId = userId;    //  user for which latest login request has been sent to server (currently only needed to debugging)
+        fillLogInUserFrame(userId, getFormattedUserDisplayName(userId), null);
+
+        // log on to server
         serverLoginRunning = true;
-        sendLogonDataToServer(accountType, userId, displayName, password, serverLoginCallback );
+        var accountType = 'PASSWORD';
+        var password = document.getElementById('passwordInput').value;
+        sendLogonDataToServer(accountType, userId, password, serverLoginCallback );
     }
+    return false;    // stop event propagation
+}
+
+function serverUserChangeCallback(accountType, userId, appUser){
+    if(appUser){
+        // user successfully updated
+        if(appUser.accountType === "PASSWORD"){
+            // update user admin data (display name, picture url)
+            fillLogInUserFrame(appUser.userId, appUser.displayName, appUser.pictureUrl);
+        }
+        toggleDisplayName();
+    }
+    else{
+        // update issues
+        // -> see message po-over
+    }
+}
+
+function passwordUserChange(){
+    var accountType = 'PASSWORD';
+    var userId = document.getElementById('emailInput').value;
+    var password = document.getElementById('passwordInput').value;
+    var displayName = document.getElementById('userAccountChangeNameInput').value;
+    fillLogInUserFrame(userId, displayName, null);
+    serverLoginRunning = true;
+    sendUserChangeDataToServer(accountType, userId, password, displayName, serverUserChangeCallback );
     return false;    // stop event propagation
 }
 

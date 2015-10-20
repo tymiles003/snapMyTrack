@@ -7,7 +7,7 @@ function togglePasswordForgotten(){
     }
 }
 
-function sendLogonDataToServer(accountType, userId, displayName, password, callback) {
+function sendLogonDataToServer(accountType, userId, password, callback) {
     // account types:
     //   - FACEBOOK
     //   - GOOGLE
@@ -16,7 +16,6 @@ function sendLogonDataToServer(accountType, userId, displayName, password, callb
     $.post('/signIn',{
                          accountType: accountType,
                          userId: userId,
-                         displayName: displayName,
                          password: password
                        }
     )
@@ -41,6 +40,36 @@ function sendLogonDataToServer(accountType, userId, displayName, password, callb
       if(isDevelopment_mode){
         showMessageLog(true);
     }    */
+}
+
+function sendUserChangeDataToServer(accountType, userId, password, displayName, serverUserChangeCallback ){
+    var userData = { 'accountType': accountType,
+                     'userId': userId,
+                     'password': password,
+                     'displayName': displayName,
+    };
+    
+    $.post('/userUpdate', userData)
+    .done(function(response){
+        var messageText = response.success;
+        if(response.data && response.data.length>0){
+          messageText += '\n' + JSON.stringify(response.data);
+        }
+        $("#messageArea").text(messageText);
+        serverUserChangeCallback(accountType, userId, response.data);    // response.data = 'appUser'
+    })
+    .fail(function(xhr, statusText, err){
+        var currentText = $("#messageArea").text();
+        var messageText = currentText + ' ------------> ' + 'Error: '+err;
+        $("#messageArea").text(messageText);
+        serverUserChangeCallback(accountType, userId, null);    // response.data = 'appUser'
+    });
+    
+    var messageText = 'Reset password of user ' + userData.userId;
+    $("#messageArea").text(messageText);
+    if(isDevelopment_mode){
+        showMessageLog(true);
+    }
 }
 
 function sendPasswordForgottenEmail(){

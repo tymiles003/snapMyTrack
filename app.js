@@ -46,12 +46,21 @@ app.get('/*', function(req, res) {
     res.status(404).sendFile(__dirname + '/error.html');
 });
 //console.log('register POST handlers');
+// sign in
 postHandlerSignIn.registerHandlerSignInPost(app);
+// confirm new account
 postHandlerSignIn.registerHandlerConfirmAccountPost(app);
-postHandlerSignIn.registerHandlerPasswordResetPost(app);
-postHandlerSignIn.registerHandlerSetNewPasswordPost(app);
+// request new password
+postHandlerSignIn.registerHandlerRequestPasswordResetPost(app);
+// set new password
+postHandlerSignIn.registerHandlerUserUpdatePasswordPost(app);
+// update public data (user display name, picture url)
+postHandlerSignIn.registerHandlerUserUpdatePublicDataPost(app);
+// update user settings
 postHandlerSettings.registerHandlerUserSettingsPost(app);
+// add new geo data to DB (recording of track)
 postHandlerGeodata.registerHandlerGeodataPost(app);
+// publish/snap tracks
 postHandlerPublish.registerHandlerPublishPost(app);
 
 console.log('ip:'+ipaddress);
