@@ -567,6 +567,7 @@ function logOut(){
         prepareForSignIn();
         toggleUserAccountPopin();
     } */
+    return true;   // stop event propagation
 }
 
 function prepareForSignIn(){
@@ -585,6 +586,9 @@ function prepareForSignIn(){
     document.getElementById('authorizeWithMailPasswordBtn').style.visibility = '';
     // remove all tracks from map
     resetMap();
+    hideMap();
+    // show into overlay
+    document.getElementById('introPageOverlay').style.visibility = '';
     // reset overlay/footer
     showFooter(true);
     // hide spinner/userSettingsBtn
@@ -695,6 +699,9 @@ function serverLoginSend(accountType, userId, displayName, pictureUrl){
         document.getElementById('authorizeWithGoogleBtn').style.visibility = 'hidden';
         document.getElementById('authorizeWithMailPasswordBtn').style.visibility = 'hidden';
 
+        // hide into overlay
+        document.getElementById('introPageOverlay').style.visibility = 'hidden';
+
         // log on to server
         serverLoginRunning = true;
         sendLogonDataToServer(accountType, userId, null, serverLoginCallback );
@@ -714,6 +721,9 @@ function passwordLoginSend(){
         document.getElementById('authorizeWithFacebookBtn').style.visibility = 'hidden';
         document.getElementById('authorizeWithGoogleBtn').style.visibility = 'hidden';
         document.getElementById('authorizeWithMailPasswordBtn').style.visibility = 'hidden';
+
+        // hide into overlay
+        document.getElementById('introPageOverlay').style.visibility = 'hidden';
 
         // log on to server
         serverLoginRunning = true;

@@ -1,6 +1,5 @@
 body{
     color:#BFBFBF;
-    background:#363636;
     margin:0;
     padding:0;
 }
@@ -9,6 +8,17 @@ body{
     z-index: 10;
     width: 100%;
     height: 100%;
+}
+.introPageOverlay{
+    position: absolute; 
+    z-index: 2000;
+    font-size: 275%;
+    margin-top: 0.5em;
+    margin-left: 9.2em;
+}
+.hugeTitle{
+    font-size: 175%;
+    color:#EFEFEF;
 }
 .overlay{
     position: absolute; 

@@ -97,6 +97,10 @@ function updateGoogleMap( geoPoints, mapTypeId ){
     }
 }
 
+function hideMap(){
+    document.getElementById("GoogleMapsCanvas").style.visibility = 'hidden';
+}
+
 function resetMap(){
     if(map){
         // markers
@@ -210,6 +214,9 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
         });
     }
     infoWindow = new google.maps.InfoWindow();
+    if( document.getElementById("GoogleMapsCanvas").style.visibility === 'hidden' ){
+        document.getElementById("GoogleMapsCanvas").style.visibility = '';
+    }    
 }
 
 function addListener( userPath, eventName, idx, userId, displayName){
