@@ -83,19 +83,26 @@
 	</div>
 
     <!-- Google Maps -->
-    <div id="GoogleMapsCanvas" class="map"></div>
+    <div id="GoogleMapsCanvas" class="map isInvisible"></div>
 
-    <div id="introPageOverlay" class="introPageOverlay">
+    <div id="introPageOverlay" class="introPageOverlay isInvisible">
         <div class="hugeTitle">Share your location</div>
-        <div>... with family, friends or the world</div>  
-        <div>... simple and secure</div>
+        <div>with family, friends ... the world</div>  
+        <div>simple and secure</div>
+    </div>
+
+    <!-- hide left part of the backgroun image -->
+    <div id="introPageOverlayHideLeftBgrImg" class="introPageOverlayHideLeftBgrImg">
+    </div>
+    
+    <div id="signInSpinner" class="signInSpinner isInvisible">
     </div>
     
     <div id="overlay" class="overlay">
         <!-- title / settings -->
         <div id="titleBar" class="titleBar horizontalContainer">
-            <div class="appTitle">SnapMyTrack</div>
-            <div id="publish" class="publishBtn isInvisible"></div>
+            <div id="appTitle" class="appTitle">SnapMyTrack</div>
+            <div id="publishBtn" class="publishBtn isInvisible"></div>
             <div id="userSettingsBtn" z-index='3000' class="buttonUserSettings isInvisible"></div>
             <div id="loginUser" z-index='3000' class="loginUser isInvisible"></div>
 <!--            <div id="login" class="login buttonSmall isInvisible">Log In</div>   -->
@@ -106,7 +113,11 @@
                 <div id="trackLocationStatus" class="statusOff"></div>
             </div>
         </div>
-        
+        <div id="introPageOverlaySmall" class="introPageOverlaySmall isInvisible">
+            <div class="smallTitle">Share your location</div>
+            <div>with family, friends ... the world</div>  
+            <div>simple and secure</div>
+        </div>
         <!-- Login -->
         <div id="authorizeFrame" class="authorizeFrame">
             <div id="authorizeWithFacebookBtn" class="authorizeWithFacebookBtn"></div>

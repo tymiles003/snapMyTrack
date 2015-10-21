@@ -139,7 +139,27 @@ function changeMapType(mapTypeId){
         // change map type
         map.setMapTypeId(mapTypeId);
         // adjust theme of overlay (title, buttons, ...)
-        // ToDo
+        adjustColorSchema(mapTypeId);
+    }
+}
+
+function adjustColorSchema(mapTypeId){
+    if( mapTypeId === google.maps.MapTypeId.ROADMAP
+        || mapTypeId === google.maps.MapTypeId.TERRAIN ){
+        $('#publishBtn').removeClass('publishIconBright');
+        $('#publishBtn').addClass('publishIconDark');
+        $('#userSettingsBtn').removeClass('settingsIconBright');
+        $('#userSettingsBtn').addClass('settingsIconDark');
+        $('#userDisplayName').removeClass('fontColorBright');
+        $('#userDisplayName').addClass('fontColorDark');
+    }
+    else{
+        $('#publishBtn').removeClass('publishIconDark');
+        $('#publishBtn').addClass('publishIconBright');
+        $('#userSettingsBtn').removeClass('settingsIconDark');
+        $('#userSettingsBtn').addClass('settingsIconBright');
+        $('#userDisplayName').removeClass('fontColorDark');
+        $('#userDisplayName').addClass('fontColorBright');
     }
 }
 
@@ -159,6 +179,7 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
       mapTypeId: mapTypeId,
     };
     map = new google.maps.Map(document.getElementById("GoogleMapsCanvas"), myOptions);
+
     // listener for click event of map (not called, for clicks on shapes)
     map.addListener('click', mapClick);
     
@@ -213,10 +234,17 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
 //            title:"You are here! (at least within a "+currentPosition.coords.accuracy+" meter radius)"
         });
     }
+
     infoWindow = new google.maps.InfoWindow();
     if( document.getElementById("GoogleMapsCanvas").style.visibility === 'hidden' ){
         document.getElementById("GoogleMapsCanvas").style.visibility = '';
-    }    
+    }
+    
+    // adjust theme of overlay (title, buttons, ...)
+    adjustColorSchema(mapTypeId);
+
+    // show map
+    $("#GoogleMapsCanvas").removeClass('isInvisible');
 }
 
 function addListener( userPath, eventName, idx, userId, displayName){

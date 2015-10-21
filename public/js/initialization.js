@@ -16,7 +16,7 @@ $('#userSettingsBtn').click(toggleSettings);
 $('#userSettingsCloseBtn').click(toggleSettings);
 $('#passwordForgottenCloseBtn').click(togglePasswordForgotten);
 $('#passwordForgottenSendBtn').click(sendPasswordForgottenEmail);
-$('#publish').click(togglePublish);
+$('#publishBtn').click(togglePublish);
 $('#publishSend').click(publish);
 $('#publishCloseBtn').click(togglePublish);
 $('#trackLocation').click(sendLocationPeriodically);
@@ -34,6 +34,40 @@ document.getElementById('passwordInput').onkeydown=passwordEnter;
 document.getElementById('passwordForgottenEmail').onkeydown=resetPasswordEnter;
 document.getElementById('userAccountChangeNameInput').onkeydown=displayNameEnter;
 
+
+function resizePage(){
+    if(document.getElementById("GoogleMapsCanvas").style.visibility === 'hidden'
+      || $("#GoogleMapsCanvas").hasClass('isInvisible')){
+        // sign-in resizing
+        if( $(window).width() < 540){
+            document.getElementById('introPageOverlayHideLeftBgrImg').style.visibility = 'hidden';
+            $('#introPageOverlayHideLeftBgrImg').addClass('isInvisible');
+            document.getElementById('introPageOverlay').style.visibility = 'hidden';
+            $('#introPageOverlay').addClass('isInvisible');
+            document.getElementById('introPageOverlaySmall').style.visibility = '';
+            $('#introPageOverlaySmall').removeClass('isInvisible');
+        }
+        else if( $(window).width() < 1024){
+            document.getElementById('introPageOverlay').style.visibility = 'hidden';
+            $('#introPageOverlay').addClass('isInvisible');
+            document.getElementById('introPageOverlaySmall').style.visibility = '';
+            $('#introPageOverlaySmall').removeClass('isInvisible');
+        }
+        else{
+            document.getElementById('introPageOverlay').style.visibility = '';
+            $('#introPageOverlay').removeClass('isInvisible');
+            // hide small background image
+            document.getElementById('introPageOverlayHideLeftBgrImg').style.visibility = '';
+            $('#introPageOverlayHideLeftBgrImg').removeClass('isInvisible');
+            document.getElementById('introPageOverlaySmall').style.visibility = 'hidden';
+            $('#introPageOverlaySmall').addClass('isInvisible');
+        }
+    }
+    else{
+        // resize map / recenter map
+        // ToDo
+    }
+}
 
 function toggleDisplayName(){
     if(document.getElementById('userAccountChangeNameInput').style.visibility === 'hidden' || $('#userAccountChangeNameInput').hasClass('isInvisible')){
@@ -105,8 +139,6 @@ function showGeoData(event, accountType, userId){     // get user settings and s
 }
 
 function initializeUi(event, accountType, userId){     // get user settings and show map
-    // get geo point data of user
-    spinnerOn();
     // account type
     var accountTypeForShow;
     if(accountType){
@@ -144,43 +176,42 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
         $("#trackLocationStatus").removeClass("statusOn");
     }
     else{
-    if(trackingIsActive || (!doNotTogglePeriodicSend&&!trackingIsActive) ){
-        trackingIsActive = true;
-        $("#trackLocationStatus").addClass("statusOn");
-        $("#trackLocationStatus").removeClass("statusOff");
-        navigator.geolocation.watchPosition(updateCurrentLocationOnMap);
-        sendLocation();
-        setTimeout( function(){
+        if(trackingIsActive || (!doNotTogglePeriodicSend&&!trackingIsActive) ){
+            trackingIsActive = true;
+            $("#trackLocationStatus").addClass("statusOn");
+            $("#trackLocationStatus").removeClass("statusOff");
+            navigator.geolocation.watchPosition(updateCurrentLocationOnMap);
+            sendLocation();
+            setTimeout( function(){
                 sendLocationPeriodically( null, true );
-        },
-        frequencySeconds*1000);
-    }
-    else{
-      return;    // periodic tracking has been switched off
-    }
+            },
+            frequencySeconds*1000 );
+        }
+        else{
+            return;    // periodic tracking has been switched off
+        }
     }
 }
 
 function sendLocation(){
-  var self=this;
-
-  if(trackingIsActive){
+    var self=this;
+    if(trackingIsActive){
     if(signedInUserId){
-      navigator.geolocation.getCurrentPosition(function(position) {
+        navigator.geolocation.getCurrentPosition(function(position) {
         // depricated --> https needed, see https://goo.gl/rStTGz
         sendGeoDataToServer(position.timestamp,
                             position.coords.accuracy,
                             position.coords.latitude,
                             position.coords.longitude,
                             position.coords.speed);
-      });
-      // use watchPosition and move params like speed
+        });
+        // use watchPosition and move params like speed
     }
     else{
         $("#messageArea").text('provide a unique user Id');
             showMessageLog(true);
         }
-  }
+    }
 }
 
 function getGeoDataFromServer(userId, accountType) {
@@ -189,7 +220,7 @@ function getGeoDataFromServer(userId, accountType) {
             if (userIsSignedIn){   // user signed out while loading geo data
                 updateGoogleMap(data.geoPoints, userSettings.mapTypeId);
                 setTimeout(function(){
-                    spinnerOff();
+                    hideSignInSpinner();
                     hideFooter(true);
                 },2000);
             }
@@ -570,6 +601,19 @@ function logOut(){
     return true;   // stop event propagation
 }
 
+function showSignInSpinner(){
+    document.getElementById('signInSpinner').style.visibility = '';
+    $('#signInSpinner').removeClass('isInvisible');
+    $('#signInSpinner').addClass('spinner');
+    
+}
+
+function hideSignInSpinner(){
+    document.getElementById('signInSpinner').style.visibility = 'hidden';
+    $('#signInSpinner').addClass('isInvisible');
+    $('#signInSpinner').removeClass('spinner');
+}
+
 function prepareForSignIn(){
     // show sign-in buttons
     // FACEBOOK
@@ -604,8 +648,15 @@ function hideFooter( showTopFrame ){
             if(showTopFrame){
                 $('#topFrame').removeClass('isInvisible');
                 document.getElementById('topFrame').style.visibility = '';
-                $('#publish').removeClass('isInvisible');
-                document.getElementById('publish').style.visibility = '';
+                $('#publishBtn').removeClass('isInvisible');
+                document.getElementById('publishBtn').style.visibility = '';
+                // hide intro screen elements
+                document.getElementById('appTitle').style.visibility = 'hidden';
+                $('#appTitle').addClass('isInvisible');
+                document.getElementById('introPageOverlay').style.visibility = 'hidden';
+                $('#introPageOverlay').addClass('isInvisible');
+                document.getElementById('introPageOverlaySmall').style.visibility = 'hidden';
+                $('#introPageOverlaySmall').addClass('isInvisible');
             }
         }
     );
@@ -618,7 +669,14 @@ function showFooter( hideTopFrame ){
             $('#homeFooter').css({opacity:1.0});
             if(hideTopFrame){
                 $('#topFrame').addClass('isInvisible');
-                $('#publish').addClass('isInvisible');
+                $('#publishBtn').addClass('isInvisible');
+                // show intro screen elements
+                document.getElementById('appTitle').style.visibility = '';
+                $('#appTitle').removeClass('isInvisible');
+                document.getElementById('introPageOverlay').style.visibility = '';
+                $('#introPageOverlay').removeClass('isInvisible');
+                document.getElementById('introPageOverlaySmall').style.visibility = '';
+                $('#introPageOverlaySmall').removeClass('isInvisible');
             }
         }
     );
@@ -675,10 +733,12 @@ function serverLoginCallback(response){
 
     if(serverLoginRunning){
         serverLoginRunning = false;
+        // hide sign-in spinner
         if(response.status === 'connected'){
             serverLogInSuccessfull( response.data );     // response.date = 'appUser'
         }
         else{
+            hideSignInSpinner();
             var messageText = 'Sign-In has failed, check user Id and password';
             $("#messageArea").text(messageText);
             showMessageLog(true);
@@ -702,6 +762,9 @@ function serverLoginSend(accountType, userId, displayName, pictureUrl){
         // hide into overlay
         document.getElementById('introPageOverlay').style.visibility = 'hidden';
 
+        // show sign-in spinner
+        showSignInSpinner();
+        
         // log on to server
         serverLoginRunning = true;
         sendLogonDataToServer(accountType, userId, null, serverLoginCallback );
@@ -725,6 +788,15 @@ function passwordLoginSend(){
         // hide into overlay
         document.getElementById('introPageOverlay').style.visibility = 'hidden';
 
+        // adopt icons scheme
+        $('#publishBtn').addClass('publishIconBright');
+        $('#buttonUserSettings').addClass('settingsIconBright');
+        $('#publishBtn').addClass('publishIconDark');
+        $('#buttonUserSettings').addClass('settingsIconDark');
+
+        // show sign-in spinner
+        showSignInSpinner();
+        
         // log on to server
         serverLoginRunning = true;
         var accountType = 'PASSWORD';
@@ -762,9 +834,13 @@ function passwordUserChange(){
 
 window.onload = function() {
     accessTokenFromUrl = getAccessTokenFromUrl();
+
+    // register resize event handler
+    window.addEventListener("resize", resizePage);
 };
 
 $(document).ready(function() {
+    resizePage();
     $.ajaxSetup({ cache: true });
 
     // check if browser supports geo-location

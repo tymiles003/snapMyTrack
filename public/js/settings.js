@@ -7,6 +7,12 @@ var userSettings = {
 //      mapTypeId: google.maps.MapTypeId.HYBRID,
 //      mapTypeId: google.maps.MapTypeId.TERRAIN,
 
+$('#mapTypeSelect').change(mapTypeOnChange);
+
+function mapTypeOnChange(evt){
+    toggleSettings(evt);
+}
+
 function toggleSettings(evt){
     if($('#settingsPopin').hasClass('isInvisible')){
         // Update DIV from userSettings
