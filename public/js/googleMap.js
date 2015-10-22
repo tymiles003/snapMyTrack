@@ -148,18 +148,34 @@ function adjustColorSchema(mapTypeId){
         || mapTypeId === google.maps.MapTypeId.TERRAIN ){
         $('#publishBtn').removeClass('publishIconBright');
         $('#publishBtn').addClass('publishIconDark');
+        $('#trackLocation').removeClass('button');
+        $('#trackLocation').addClass('buttonDark');
         $('#userSettingsBtn').removeClass('settingsIconBright');
         $('#userSettingsBtn').addClass('settingsIconDark');
         $('#userDisplayName').removeClass('fontColorBright');
         $('#userDisplayName').addClass('fontColorDark');
+        $('#userImage').removeClass('userPictureSmall');
+        $('#userImage').addClass('userPictureSmallDark');
+        if( $('#trackLocationStatus').hasClass('statusOff') ){
+            $('#trackLocationStatus').removeClass('statusOff');
+            $('#trackLocationStatus').addClass('statusOffDark');
+        }
     }
     else{
         $('#publishBtn').removeClass('publishIconDark');
         $('#publishBtn').addClass('publishIconBright');
+        $('#trackLocation').removeClass('buttonDark');
+        $('#trackLocation').addClass('button');
         $('#userSettingsBtn').removeClass('settingsIconDark');
         $('#userSettingsBtn').addClass('settingsIconBright');
         $('#userDisplayName').removeClass('fontColorDark');
         $('#userDisplayName').addClass('fontColorBright');
+        $('#userImage').removeClass('userPictureSmallDark');
+        $('#userImage').addClass('userPictureSmall');
+        if( $('#trackLocationStatus').hasClass('statusOffDark') ){
+            $('#trackLocationStatus').removeClass('statusOffDark');
+            $('#trackLocationStatus').addClass('statusOff');
+        }
     }
 }
 

@@ -35,7 +35,7 @@
 	<!-- user account popin -->
 	<div id='userAccountPopin' class='popin userAccountPopin boxShadowPopover isInvisible'>
         <div id="userAccountCloseBtn" class="buttonUserAccountClose"></div>
-        <div id="userAccountPicture" class="userAccountPicture userImage"></div>
+        <div id="userAccountPicture" class="userAccountPicture"></div>
         <div id="userAccountDisplayName" class="userAccountDisplayName"></div>
         <input id="userAccountChangeNameInput" class="userAccountChangeNameInput isInvisible" placeholder="Add a display name">
         <div id="userAccountAccountType" class="userAccountAccountType">account type</div>
@@ -91,13 +91,22 @@
         <div>simple and secure</div>
     </div>
 
-    <!-- hide left part of the backgroun image -->
+    <!-- hide left part of the background image -->
     <div id="introPageOverlayHideLeftBgrImg" class="introPageOverlayHideLeftBgrImg">
     </div>
     
-    <div id="signInSpinner" class="signInSpinner isInvisible">
+    <!-- spinner and loading text (sign-in + geo-data load) -->
+    <div id="signInInfo" class="signInInfo isInvisible">
+        <div id="signInSpinner" class="signInSpinner"></div>
+        <div class="loadingText">tracks are loading ...</div>
     </div>
     
+    <!-- tracking bar -->
+    <div id="trackLocationBar" class="trackLocationBar horizontalContainerFlex isInvisible">
+        <div id="trackLocation" class="button buttonWidthStatus">Recording</div>
+        <div id="trackLocationStatus" class="recordingStatus statusOff"></div>
+    </div>
+
     <div id="overlay" class="overlay">
         <!-- title / settings -->
         <div id="titleBar" class="titleBar horizontalContainer">
@@ -106,12 +115,6 @@
             <div id="userSettingsBtn" z-index='3000' class="buttonUserSettings isInvisible"></div>
             <div id="loginUser" z-index='3000' class="loginUser isInvisible"></div>
 <!--            <div id="login" class="login buttonSmall isInvisible">Log In</div>   -->
-        </div>
-        <div id="topFrame" class="horizontalContainerFlex isInvisible">
-            <div id="trackLocationBar" class="horizontalContainerFlex">
-                <div id="trackLocation" class="button buttonWidthStatus">Recording On/Off</div>
-                <div id="trackLocationStatus" class="statusOff"></div>
-            </div>
         </div>
         <div id="introPageOverlaySmall" class="introPageOverlaySmall isInvisible">
             <div class="smallTitle">Share your location</div>

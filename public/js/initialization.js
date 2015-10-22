@@ -62,30 +62,36 @@ function resizePage(){
             document.getElementById('introPageOverlaySmall').style.visibility = 'hidden';
             $('#introPageOverlaySmall').addClass('isInvisible');
         }
+        document.getElementById('appTitle').style.visibility = '';
+        $('#appTitle').removeClass('isInvisible');
     }
     else{
+        document.getElementById('appTitle').style.visibility = 'hidden';
+        $('#appTitle').addClass('isInvisible');
         // resize map / recenter map
         // ToDo
     }
 }
 
 function toggleDisplayName(){
-    if(document.getElementById('userAccountChangeNameInput').style.visibility === 'hidden' || $('#userAccountChangeNameInput').hasClass('isInvisible')){
-        // show input box
-        $('#userAccountChangeNameInput').val($('#userAccountDisplayName').text());
-        document.getElementById('userAccountChangeNameInput').setSelectionRange(0, document.getElementById('userAccountChangeNameInput').value.length);
-        $('#userAccountDisplayName').addClass('isInvisible');
-        document.getElementById('userAccountDisplayName').style.visibility = 'hidden';
-        $('#userAccountChangeNameInput').removeClass('isInvisible');
-        document.getElementById('userAccountChangeNameInput').style.visibility = '';
-    }
-    else{
-        // hide input box
-        $('#userAccountDisplayName').text($('#userAccountChangeNameInput').val());
-        $('#userAccountDisplayName').removeClass('isInvisible');
-        document.getElementById('userAccountDisplayName').style.visibility = '';
-        $('#userAccountChangeNameInput').addClass('isInvisible');
-        document.getElementById('userAccountChangeNameInput').style.visibility = 'hidden';
+    if(userAccountType==='PASSWORD'){
+        if(document.getElementById('userAccountChangeNameInput').style.visibility === 'hidden' || $('#userAccountChangeNameInput').hasClass('isInvisible')){
+            // show input box
+            $('#userAccountChangeNameInput').val($('#userAccountDisplayName').text());
+            document.getElementById('userAccountChangeNameInput').setSelectionRange(0, document.getElementById('userAccountChangeNameInput').value.length);
+            $('#userAccountDisplayName').addClass('isInvisible');
+            document.getElementById('userAccountDisplayName').style.visibility = 'hidden';
+            $('#userAccountChangeNameInput').removeClass('isInvisible');
+            document.getElementById('userAccountChangeNameInput').style.visibility = '';
+        }
+        else{
+            // hide input box
+            $('#userAccountDisplayName').text($('#userAccountChangeNameInput').val());
+            $('#userAccountDisplayName').removeClass('isInvisible');
+            document.getElementById('userAccountDisplayName').style.visibility = '';
+            $('#userAccountChangeNameInput').addClass('isInvisible');
+            document.getElementById('userAccountChangeNameInput').style.visibility = 'hidden';
+        }
     }
     return false;
 }
@@ -174,12 +180,15 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
         trackingIsActive = false;
         $("#trackLocationStatus").addClass("statusOff");
         $("#trackLocationStatus").removeClass("statusOn");
+        $("#trackLocationStatus").removeClass("pulser");
     }
     else{
         if(trackingIsActive || (!doNotTogglePeriodicSend&&!trackingIsActive) ){
             trackingIsActive = true;
             $("#trackLocationStatus").addClass("statusOn");
             $("#trackLocationStatus").removeClass("statusOff");
+            $("#trackLocationStatus").removeClass("statusOffDark");
+            $("#trackLocationStatus").addClass("pulser");
             navigator.geolocation.watchPosition(updateCurrentLocationOnMap);
             sendLocation();
             setTimeout( function(){
@@ -342,17 +351,17 @@ function fillLogInUserFrame( userId, displayName, imageUrl ){
         heading.id = 'userAccountFrame';
     }
     if(imageUrl){
-        if(document.getElementById('userAccountImage')){
-            document.getElementById('userAccountImage').src=imageUrl;
-            $('#userAccountImage').removeClass('isInvisible');
-            document.getElementById('userAccountImage').style.visibility = '';
+        if(document.getElementById('userImage')){
+            document.getElementById('userImage').src=imageUrl;
+            $('#userImage').removeClass('isInvisible');
+            document.getElementById('userImage').style.visibility = '';
         }
         else{
             var image = document.createElement('img');
-            image.id = 'userAccountImage';
+            image.id = 'userImage';
             image.src = imageUrl;
             image.height = '30';
-            image.classList.add('userImage');
+            image.classList.add('userPictureSmall');
             heading.appendChild(image);
             heading.onclick = userAccountClick;
             if(document.getElementById('userDisplayName')){
@@ -362,9 +371,9 @@ function fillLogInUserFrame( userId, displayName, imageUrl ){
         }
     }
     else if(displayName){
-        if(document.getElementById('userAccountImage')){
-//            document.getElementById('userAccountImage').style.visibility='gone';
-            $('#userAccountImage').addClass('isInvisible');
+        if(document.getElementById('userImage')){
+//            document.getElementById('userImage').style.visibility='gone';
+            $('#userImage').addClass('isInvisible');
         }
         if(!document.getElementById('userDisplayName')){
             var displayNameDiv = document.createElement('div');
@@ -388,7 +397,7 @@ function fillLogInUserFrame( userId, displayName, imageUrl ){
 }
 
 /* function resetLogInUserFrame( displayName, imageUrl ){
-    document.getElementById('userAccountImage').src='';
+    document.getElementById('userImage').src='';
 } */
 
 function makeGoogleApiCall() {
@@ -602,15 +611,15 @@ function logOut(){
 }
 
 function showSignInSpinner(){
-    document.getElementById('signInSpinner').style.visibility = '';
-    $('#signInSpinner').removeClass('isInvisible');
+    document.getElementById('signInInfo').style.visibility = '';
+    $('#signInInfo').removeClass('isInvisible');
     $('#signInSpinner').addClass('spinner');
     
 }
 
 function hideSignInSpinner(){
-    document.getElementById('signInSpinner').style.visibility = 'hidden';
-    $('#signInSpinner').addClass('isInvisible');
+    document.getElementById('signInInfo').style.visibility = 'hidden';
+    $('#signInInfo').addClass('isInvisible');
     $('#signInSpinner').removeClass('spinner');
 }
 
@@ -631,23 +640,23 @@ function prepareForSignIn(){
     // remove all tracks from map
     resetMap();
     hideMap();
-    // show into overlay
-    document.getElementById('introPageOverlay').style.visibility = '';
     // reset overlay/footer
     showFooter(true);
     // hide spinner/userSettingsBtn
     document.getElementById('userSettingsBtn').style.visibility = 'hidden';
     // hide user account
     document.getElementById('loginUser').style.visibility = 'hidden';
+    // show into overlay
+    resizePage();
 }
 
-function hideFooter( showTopFrame ){
+function hideFooter( showHeaderButtons ){
     $('#homeFooter').animate({opacity:0.01}, 1250, function(){
             $('#homeFooter').addClass('isInvisible');
             $('#homeFooter').css({opacity:1.0});
-            if(showTopFrame){
-                $('#topFrame').removeClass('isInvisible');
-                document.getElementById('topFrame').style.visibility = '';
+            if(showHeaderButtons){
+                $('#trackLocationBar').removeClass('isInvisible');
+                document.getElementById('trackLocationBar').style.visibility = '';
                 $('#publishBtn').removeClass('isInvisible');
                 document.getElementById('publishBtn').style.visibility = '';
                 // hide intro screen elements
@@ -662,13 +671,19 @@ function hideFooter( showTopFrame ){
     );
 }
 
-function showFooter( hideTopFrame ){
+function showFooter( hideHeaderButtons ){
+    if(hideHeaderButtons){
+        $('#trackLocationBar').addClass('isInvisible');
+        $('#publishBtn').addClass('isInvisible');
+        // show intro screen elements
+        resizePage();
+    }
     $('#homeFooter').animate({opacity:1.00}, 1250, function(){
             $('#homeFooter').removeClass('isInvisible');
             document.getElementById('homeFooter').style.visibility = '';
             $('#homeFooter').css({opacity:1.0});
-            if(hideTopFrame){
-                $('#topFrame').addClass('isInvisible');
+/*            if(hideHeaderButtons){
+                $('#trackLocationBar').addClass('isInvisible');
                 $('#publishBtn').addClass('isInvisible');
                 // show intro screen elements
                 document.getElementById('appTitle').style.visibility = '';
@@ -677,7 +692,7 @@ function showFooter( hideTopFrame ){
                 $('#introPageOverlay').removeClass('isInvisible');
                 document.getElementById('introPageOverlaySmall').style.visibility = '';
                 $('#introPageOverlaySmall').removeClass('isInvisible');
-            }
+            }   */
         }
     );
 }
@@ -841,6 +856,7 @@ window.onload = function() {
 
 $(document).ready(function() {
     resizePage();
+
     $.ajaxSetup({ cache: true });
 
     // check if browser supports geo-location

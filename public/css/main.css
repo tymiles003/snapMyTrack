@@ -9,16 +9,22 @@ body{
     width: 100%;
     height: 100%;
 }
-.signInSpinner{
+.signInInfo{
     position: absolute; 
     z-index: 2500;
-    top: 10.0em;
+    top: 12.0em;
+    left: calc( 50vw - ( (18.0em)/2 ) );
+}
+.loadingText{
+    font-size: 125%;
+    margin-top: 0.5em;
+}
+.signInSpinner{
     width: 4em;
     height: 4em;
     background: url('../icon/icon_gear_settings.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    left: calc( 50vw - ( (2.0em)/2 ) );
 }
 .introPageOverlay{
     position: absolute; 
@@ -53,6 +59,30 @@ body{
     position: absolute; 
     z-index: 1000;
     margin-left: 1.2em;
+}
+.trackLocationBar{
+    position: absolute;
+    z-index: 1010;
+    margin-top: 0.35em;
+    margin-left: 1.00em;
+}
+.recordingStatus{
+    height: 1.250em;
+    width: 2.50em;
+    margin-left:0.5em;
+    margin-top:1.50em;
+    -moz-border-radius: 5.0em;
+    -webkit-border-radius: 5.0em;
+    border-radius: 5.0em;
+}
+.statusOn{
+    background-color: #EE1010;
+}
+.statusOff{
+    background-color: #EFEFEF;
+}
+.statusOffDark{
+    background-color: #363636;
 }
 .appTitle{
     font-size: 250%;
@@ -148,26 +178,31 @@ body{
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }
-
+.login{
+    position: absolute; 
+    right: 4.5em;
+    margin-top: 0.3em;
+}
 .loginUser{
     position: absolute; 
     right: 0.15em;
     margin-top: 0.3em;
 }
-.userImage{
-    border: 1px solid #E9E9E9;
-    border-radius: 2.5px;
+.userPictureSmall{
+    border: 0.1em solid #E9E9E9;
+    border-radius: 1.0em;
 }
-.login{
-    position: absolute; 
-    right: 4.5em;
-    margin-top: 0.3em;
+.userPictureSmallDark{
+    border: 0.1em solid #363636;
+    border-radius: 1.0em;
 }
 .userAccountPicture{
     width:3.2em;
     height:3.2em;
     background-repeat: no-repeat;
     background-size: 100% 100%;
+    border: 0.05em solid #E9E9E9;
+    border-radius: 0.5em;
 }
 .userAccountAccountType{
     margin-top:0.2em;
@@ -407,19 +442,38 @@ body{
     background-size: 100% 100%;
     color:#363636;
     font-size: 150%;
-    padding-top: 0.3em;
-    padding-bottom: 0.45em;
-    padding-left: 0.15em;
-    padding-right: 0.15em;
+    padding-top: 0.2em;
+    padding-bottom: 0.30em;
+    padding-left: 0.30em;
+    padding-right: 0.30em;
     text-align: center;
     border: 1px solid #E9E9E9;
-    border-radius: 2.5px;
-    margin-bottom:10px;
+    border-radius: 1.00em;
 }
 .button:hover,
 .button:active{
 	background: #b8b8b8;
 	border: 1px solid #b8b8b8;
+    transition: background-color 0.3s ease-in, color 0.3s ease-in;
+}
+.buttonDark{
+    background: #363636;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    color:#E9E9E9;
+    font-size: 150%;
+    padding-top: 0.2em;
+    padding-bottom: 0.30em;
+    padding-left: 0.30em;
+    padding-right: 0.30em;
+    text-align: center;
+    border: 1px solid #363636;
+    border-radius: 1.00em;
+}
+.buttonDark:hover,
+.buttonDark:active{
+	background: #484848;
+	border: 1px solid #484848;
     transition: background-color 0.3s ease-in, color 0.3s ease-in;
 }
 .buttonSmall{
@@ -454,26 +508,6 @@ body{
     text-align: center;
     border: 1px solid #ffffff;
     border-radius: 4.5px;
-}
-.statusOn{
-    background-color: #34FF34;
-    height: 2.5em;
-    width: 2.5em;
-    margin-left:0.5em;
-    margin-top:0.2em;
-    -moz-border-radius: 2.5em;
-    -webkit-border-radius: 2.5em;
-    border-radius: 2.5em;
-}
-.statusOff{
-    background-color: #EE1010;
-    height: 2.5em;
-    width: 2.5em;
-    margin-left:0.5em;
-    margin-top:0.2em;
-    -moz-border-radius: 2.5em;
-    -webkit-border-radius: 2.5em;
-    border-radius: 2.5em;
 }
 .horizontalContainer>div{
     display: inline-block;
@@ -686,4 +720,47 @@ body{
 @-webkit-keyframes spin {
     from { -webkit-transform: rotate(0deg); }
     to { -webkit-transform: rotate(360deg); }
+}
+
+.pulser{
+    -webkit-animation-name: pulse;
+    -webkit-animation-duration: 2000ms;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-name: pulse;
+    -moz-animation-duration: 2000ms;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-timing-function: linear;
+    -ms-animation-name: pulse;
+    -ms-animation-duration: 2000ms;
+    -ms-animation-iteration-count: infinite;
+    -ms-animation-timing-function: linear;
+    animation-name: pulse;
+    animation-duration: 2000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes pulse {
+    from { transform:rotate(0deg); }
+    to { transform:rotate(360deg); }
+}
+@-moz-keyframes pulse {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes pulse {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  10%, 90% { transform: translate3d(-1px, 0, 0);
+  }
+  20%, 80% { transform: translate3d(2px, 0, 0);
+  }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0);
+  }
+  40%, 60% { transform: translate3d(4px, 0, 0);
+  }
 }
