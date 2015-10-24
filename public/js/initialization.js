@@ -359,8 +359,8 @@ function toggleUserAccountPopin(){
         $('#userAccountPopin').removeClass('isInvisible');
         $('#userAccountCloseBtn').click(toggleUserAccountPopin);
         document.getElementById('userAccountPicture').style.backgroundImage = "url('"+userPictureUrl+"')";
+        $('#userAccountDisplayName').text(getFormattedUserDisplayName());
         $('#userAccountAccountType').text(userAccountType);
-        $('#userAccountDisplayName').text( getFormattedUserDisplayName() );
     }
     else{
         $('#userAccountPopin').addClass('isInvisible');
@@ -493,8 +493,12 @@ function serverLogInSuccessfull(appUser){
     document.getElementById('loginUser').style.visibility = '';
     
     if(appUser.accountType === "PASSWORD"){
+        var displayName = appUser.displayName;
+        if( !displayName || displayName.length === 0){
+            displayName = getFormattedUserDisplayName(appUser.userId);
+        }
         // update user admin data (display name, picture url)
-        fillLogInUserFrame(appUser.userId, appUser.displayName, appUser.pictureUrl);
+        fillLogInUserFrame(appUser.userId, displayName, appUser.pictureUrl);
     }
     // initial display of map
     showGeoData( null, appUser.accountType, appUser.userId );
@@ -980,6 +984,12 @@ function passwordUserChange(){
     var displayName = document.getElementById('userAccountChangeNameInput').value;
     var pictureUrl = document.getElementById('userAccountChangePictureUrlInput').value;
     var userPicture = '';
+    if( !displayName || displayName.length===0 ){
+        displayName = userDisplayName;
+    }
+    if( !pictureUrl || pictureUrl.length===0 ){
+        pictureUrl = userPictureUrl;
+    }
     fillLogInUserFrame(userId, displayName, userPicture);
     serverLoginRunning = true;
     sendUserChangeDataToServer(accountType, userId, password, displayName, userPicture, pictureUrl, serverUserChangeCallback );
