@@ -111,7 +111,7 @@ body{
     position: absolute; 
     width: 2em;
     height: 2em;
-    right: 5.3em;
+    right: 5.8em;
     margin-top: 0.3em;
 }
 .publishIconBright{
@@ -145,7 +145,7 @@ body{
     margin-bottom: 0.3em;
 }
 .userAccountLogout{
-    width: 8.0em;
+    width: 6.0em;
     background: #ffc93b;
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -189,11 +189,11 @@ body{
     margin-top: 0.3em;
 }
 .userPictureSmall{
-    border: 0.1em solid #E9E9E9;
+    border: 1px solid #E9E9E9;
     border-radius: 1.0em;
 }
 .userPictureSmallDark{
-    border: 0.1em solid #363636;
+    border: 1px solid #363636;
     border-radius: 1.0em;
 }
 .userAccountPicture{
@@ -201,7 +201,7 @@ body{
     height:3.2em;
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    border: 0.05em solid #E9E9E9;
+    border: 1px solid #E9E9E9;
     border-radius: 0.5em;
 }
 .userAccountAccountType{
@@ -528,7 +528,7 @@ body{
     z-index: 3000;
     display: -moz-box;  display: -webkit-box; display: -ms-flexbox;
 	-moz-box-orient: vertical; -webkit-box-orient: vertical; -ms-flex-direction: column;
-    width:100%;
+    width: calc( 100vw );
     color:#494949;
     background: #868686;
     font-size: 50%;
@@ -602,7 +602,6 @@ body{
 }
 .userDisplayName{
     width: 9.00em;
-    text-align: right;
 }
 .fontColorBright{
     color:#FFFFFF;
@@ -613,13 +612,27 @@ body{
 .userAccountPopin{
     font-size: 135%;
     padding: 1.5em;
-    height: 12.0em;
-    width: 13.0em;
-    top: calc( 50vh - ( (12.0em)/2 ) );
-    left: calc( 50vw - ( (13.0em)/2 ) );
+    height: 17.0em;
+    width: 10.0em;
+    top: calc( 50vh - ( (17.0em)/2 ) );
+    left: calc( 50vw - ( (10.0em)/2 ) );
 }
 .userAccountDisplayName{
     margin-top:1.0em;
+}
+.userAccountChangePictureUrlInput{
+    margin-top:1.0em;
+    width: 10.00em;
+    font-size: 100%;
+    margin-bottom: 0.3em;
+    margin-right: 0;
+    padding-top: 0.3em;
+    padding-bottom: 0.45em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: center;
+    border: 1px solid #FFFFFF;
+    border-radius: 4.5px;
 }
 .userAccountChangeNameInput{
     margin-top:1.0em;

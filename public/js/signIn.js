@@ -42,11 +42,13 @@ function sendLogonDataToServer(accountType, userId, password, callback) {
     }    */
 }
 
-function sendUserChangeDataToServer(accountType, userId, password, displayName, serverUserChangeCallback ){
+function sendUserChangeDataToServer(accountType, userId, password, displayName, userPicture, pictureUrl, serverUserChangeCallback ){
     var userData = { 'accountType': accountType,
                      'userId': userId,
                      'password': password,
                      'displayName': displayName,
+                     'userPicture': userPicture,
+                     'pictureUrl': pictureUrl
     };
     
     $.post('/userUpdate', userData)
@@ -65,7 +67,7 @@ function sendUserChangeDataToServer(accountType, userId, password, displayName, 
         serverUserChangeCallback(accountType, userId, null);    // response.data = 'appUser'
     });
     
-    var messageText = 'Reset password of user ' + userData.userId;
+    var messageText = 'Change admin data of user ' + userData.userId;
     $("#messageArea").text(messageText);
     if(isDevelopment_mode){
         showMessageLog(true);

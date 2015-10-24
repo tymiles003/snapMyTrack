@@ -61,20 +61,8 @@ function displayGeopointsOnMap(geoPoints, currentPosition, mapTypeId){
 
 function updateGoogleMap( geoPoints, mapTypeId ){
     if(geoPoints.length>0){
-        navigator.geolocation.getCurrentPosition(function(position) {
-                displayGeopointsOnMap(geoPoints, position, mapTypeId);
-            }, function(err){
-                if (err.code == 1) {
-                    // user did not allow
-                    if(isDevelopment_mode){
-                        $("#messageArea").text(err.message);
-                        showMessageLog(true);
-                    }
-                }
-                displayGeopointsOnMap(geoPoints, null, mapTypeId);
-            },
-            { enableHighAccuracy: true}
-        );
+        displayGeopointsOnMap(geoPoints, null, mapTypeId);
+        setTimeout(function() { setCurrentLocationOnMap(); }, 10);
     }
     else{
         navigator.geolocation.getCurrentPosition(
@@ -138,14 +126,17 @@ function changeMapType(mapTypeId){
     if(map){
         // change map type
         map.setMapTypeId(mapTypeId);
-        // adjust theme of overlay (title, buttons, ...)
-        adjustColorSchema(mapTypeId);
+        // adjust adjustColorTheme of overlay (title, buttons, ...)
+        adjustColorTheme(mapTypeId);
     }
 }
 
-function adjustColorSchema(mapTypeId){
-    if( mapTypeId === google.maps.MapTypeId.ROADMAP
-        || mapTypeId === google.maps.MapTypeId.TERRAIN ){
+function isThemeDark(mapTypeId){
+    return mapTypeId === google.maps.MapTypeId.ROADMAP || mapTypeId === google.maps.MapTypeId.TERRAIN;
+}
+
+function adjustColorTheme(mapTypeId){
+    if( isThemeDark(mapTypeId) ){
         $('#publishBtn').removeClass('publishIconBright');
         $('#publishBtn').addClass('publishIconDark');
         $('#trackLocation').removeClass('button');
@@ -179,12 +170,39 @@ function adjustColorSchema(mapTypeId){
     }
 }
 
-function updateCurrentLocationOnMap( currentPosition ){
+function setCurrentLocationOnMap(){
+    navigator.geolocation.getCurrentPosition(function(position) {
+            updateCurrentLocationOnMap(position);
+        }, function(err){
+            if (err.code == 1) {
+                // user did not allow
+                if(isDevelopment_mode){
+                    $("#messageArea").text(err.message);
+                    showMessageLog(true);
+                }
+            }
+        },
+        { enableHighAccuracy: true}
+    );
+}
+
+function updateCurrentLocationOnMap(currentPosition){
+    if(!map) return;
+    
     var currentlatlng = new google.maps.LatLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
-    if (markerCurrentPosition){
+    if (!markerCurrentPosition){
+        markerCurrentPosition = new google.maps.Marker({
+            position: currentlatlng,
+            map: map,
+//            title:"You are here! (at least within a "+currentPosition.coords.accuracy+" meter radius)"
+        });
+        
+    }
+    else{
         markerCurrentPosition.position = currentlatlng;
     }
 }
+
 
 function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
     var myOptions = {
@@ -243,12 +261,7 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
     }
 
     if(currentPosition){
-        var currentlatlng = new google.maps.LatLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
-        markerCurrentPosition = new google.maps.Marker({
-            position: currentlatlng,
-            map: map,
-//            title:"You are here! (at least within a "+currentPosition.coords.accuracy+" meter radius)"
-        });
+        updateCurrentLocationOnMap(currentPosition);
     }
 
     infoWindow = new google.maps.InfoWindow();
@@ -256,8 +269,8 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
         document.getElementById("GoogleMapsCanvas").style.visibility = '';
     }
     
-    // adjust theme of overlay (title, buttons, ...)
-    adjustColorSchema(mapTypeId);
+    // adjust adjustColorTheme of overlay (title, buttons, ...)
+    adjustColorTheme(mapTypeId);
 
     // show map
     $("#GoogleMapsCanvas").removeClass('isInvisible');

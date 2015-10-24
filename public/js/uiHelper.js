@@ -1,3 +1,29 @@
+function getUserParameter(param){
+    var paramValue;
+    switch(param){
+        case 'accountType': paramValue = localStorage.getItem(param) || '';
+    }
+    return paramValue;
+}
+
+function setUserParameter(param,value){
+    var paramSupported=false;
+    switch(param){
+        case 'accountType': { localStorage.setItem(param,value);
+                              paramSupported = true; }
+    }
+    return paramSupported;
+}
+
+function removeUserParameter(param){
+    var paramSupported=false;
+    switch(param){
+        case 'accountType': { localStorage.removeItem(param);
+                              paramSupported = true; }
+    }
+    return paramSupported;
+}
+
 function getGeoInfo(geoPoints) {
 
   var latitudes=[];

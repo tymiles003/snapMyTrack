@@ -6,6 +6,8 @@
             background-image: url(public/icon/snapMyTrackLogo_1250x800.jpg); 
             background-repeat: no-repeat;
             background-color: #363636;
+            width:100%;
+            height:100%;
         }
     </style>
     <title>SnapMyTrack</title>
@@ -25,7 +27,7 @@
     <link rel="apple-touch-startup-image" href="public/icon/dsignmatters_icon_round_196.png"/>
     <link rel="stylesheet" type="text/css" href="public/css/main.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script src="//js.live.net/v5.0/wl.js"></script>
   </head>
   <body>
     <!-- messages popin -->
@@ -36,6 +38,8 @@
 	<div id='userAccountPopin' class='popin userAccountPopin boxShadowPopover isInvisible'>
         <div id="userAccountCloseBtn" class="buttonUserAccountClose"></div>
         <div id="userAccountPicture" class="userAccountPicture"></div>
+        <input id="userAccountChangePictureUrlInput" class="userAccountChangePictureUrlInput isInvisible" placeholder="public URL">
+<!--        <input type="file" id="userAccountChangePictureInput" class="userAccountChangePictureInput isInvisible" placeholder="URL or upload">   -->
         <div id="userAccountDisplayName" class="userAccountDisplayName"></div>
         <input id="userAccountChangeNameInput" class="userAccountChangeNameInput isInvisible" placeholder="Add a display name">
         <div id="userAccountAccountType" class="userAccountAccountType">account type</div>
@@ -46,7 +50,7 @@
         <div id="publishCloseBtn" class="buttonPublishClose"></div>
         <div class="popinLongtextBig">We will send an email with a link.</div>
         <div>
-            <input id="publishEmailInput" class="emailInput publishInput" placeholder="E-Mail" type="email">
+            <input type="email" id="publishEmailInput" class="emailInput publishInput" placeholder="Email">
         </div>
         <div class="popinLongtextBig">For how long to publish?</div>
         <select id="publishPeriodSelect" class="mySelect">
@@ -78,7 +82,7 @@
         <div id="passwordForgottenCloseBtn" class="buttonPasswordForgottenClose"></div>
         <div id="passwordForgottenTitle" class="popinLabelSmall">Reset Password</div>
         <div id="passwordForgottenDescription" class="popinLongtext">To reset your password, enter the email address associated with your account and we'll send you instructions for resetting your SnapMyTrack password.</div>
-        <input id="passwordForgottenEmail" class="passwordForgottenEmail userInputSmall" placeholder="Email Address" type="email">
+        <input type="email" id="passwordForgottenEmail" class="passwordForgottenEmail userInputSmall" placeholder="Email">
         <div id="passwordForgottenSendBtn" class="passwordForgottenSendBtn">Send</div>
 	</div>
 
@@ -133,10 +137,10 @@
             </div>
             <div id="passwordFrame" class="passwordFrame isInvisible">
                 <div>
-                    <input id="emailInput" class="emailInput isInvisible" placeholder="E-Mail" type="email">
+                    <input type="email" id="emailInput" class="emailInput isInvisible" placeholder="Email">
                 </div>
                 <div>
-                    <input id="passwordInput" class="passwordInput isInvisible" placeholder="Password" type="password">
+                    <input type="password" id="passwordInput" class="passwordInput isInvisible" placeholder="Password">
                     <div id='passwordForgottenFrame' class='passwordForgottenFrame'>
                         <a id='passwordForgotten' class='passwordForgotten' href=''>Password forgotten?</a>
                     </div>
@@ -174,9 +178,9 @@
 			<div class="addressContainer">
   			<a id="linkToDsignMatters"
 						   href="http://dsignmatters.com">
-						<img class="designMattersImage" src="public/icon/dsignmatters_icon_round_50.png">DsignMatters</a> , Germany 69190 Walldorf, Zum Brühl 33, Phone: +49-6227-890723, E-Mail: <a class="mailLink" href='mailto://dsignmatters@outlook.com' tabindex=9000>info@dsignmatters.com</a>
+						<img class="designMattersImage" src="public/icon/dsignmatters_icon_round_50.png">DsignMatters</a> , Germany 69190 Walldorf, Zum Brühl 33, Phone: +49-6227-890723, Email: <a class="mailLink" href='mailto://dsignmatters@outlook.com' tabindex=9000>info@dsignmatters.com</a>
 			</div>
-		<div class="footerLine">Last-Updated: October 18th 2015, 05:51 pm</div>
+		<div class="footerLine">Last-Updated: October 24th 2015, 10:32 am</div>
 		</div>
 	</div>
 
@@ -187,8 +191,9 @@
     <script type="text/javascript" src="public/js/messageLog.js"></script>
     <script type="text/javascript" src="public/js/settings.js"></script>
     <script type="text/javascript" src="public/js/initialization.js"></script>
-    <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleGoogleClientLoad"></script>
-    <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerwithlabel/src/markerwithlabel.js"></script>
+    <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=googleLoaded"></script>
     <script type="text/javascript" src="public/js/googleMap.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
+    <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerwithlabel/src/markerwithlabel.js"></script>
   </body>
 </html>
