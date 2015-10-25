@@ -610,6 +610,8 @@ body{
     color:#363636;
 }
 .userAccountPopin{
+    position: absolute; 
+    z-index: 2700;
     font-size: 135%;
     padding: 1.5em;
     height: 17.0em;
