@@ -187,8 +187,15 @@ function navigateToHomepagePage(){
 }
 
 function getAccessTokenFromUrl(){
+    var accessTokenUnregisteredUser;
 	var params = window.location.href.split('=');
-    return params[1] || 0;
+	if(params && params[1] && params[1].length>0){
+        var params2 = params[0].split('?');
+        if(params2 && params2[1] === "accessTokenUnregisteredUser"){
+            accessTokenUnregisteredUser = params[1];
+        }
+	}
+	return accessTokenUnregisteredUser;
 }
 
 function showGeoData(event, accountType, userId){     // get user settings and show map
@@ -214,7 +221,12 @@ function initializeUi(event, accountType, userId){     // get user settings and 
         userIdForShow = signedInUserId;
     }
     // get user settings and afterwards update map
-    getUserSettingsFromServer(userIdForShow, accountTypeForShow, true);
+    if(userIdForShow && accountTypeForShow !== ""){
+        getUserSettingsFromServer(userIdForShow, accountTypeForShow, true);
+    }
+    else{
+        getGeoDataFromServer(userId, accountType, accessTokenFromUrl);
+    }
 }
 
 function sendLocationPeriodically(event, doNotTogglePeriodicSend){
@@ -280,9 +292,9 @@ function sendLocation(){
     }
 }
 
-function getGeoDataFromServer(userId, accountType) {
+function getGeoDataFromServer(userId, accountType, accessToken) {
     if(userIsSignedIn){   // user signed out while loading geo data
-        $.getJSON('/geodata?userId='+signedInUserId+'&accountType='+accountType, function( data ) {
+        $.getJSON('/geodata?userId='+signedInUserId+'&accountType='+accountType+'&accessToken='+accessToken, function( data ) {
             if (userIsSignedIn){   // user signed out while loading geo data
                 updateGoogleMap(data.geoPoints, userSettings.mapTypeId);
                 setTimeout(function(){
@@ -467,7 +479,7 @@ function makeGoogleApiCall() {
         request.then(function(resp) {
             if(!userIsSignedIn){    // make sure we not already looged in with GOOGLE, WINDOWSLIVE, ...
                 // log-in SnapMyTrack server
-                serverLoginSend( 'GOOGLE', resp.result.id, resp.result.displayName, resp.result.image.url);
+                serverLoginSend( 'GOOGLE', resp.result.id, resp.result.displayName, resp.result.image.url, accessTokenFromUrl);
             }
         }, function(reason) {
             console.log('Error: ' + reason.result.error.message);
@@ -477,9 +489,6 @@ function makeGoogleApiCall() {
 
 function googelLoginButtonClick(event){
     googleApiSignIn();
-/*    var clientId = '444771318616-gfpg8jouu25l05frrtrj8l3len0ei8pr.apps.googleusercontent.com';
-    var scopes = 'https://www.googleapis.com/auth/plus.me';
-    getGoogleLoginStatus(handleGoogleAuthResult, false); */
 }
 
 // server Log-In
@@ -544,7 +553,7 @@ function makeFacebookApiCall() {
         FB.api('/me/picture', function(response) {
             if(!userIsSignedIn){    // make sure we not already looged in with GOOGLE, WINDOWSLIVE, ...
                 // log-in SnapMyTrack server
-                serverLoginSend( 'FACEBOOK', userId, displayName, response.data.url);
+                serverLoginSend( 'FACEBOOK', userId, displayName, response.data.url, accessTokenFromUrl );
             }
         });
     });
@@ -622,14 +631,14 @@ function makeWindowsLiveApiCall() {
                 function(pictureResponse){
                     if(!userIsSignedIn){    // make sure we not already looged in with GOOGLE, WINDOWSLIVE, ...
                         // log-in SnapMyTrack server
-                        serverLoginSend( 'WINDOWSLIVE', userId, displayName, pictureResponse.location);
+                        serverLoginSend( 'WINDOWSLIVE', userId, displayName, pictureResponse.location, accessTokenFromUrl);
                     }
                 },
                 function(pictureResponseFailed){
                     if(!userIsSignedIn){    // make sure we not already looged in with GOOGLE, WINDOWSLIVE, ...
                         console.log('WL.api(me/picture) error: ', responseFailed);
                         // log-in SnapMyTrack server
-                        serverLoginSend( 'WINDOWSLIVE', userId, displayName, null);
+                        serverLoginSend( 'WINDOWSLIVE', userId, displayName, null, accessTokenFromUrl);
                     }
                 }
             );
@@ -702,45 +711,11 @@ function windowsLiveApiLoadAndSignIn(){
 }
 
 function logOut(){
-    // we do not provide a log out
+    // we do not provide sign-out
     // -> show 'sign in' buttons instead
     userIsSignedIn=false;
     prepareForSignIn();
     toggleUserAccountPopin();
-/*    if(userAccountType === 'FACEBOOK'){
-        FB.logout(function(response) {
-            // ToDo -> error handling
-            console.log(userAccountType + '-logout:'+response);
-        });
-    }
-    else if (userAccountType === 'GOOGLE'){
-        gapi.auth.signOut(function(response) {
-            // ToDo -> error handling
-            console.log(userAccountType + '-logout:'+response);
-            toggleUserAccountPopin();
-        });
-        gapi.auth.setToken(null);
-        gapi.auth.signOut();
-        prepareForSignIn();
-        toggleUserAccountPopin();
-    }
-    else if (userAccountType === 'WINDOWSLIVE'){
-        WL.logout(function(response) {
-            // ToDo -> error handling
-            console.log(userAccountType + '-logout:'+response);
-            toggleUserAccountPopin();
-        });
-//        WL.logout();
-        prepareForSignIn();
-        toggleUserAccountPopin();
-    }
-    else if (userAccountType === 'PASSWORD'){
-        // ToDo
-            // ToDo -> error handling
-            // console.log(userAccountType + '-logout:'+response);
-        prepareForSignIn();
-        toggleUserAccountPopin();
-    } */
     return true;   // stop event propagation
 }
 
@@ -900,7 +875,7 @@ function serverLoginCallback(response){
     }
 }
 
-function serverLoginSend(accountType, userId, displayName, pictureUrl){
+function serverLoginSend(accountType, userId, displayName, pictureUrl, accessToken){
     if(!serverLoginRunning){
         // show user data
         userAccountType = accountType;
@@ -921,7 +896,7 @@ function serverLoginSend(accountType, userId, displayName, pictureUrl){
         
         // log on to server
         serverLoginRunning = true;
-        sendLogonDataToServer(accountType, userId, null, serverLoginCallback );
+        sendLogonDataToServer(accountType, userId, null, accessToken, serverLoginCallback);
     }
 }
 
@@ -955,7 +930,7 @@ function passwordLoginSend(){
         serverLoginRunning = true;
         var accountType = 'PASSWORD';
         var password = document.getElementById('passwordInput').value;
-        sendLogonDataToServer(accountType, userId, password, serverLoginCallback );
+        sendLogonDataToServer(accountType, userId, password, accessTokenFromUrl, serverLoginCallback);
     }
     return false;    // stop event propagation
 }
@@ -998,7 +973,20 @@ function passwordUserChange(){
 
 window.onload = function() {
     accessTokenFromUrl = getAccessTokenFromUrl();
-
+    if(accessTokenFromUrl){
+        if( getUserParameter('accountType') === ""){
+            // one-time access, no sign in needed
+            //  - show register button to become a snapMyTrack user
+            //  - show info messages, when clicking "Record" or "Publish"
+            serverLoginSend("", "", "", "", accessTokenFromUrl);            
+        }    
+        else if( getUserParameter('accountType') === "PASSWORD" ){
+            // sign-in via email/password
+        }    
+        else{
+            // automatic oAuth sign in (FACEBOOK, GOOGLE, WINDOWSLIVE)
+        }
+    }
     // register resize event handler
     window.addEventListener("resize", resizePage);
 };
@@ -1018,10 +1006,6 @@ $(document).ready(function() {
         // Facebook
         facebookApiLoadAndSignIn();
     }
-/*    else if( getUserParameter('accountType') === "GOOGLE" ){
-        // Google
-        googleApiLoadAndSignIn();
-    }  */
     else if( getUserParameter('accountType') === "WINDOWSLIVE" ){
         // Windows Live
         windowsLiveApiLoadAndSignIn();

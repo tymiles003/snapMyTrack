@@ -40,13 +40,13 @@ function updateUserSettings(userSettingsNew){
 }
 
 // user userSettings
-function getUserSettingsFromServer(userId, accountType, doUpdateMap) {
+function getUserSettingsFromServer(userId, accountType, doUpdateMap, accessToken) {
     $.getJSON('/usersettings?userId='+userId+'&accountType='+accountType, function( data ) {
         if(data.userSettings && data.userSettings.length>0){    // expected to be one or none^
             updateUserSettings(data.userSettings[0]);
         }
         if(doUpdateMap){
-            getGeoDataFromServer(userId, accountType);
+            getGeoDataFromServer(userId, accountType, accessToken);
         }
     });
 }

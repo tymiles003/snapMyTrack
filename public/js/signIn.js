@@ -7,7 +7,7 @@ function togglePasswordForgotten(){
     }
 }
 
-function sendLogonDataToServer(accountType, userId, password, callback) {
+function sendLogonDataToServer(accountType, userId, password, accessToken, callback) {
     // account types:
     //   - FACEBOOK
     //   - GOOGLE
@@ -16,7 +16,8 @@ function sendLogonDataToServer(accountType, userId, password, callback) {
     $.post('/signIn',{
                          accountType: accountType,
                          userId: userId,
-                         password: password
+                         password: password,
+                         accessToken: accessToken
                        }
     )
     .done(function(response){

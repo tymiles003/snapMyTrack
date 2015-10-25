@@ -1,7 +1,12 @@
 function getUserParameter(param){
     var paramValue;
     switch(param){
-        case 'accountType': paramValue = localStorage.getItem(param) || '';
+        case 'accountType': {
+            paramValue = localStorage.getItem(param);
+            if(!paramValue || paramValue  === "undefined" || paramValue  === undefined){
+                paramValue="";
+            }
+        }
     }
     return paramValue;
 }
