@@ -203,6 +203,48 @@ function updateCurrentLocationOnMap(currentPosition){
     }
 }
 
+function getDistanceFromLatLonInKm(currentGeoPoint, previousGeoPoint) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(currentGeoPoint.latitude-previousGeoPoint.latitude);  // deg2rad below
+  var dLon = deg2rad(currentGeoPoint.longitude-previousGeoPoint.longitude);
+  var a =
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(previousGeoPoint.latitude)) * Math.cos(deg2rad(currentGeoPoint.latitude)) *
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ;
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
+}
+
+function pointTimestampDiffInSeconds(currentGeoPoint, previousGeoPoint){
+    return Math.floor( (currentGeoPoint.timestamp - previousGeoPoint.timestamp) / 1000 );    // seconds
+}
+
+function isTrackChange(i, previousGeoPoint, geoPoints){
+    var trackChange;
+    if( !previousGeoPoint ){
+        return trackChange;   // first point
+    }
+
+    if( previousGeoPoint.userId !== geoPoints[i].userId ){
+        trackChange=true;   // different user
+    }
+    else if( geoPoints[i].isFirstPointOfTrack ){
+        trackChange=true;   // first point of track
+    }
+    else if( i+1 === geoPoints.length ){
+        trackChange=true;   // last point
+    }
+    else if ( pointTimestampDiffInSeconds(geoPoints[i], previousGeoPoint) > 60 && getDistanceFromLatLonInKm(geoPoints[i], previousGeoPoint) > 1 ){
+        trackChange=true;   // timestamp difference more than one hour (and location different)
+    }
+    return trackChange;
+}
 
 function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
     var myOptions = {
@@ -223,7 +265,7 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
     if(geoPoints && geoPoints.length>0){
         for(var i=0,len=geoPoints.length;i<len;i++){
             var latlng = new google.maps.LatLng(geoPoints[i].latitude, geoPoints[i].longitude);
-            if( (previousGeoPoint && (previousGeoPoint.userId !== geoPoints[i].userId)) || geoPoints[i].isFirstPointOfTrack || i+1 === geoPoints.length ){
+            if( isTrackChange(i, previousGeoPoint, geoPoints) ){
                 if( i+1 === geoPoints.length ){
                   userCoordinates.push( {
                     lat: parseFloat(geoPoints[i].latitude),
