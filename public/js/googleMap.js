@@ -1,5 +1,6 @@
 var map;
 var userPaths=[];
+var geopointMarkers=[];
 var tooltipMarkers=[];
 var markerCurrentPosition;
 var infoWindow;
@@ -92,18 +93,29 @@ function hideMap(){
 function resetMap(){
     if(map){
         // markers
-        for(i=0,len=tooltipMarkers.length;i<len;i++){
+        for(var i=0,len_i=tooltipMarkers.length;i<len_i;i++){
             tooltipMarkers[i].marker.setMap(null);
         }
+        // geoPoint Markers
+        for(var j=0,len_j=geopointMarkers.length;j<len_j;j++){
+            geopointMarkers[j].setMap(null);
+        }
         // paths
-        for(i=0,len=userPaths.length;i<len;i++){
-            userPaths[i].setMap(null);
+        for(var k=0,len_k=userPaths.length;k<len_k;k++){
+            userPaths[k].setMap(null);
         }
     }
     else{
         // ToDo
         // initial load ...
     }
+}
+
+function getRandomColor(){
+    var nextColor = colorPalette[userColor.length % colorPalette.length].code;    // Take care, there might be insufficient colors -> reuse them
+    userColor.push({ userId: 'random'+userColor.length,
+                     color: nextColor });
+    return nextColor;
 }
 
 function getColorOfUser(userId){
@@ -194,7 +206,7 @@ function updateCurrentLocationOnMap(currentPosition){
         markerCurrentPosition = new google.maps.Marker({
             position: currentlatlng,
             map: map,
-//            title:"You are here! (at least within a "+currentPosition.coords.accuracy+" meter radius)"
+            title: "You are here!"
         });
         
     }
@@ -204,6 +216,7 @@ function updateCurrentLocationOnMap(currentPosition){
 }
 
 function getDistanceFromLatLonInKm(currentGeoPoint, previousGeoPoint) {
+  // Haversine formula -> see http://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula 
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(currentGeoPoint.latitude-previousGeoPoint.latitude);  // deg2rad below
   var dLon = deg2rad(currentGeoPoint.longitude-previousGeoPoint.longitude);
@@ -218,7 +231,7 @@ function getDistanceFromLatLonInKm(currentGeoPoint, previousGeoPoint) {
 }
 
 function deg2rad(deg) {
-  return deg * (Math.PI/180)
+  return deg * (Math.PI/180);
 }
 
 function pointTimestampDiffInSeconds(currentGeoPoint, previousGeoPoint){
@@ -246,6 +259,29 @@ function isTrackChange(i, previousGeoPoint, geoPoints){
     return trackChange;
 }
 
+function addUserPath( userCoordinates ){
+    var randCol = getRandomColor();
+    var userPath = new google.maps.Polyline({
+        path: userCoordinates,
+        geodesic: true,
+        strokeColor: randCol,
+        //                      strokeColor: getColorOfUser(geoPoints[i].userId),
+        strokeOpacity: 1.0,
+        strokeWeight: 4,
+    });
+    userPath.setMap(map);
+/*        ( function(){
+        addListener(userPath, 'click', i, geoPoints[i].userId, geoPoints[i].displayName); 
+    })();
+    ( function(){
+        addListener(userPath, 'mouseover', i, geoPoints[i].userId, geoPoints[i].displayName); 
+    })();
+    ( function(){
+        addListener(userPath, 'mouseout', i, geoPoints[i].userId, geoPoints[i].displayName); 
+    })();  */
+    userPaths.push(userPath);
+}
+
 function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
     var myOptions = {
       zoom: mapZoom,
@@ -260,8 +296,8 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
     map.addListener('click', mapClick);
     
     userPaths=[];
-    var userCoordinates=[];
     var previousGeoPoint;
+    var userCoordinates=[];
     if(geoPoints && geoPoints.length>0){
         for(var i=0,len=geoPoints.length;i<len;i++){
             var latlng = new google.maps.LatLng(geoPoints[i].latitude, geoPoints[i].longitude);
@@ -272,24 +308,13 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
                     lng: parseFloat(geoPoints[i].longitude)
                   });
                 }
-                var userPath = new google.maps.Polyline({
-                  path: userCoordinates,
-                  geodesic: true,
-                  strokeColor: getColorOfUser(geoPoints[i].userId),
-                  strokeOpacity: 1.0,
-                  strokeWeight: 4,
-                });
-                userPath.setMap(map);
-            /*        ( function(){
-                    addListener(userPath, 'click', i, geoPoints[i].userId, geoPoints[i].displayName); 
-                })();
-                ( function(){
-                    addListener(userPath, 'mouseover', i, geoPoints[i].userId, geoPoints[i].displayName); 
-                })();
-                ( function(){
-                    addListener(userPath, 'mouseout', i, geoPoints[i].userId, geoPoints[i].displayName); 
-                })();  */
-                userPaths.push(userPath);
+                if(userCoordinates.length > 1){
+                    addUserPath( userCoordinates );
+                }
+                else if (userCoordinates.length === 1){
+                    // only one point, display a marker instead of a path
+                    addGeopointMarker(geoPoints[i]);
+                }
                 userCoordinates=[];
             }
             else{
@@ -363,6 +388,40 @@ function createUserLabelClass(className, color){
                       + ' }';
     document.getElementsByTagName('head')[0].appendChild(style);
 }
+
+function addGeopointMarker(geoPoint){
+    var latLng = new google.maps.LatLng(geoPoint.latitude, geoPoint.longitude);
+    var titleDate = (new Date(Date(geoPoint.timestamp)));
+//    var titleDateString = titleDate.toUTCString();
+    var titleDateString = titleDate.toDateString();
+    geopointMarkers.push( new google.maps.Marker({
+        position: latLng,
+        map: map,
+        title: geoPoint.displayName+' ('+titleDateString+')'
+    }));
+}
+
+/* function addGeopointMarker(geoPoint, userId, displayName){
+    var color = getColorOfUser(userId);
+    var userGeopointLabelClassName = "geoPointLabel_" + userId;
+    createUserLabelClass( userGeopointLabelClassName, color);
+    var myIcon = pinSymbolUserId( color );
+    var latLng = new google.maps.LatLng(geoPoint.latitude, geoPoint.longitude);
+    var geopointMarker = new MarkerWithLabel({
+        position: latLng,
+        map: map,
+//        draggable: true,
+//        raiseOnDrag: true,
+        labelContent: displayName,
+        labelAnchor: latLng,
+        labelClass: userGeopointLabelClassName,
+        labelInBackground: false,
+        icon: myIcon
+    });
+    geopointMarkers.push({ userId: userId,
+                           displayName: displayName,
+                           marker: geopointMarker });
+}   */
 
 function pathMouseOver(event, pathId, userId, displayName){
     var color = getColorOfUser(userId);

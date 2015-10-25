@@ -1,6 +1,6 @@
 // initialization
 
-var isDevelopment_mode=false;   // add some dev. info ( success/error messages )
+var isDevelopment_mode=true;   // add some dev. info ( success/error messages )
 var trackingIsActive=false;
 var serverLoginRunning=false;
 var serverLoginUserId;   // user for which latest login request has been sent to server (currently only needed to debugging)
@@ -714,8 +714,8 @@ function logOut(){
     // we do not provide sign-out
     // -> show 'sign in' buttons instead
     userIsSignedIn=false;
-    prepareForSignIn();
     toggleUserAccountPopin();
+    prepareForSignIn();
     return true;   // stop event propagation
 }
 
@@ -733,6 +733,9 @@ function hideSignInSpinner(){
 }
 
 function showSignInButtons(){
+    // Authorization frame
+    document.getElementById('authorizeFrame').style.visibility = '';
+    $('#authorizeFrame').removeClass('isInvisible');
     // FACEBOOK
     document.getElementById('authorizeWithFacebookBtn').style.visibility = '';
     document.getElementById('authorizeWithFacebookBtn').onclick = facebookLoginButtonClick;
@@ -887,6 +890,10 @@ function serverLoginSend(accountType, userId, displayName, pictureUrl, accessTok
         document.getElementById('authorizeWithFacebookBtn').style.visibility = 'hidden';
         document.getElementById('authorizeWithGoogleBtn').style.visibility = 'hidden';
         document.getElementById('authorizeWithMailPasswordBtn').style.visibility = 'hidden';
+
+        // hide authorization frame
+        document.getElementById('authorizeFrame').style.visibility = 'hidden';
+        $('#authorizeFrame').addClass('isInvisible');
 
         // hide into overlay
         document.getElementById('introPageOverlay').style.visibility = 'hidden';
