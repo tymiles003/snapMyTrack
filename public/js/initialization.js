@@ -1,6 +1,6 @@
 // initialization
 
-var isDevelopment_mode=true;   // add some dev. info ( success/error messages )
+var isDevelopment_mode=false;   // add some dev. info ( success/error messages )
 var trackingIsActive=false;
 var serverLoginRunning=false;
 var serverLoginUserId;   // user for which latest login request has been sent to server (currently only needed to debugging)
