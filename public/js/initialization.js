@@ -457,7 +457,7 @@ function fillLogInUserFrame( userId, displayName, imageUrl ){
             var displayNameDiv = document.createElement('div');
             displayNameDiv.id = 'userDisplayName';
             displayNameDiv.style.position = 'absolute';
-            displayNameDiv.style.right = '5.0em';
+            displayNameDiv.style.right = '8.0em';
             displayNameDiv.style.zIndex = '3000';
             displayNameDiv.classList.add('userDisplayName');
             displayNameDiv.innerHTML = displayName;
@@ -892,21 +892,8 @@ function serverLoginSend(accountType, userId, displayName, pictureUrl, accessTok
         serverLoginUserId = userId;    //  user for which latest login request has been sent to server (currently only needed to debugging)
         fillLogInUserFrame(userId, displayName, pictureUrl);
 
-        // hide authorization buttons
-        document.getElementById('authorizeWithWindowsBtn').style.visibility = 'hidden';
-        document.getElementById('authorizeWithFacebookBtn').style.visibility = 'hidden';
-        document.getElementById('authorizeWithGoogleBtn').style.visibility = 'hidden';
-        document.getElementById('authorizeWithMailPasswordBtn').style.visibility = 'hidden';
-
-        // hide authorization frame
-        document.getElementById('authorizeFrame').style.visibility = 'hidden';
-        $('#authorizeFrame').addClass('isInvisible');
-
-        // hide into overlay
-        document.getElementById('introPageOverlay').style.visibility = 'hidden';
-
-        // show sign-in spinner
-        showSignInSpinner();
+        // hide sign-in elements
+        prepareSignInCallback();
         
         // log on to server
         serverLoginRunning = true;
@@ -922,31 +909,37 @@ function passwordLoginSend(){
         serverLoginUserId = userId;    //  user for which latest login request has been sent to server (currently only needed to debugging)
         fillLogInUserFrame(userId, getFormattedUserDisplayName(userId), null);
 
-        // hide authorization buttons
-        document.getElementById('authorizeWithWindowsBtn').style.visibility = 'hidden';
-        document.getElementById('authorizeWithFacebookBtn').style.visibility = 'hidden';
-        document.getElementById('authorizeWithGoogleBtn').style.visibility = 'hidden';
-        document.getElementById('authorizeWithMailPasswordBtn').style.visibility = 'hidden';
-
-        // hide into overlay
-        document.getElementById('introPageOverlay').style.visibility = 'hidden';
+        // hide sign-in elements
+        prepareSignInCallback();
 
         // adopt icons scheme
         $('#publishBtn').addClass('publishIconBright');
         $('#buttonUserSettings').addClass('settingsIconBright');
-        $('#publishBtn').addClass('publishIconDark');
-        $('#buttonUserSettings').addClass('settingsIconDark');
+/*        $('#publishBtn').addClass('publishIconDark');
+        $('#buttonUserSettings').addClass('settingsIconDark');  */
 
-        // show sign-in spinner
-        showSignInSpinner();
-        
         // log on to server
-        serverLoginRunning = true;
         var accountType = 'PASSWORD';
         var password = document.getElementById('passwordInput').value;
+        serverLoginRunning = true;
         sendLogonDataToServer(accountType, userId, password, accessTokenFromUrl, serverLoginCallback);
     }
     return false;    // stop event propagation
+}
+
+function prepareSignInCallback(){
+    // hide authorization buttons
+    document.getElementById('authorizeWithWindowsBtn').style.visibility = 'hidden';
+    document.getElementById('authorizeWithFacebookBtn').style.visibility = 'hidden';
+    document.getElementById('authorizeWithGoogleBtn').style.visibility = 'hidden';
+    document.getElementById('authorizeWithMailPasswordBtn').style.visibility = 'hidden';
+    // hide authorization frame
+    document.getElementById('authorizeFrame').style.visibility = 'hidden';
+    $('#authorizeFrame').addClass('isInvisible');
+    // hide into overlay
+    document.getElementById('introPageOverlay').style.visibility = 'hidden';
+    // show sign-in spinner
+    showSignInSpinner();
 }
 
 function serverUserChangeCallback(accountType, userId, appUser){

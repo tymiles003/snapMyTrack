@@ -287,22 +287,26 @@ function pointTimestampDiffInSeconds(currentGeoPoint, previousGeoPoint){
     return Math.floor( (currentGeoPoint.timestamp - previousGeoPoint.timestamp) / 1000 );    // seconds
 }
 
-function isTrackChange(i, previousGeoPoint, geoPoints){
-    var trackChange;
+function isTrackEnd(previousGeoPoint, currentGeoPoint){
+    var trackEnd;
     if( !previousGeoPoint ){
-        return trackChange;   // first point
+        return trackEnd;   // first point
     }
 
-    if( previousGeoPoint.userId !== geoPoints[i].userId ){
-        trackChange=true;   // different user
+    if( previousGeoPoint.userId !== currentGeoPoint.userId ){
+        trackEnd=true;   // different user
     }
-    else if( i+1 === geoPoints.length ){
-        trackChange=true;   // last point
+    else if ( getDistanceFromLatLonInKm(currentGeoPoint, previousGeoPoint) > 3 
+        && pointTimestampDiffInSeconds(currentGeoPoint, previousGeoPoint) < 60){
+            trackEnd=true;   // timestamp difference more than one hour (and location different)
     }
-    else if ( pointTimestampDiffInSeconds(geoPoints[i], previousGeoPoint) > 60 && getDistanceFromLatLonInKm(geoPoints[i], previousGeoPoint) > 1 ){
-        trackChange=true;   // timestamp difference more than one hour (and location different)
+    else if ( pointTimestampDiffInSeconds(currentGeoPoint, previousGeoPoint) > 60 ){
+        trackEnd=true;   // timestamp difference more than one hours
     }
-    return trackChange;
+    else if ( pointTimestampDiffInSeconds(currentGeoPoint, previousGeoPoint) > 60*60 ){
+        trackEnd=true;   // timestamp difference more than one hours
+    }
+    return trackEnd;
 }
 
 function addUserPath( userCoordinates, isCurrentTrack ){
@@ -357,29 +361,36 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
     var userCoordinates=[];
     if(geoPoints && geoPoints.length>0){
         for(var i=0,len=geoPoints.length;i<len;i++){
-            var latlng = new google.maps.LatLng(geoPoints[i].latitude, geoPoints[i].longitude);
-            if( isTrackChange(i, previousGeoPoint, geoPoints) ){
-                if( i+1 === geoPoints.length ){
-                  userCoordinates.push( {
-                    lat: parseFloat(geoPoints[i].latitude),
-                    lng: parseFloat(geoPoints[i].longitude)
-                  });
-                }
+            if( isTrackEnd(previousGeoPoint, geoPoints[i]) ){
                 if(userCoordinates.length > 1){
                     addUserPath( userCoordinates, false );
                 }
                 else if (userCoordinates.length === 1){
                     // only one point, display a marker instead of a path
-                    addGeopointMarker(geoPoints[i]);
+                    addGeopointMarker(geoPoints[i].latitude,geoPoints[i].longitude,geoPoints[i].timestamp, geoPoints[i].displayName);
                 }
+                previousGeoPoint=null;
                 userCoordinates=[];
             }
-            else{
-                userCoordinates.push( {
-                  lat: parseFloat(geoPoints[i].latitude),
-                  lng: parseFloat(geoPoints[i].longitude)
-                });
+            
+            userCoordinates.push( {
+                lat: parseFloat(geoPoints[i].latitude),
+                lng: parseFloat(geoPoints[i].longitude)
+            });
+
+            // always make sure to display last track
+            if( i+1 === geoPoints.length ){
+                if(userCoordinates.length > 1){
+                    addUserPath( userCoordinates, false );
+                }
+                else if (userCoordinates.length === 1){
+                    // only one point, display a marker instead of a path
+                    addGeopointMarker(geoPoints[i].latitude,geoPoints[i].longitude,geoPoints[i].timestamp, geoPoints[i].displayName);
+                }
+                previousGeoPoint=null;
+                userCoordinates=[];
             }
+
             previousGeoPoint=geoPoints[i];
         }
     }
@@ -446,15 +457,16 @@ function createUserLabelClass(className, color){
     document.getElementsByTagName('head')[0].appendChild(style);
 }
 
-function addGeopointMarker(geoPoint){
-    var latLng = new google.maps.LatLng(geoPoint.latitude, geoPoint.longitude);
-    var titleDate = (new Date(Date(geoPoint.timestamp)));
+function addGeopointMarker(latitude,longitude,timestamp,displayName){
+    var latLng = new google.maps.LatLng(latitude,longitude);
+    var titleDate = new Date( parseFloat(timestamp) );
 //    var titleDateString = titleDate.toUTCString();
-    var titleDateString = titleDate.toDateString();
+    var titleDateString = titleDate.toLocaleString();
+//    alert( titleDateString+" - lat: "+latitude+'long: '+longitude);
     geopointMarkers.push( new google.maps.Marker({
         position: latLng,
         map: map,
-        title: geoPoint.displayName+' ('+titleDateString+')'
+        title: displayName+' ('+titleDateString+')'
     }));
 }
 
