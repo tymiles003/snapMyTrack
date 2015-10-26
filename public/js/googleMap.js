@@ -1,5 +1,6 @@
 var map;
 var userPaths=[];
+var currentTrack;
 var geopointMarkers=[];
 var tooltipMarkers=[];
 var markerCurrentPosition;
@@ -18,6 +19,8 @@ var colorPalette=[
       {name:"MediumOrchid", code:"#BA55D3"}
   ];
 var mapZoomDefault = 15;
+var colorCurrentTrackBright = {name:"Tomato", code:"#FF6347"};
+var colorCurrentTrackDark = {name:"Tomato", code:"#FF6347"};
 
 function displayGeopointsOnMap(geoPoints, currentPosition, mapTypeId){
     var geoInfo = getGeoInfo(geoPoints);
@@ -111,6 +114,17 @@ function resetMap(){
     }
 }
 
+function getCurrentTrackColor(){
+    if(!map) return;
+    if( isThemeDark( map.getMapTypeId() ) ){    
+        col = colorCurrentTrackDark.code;
+    }
+    else{
+        col = colorCurrentTrackBright.code;
+    }
+    return col;
+}
+
 function getRandomColor(){
     var nextColor = colorPalette[userColor.length % colorPalette.length].code;    // Take care, there might be insufficient colors -> reuse them
     userColor.push({ userId: 'random'+userColor.length,
@@ -119,19 +133,19 @@ function getRandomColor(){
 }
 
 function getColorOfUser(userId){
-  var colorOfUser;
-  for(var i=0,len=userColor.length;i<len;i++){
+    var colorOfUser;
+    for(var i=0,len=userColor.length;i<len;i++){
     if(userColor[i].userId===userId){
-      colorOfUser=userColor[i].color;
-      break;
+        colorOfUser=userColor[i].color;
+        break;
     }
-  }
-  if(!colorOfUser){
-      colorOfUser = colorPalette[userColor.length % colorPalette.length].code;    // Take care, there might be more users than colors
-      userColor.push({ userId: userId,
+    }
+    if(!colorOfUser){
+        colorOfUser = colorPalette[userColor.length % colorPalette.length].code;    // Take care, there might be more users than colors
+        userColor.push({ userId: userId,
                        color: colorOfUser });
-  }
-  return colorOfUser;
+    }
+    return colorOfUser;
 }
 
 function changeMapType(mapTypeId){
@@ -211,27 +225,62 @@ function updateCurrentLocationOnMap(currentPosition){
         
     }
     else{
-        markerCurrentPosition.position = currentlatlng;
+        markerCurrentPosition.setPosition(currentlatlng);
+//        markerCurrentPosition.setTitle( "dummy" );
     }
 }
 
+function setMapCenter(position){
+    if(position){
+        var currentlatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        map.setCenter(currentlatlng);
+    }
+    else{
+        // do not change center of map
+    }
+}
+
+function updateCurrentTrackOnMap(currentPosition){
+    if(!map) return;
+    
+    if (!currentTrack){
+        // create new track
+        var coordinates = [];
+        coordinates.push( {
+            lat: parseFloat(currentPosition.coords.latitude),
+            lng: parseFloat(currentPosition.coords.longitude)
+          });
+        addUserPath(coordinates, true);
+    }
+    else{
+        // add point to track
+        var currentlatlng = new google.maps.LatLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
+        addPointToTrack(currentTrack, currentlatlng);
+    }
+}
+
+function addPointToTrack(currentTrack, currentlatlng){
+    var path = currentTrack.getPath();
+    path.push(currentlatlng);
+}
+
 function getDistanceFromLatLonInKm(currentGeoPoint, previousGeoPoint) {
-  // Haversine formula -> see http://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula 
-  var R = 6371; // Radius of the earth in km
-  var dLat = deg2rad(currentGeoPoint.latitude-previousGeoPoint.latitude);  // deg2rad below
-  var dLon = deg2rad(currentGeoPoint.longitude-previousGeoPoint.longitude);
-  var a =
+    // Haversine formula -> see http://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula 
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(currentGeoPoint.latitude-previousGeoPoint.latitude);  // deg2rad below
+    var dLon = deg2rad(currentGeoPoint.longitude-previousGeoPoint.longitude);
+    var a =
     Math.sin(dLat/2) * Math.sin(dLat/2) +
     Math.cos(deg2rad(previousGeoPoint.latitude)) * Math.cos(deg2rad(currentGeoPoint.latitude)) *
     Math.sin(dLon/2) * Math.sin(dLon/2)
     ;
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  var d = R * c; // Distance in km
-  return d;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c; // Distance in km
+    return d;
 }
 
 function deg2rad(deg) {
-  return deg * (Math.PI/180);
+    return deg * (Math.PI/180);
 }
 
 function pointTimestampDiffInSeconds(currentGeoPoint, previousGeoPoint){
@@ -247,9 +296,6 @@ function isTrackChange(i, previousGeoPoint, geoPoints){
     if( previousGeoPoint.userId !== geoPoints[i].userId ){
         trackChange=true;   // different user
     }
-    else if( geoPoints[i].isFirstPointOfTrack ){
-        trackChange=true;   // first point of track
-    }
     else if( i+1 === geoPoints.length ){
         trackChange=true;   // last point
     }
@@ -259,12 +305,18 @@ function isTrackChange(i, previousGeoPoint, geoPoints){
     return trackChange;
 }
 
-function addUserPath( userCoordinates ){
-    var randCol = getRandomColor();
+function addUserPath( userCoordinates, isCurrentTrack ){
+    var trackColor;
+    if(isCurrentTrack){
+        trackColor = getCurrentTrackColor();
+    }
+    else{
+        trackColor = getRandomColor();
+    }
     var userPath = new google.maps.Polyline({
         path: userCoordinates,
         geodesic: true,
-        strokeColor: randCol,
+        strokeColor: trackColor,
         //                      strokeColor: getColorOfUser(geoPoints[i].userId),
         strokeOpacity: 1.0,
         strokeWeight: 4,
@@ -279,7 +331,12 @@ function addUserPath( userCoordinates ){
     ( function(){
         addListener(userPath, 'mouseout', i, geoPoints[i].userId, geoPoints[i].displayName); 
     })();  */
-    userPaths.push(userPath);
+    if(isCurrentTrack){
+        currentTrack = userPath;
+    }
+    else{
+        userPaths.push(userPath);
+    }
 }
 
 function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
@@ -309,7 +366,7 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
                   });
                 }
                 if(userCoordinates.length > 1){
-                    addUserPath( userCoordinates );
+                    addUserPath( userCoordinates, false );
                 }
                 else if (userCoordinates.length === 1){
                     // only one point, display a marker instead of a path

@@ -189,11 +189,11 @@ body{
     margin-top: 0.3em;
 }
 .userPictureSmall{
-    border: 1px solid #E9E9E9;
+    border: 2px solid #E9E9E9;
     border-radius: 1.0em;
 }
 .userPictureSmallDark{
-    border: 1px solid #363636;
+    border: 2px solid #363636;
     border-radius: 1.0em;
 }
 .userAccountPicture{
@@ -201,7 +201,7 @@ body{
     height:3.2em;
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    border: 1px solid #E9E9E9;
+    border: 2px solid #E9E9E9;
     border-radius: 0.5em;
 }
 .userAccountAccountType{

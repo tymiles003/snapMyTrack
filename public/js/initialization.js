@@ -230,7 +230,7 @@ function initializeUi(event, accountType, userId){     // get user settings and 
 }
 
 function sendLocationPeriodically(event, doNotTogglePeriodicSend){
-    var frequencySeconds = 4;   // send every 4 seconds
+    var frequencySeconds = 2;   // send every 'frequencySeconds' seconds
     if(!signedInUserId){
         $("#messageArea").text('Add "User Id" for tracking.\nThe user id can be any sequence of characters.');
         showMessageLog(true);
@@ -275,8 +275,14 @@ function sendLocation(){
     var self=this;
     if(trackingIsActive){
     if(signedInUserId){
-        navigator.geolocation.getCurrentPosition(function(position) {
         // depricated --> https needed, see https://goo.gl/rStTGz
+        navigator.geolocation.getCurrentPosition(function(position) {
+        // update current-location marker and center it
+        setMapCenter(position);
+        updateCurrentLocationOnMap(position);
+        // add new position to current track
+        updateCurrentTrackOnMap(position);
+        // send location to server
         sendGeoDataToServer(position.timestamp,
                             position.coords.accuracy,
                             position.coords.latitude,
@@ -284,6 +290,7 @@ function sendLocation(){
                             position.coords.speed);
         });
         // use watchPosition and move params like speed
+        //  - ToDo  --- prio2
     }
     else{
         $("#messageArea").text('provide a unique user Id');
