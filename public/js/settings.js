@@ -1,6 +1,7 @@
 var userSettings = {
     userId: "",
-    mapTypeId: 'roadmap'
+    mapTypeId: 'roadmap',
+    tracksToShow: 'unlimited'
 };
 //      mapTypeId: google.maps.MapTypeId.ROADMAP,
 //      mapTypeId: google.maps.MapTypeId.SATELLITE,
@@ -10,31 +11,38 @@ var userSettings = {
 $('#mapTypeSelect').change(mapTypeOnChange);
 
 function mapTypeOnChange(evt){
-    toggleSettings(evt);
+    changeMapType( $('#mapTypeSelect').val() );
+//    toggleSettings(evt);
 }
 
 function toggleSettings(evt){
     if($('#settingsPopin').hasClass('isInvisible')){
         // Update DIV from userSettings
         $('#mapTypeSelect').val(userSettings.mapTypeId);
+        $('#tracksToShowSelect').val(userSettings.tracksToShow);
         // Set current select value
         $('#settingsPopin').removeClass('isInvisible');
     }
     else{
         $('#settingsPopin').addClass('isInvisible');
-        if( $('#mapTypeSelect').val() !== userSettings.mapTypeId ){
+        if( $('#mapTypeSelect').val() !== userSettings.mapTypeId
+            || $('#tracksToShowSelect').val() !== userSettings.tracksToShow ){
             userSettings.accountType = userAccountType;
             userSettings.userId = signedInUserId;
             userSettings.mapTypeId = $('#mapTypeSelect').val();
+            userSettings.tracksToShow = $('#tracksToShowSelect').val();
             changeMapType( userSettings.mapTypeId );
-            sendUserSettingsToServer( userSettings.userId, userSettings.accountType, userSettings.mapTypeId ); 
+            sendUserSettingsToServer( userSettings.userId, userSettings.accountType,
+                                      userSettings.mapTypeId, userSettings.tracksToShow ); 
         }
     }
 }
 
 function updateUserSettings(userSettingsNew){
-    if( userSettingsNew.mapTypeId !== userSettings.mapTypeId ){
+    if( userSettingsNew.mapTypeId !== userSettings.mapTypeId
+        ||  userSettingsNew.tracksToShow !== userSettings.tracksToShow ){
         userSettings.mapTypeId = userSettingsNew.mapTypeId;
+        userSettings.tracksToShow = userSettingsNew.tracksToShow;
         changeMapType( userSettings.mapTypeId );
     }
 }
@@ -51,11 +59,12 @@ function getUserSettingsFromServer(userId, accountType, doUpdateMap, accessToken
     });
 }
 
-function sendUserSettingsToServer(userId, accountType, mapTypeId) {
+function sendUserSettingsToServer(userId, accountType, mapTypeId, tracksToShow) {
   $.post('/usersettings',{
                          accountType: accountType,
                          userId: userId,
-                         mapTypeId: mapTypeId
+                         mapTypeId: mapTypeId,
+                         tracksToShow: tracksToShow
                        }
       )
       .done(function(msg){

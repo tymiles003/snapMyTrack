@@ -604,10 +604,14 @@ body{
     color:#dddddd;
     font-size: 110%;
 }
+.tracksToShow{
+    margin-top: 0.5em;
+}
 .popinUserSetting{
-    height: 7em;
+    padding: 1.5em;
+    height: 14em;
     width: 15em;
-    top: calc( 50vh - ( 7em / 2 ) );
+    top: calc( 50vh - ( 14em / 2 ) );
     left: calc( 50vw - ( 15em / 2 ) );
 }
 .popinLongtext{

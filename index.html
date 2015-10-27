@@ -77,6 +77,15 @@
                 <option value="hybrid">Hybrid</option>            <!-- mapTypeId: google.maps.MapTypeId.HYBRID -->
                 <option value="terrain">Terrain</option>          <!-- mapTypeId: google.maps.MapTypeId.TERRAIN -->
             </select>
+            <div id="tracksToShow" class="popinLabel tracksToShow">Tracks to show:</div>
+            <select id="tracksToShowSelect" class="mySelect">
+                <option value="oneHour">Latest track</option>
+                <option value="oneHour">Last hour</option>
+                <option value="oneDay">Today</option>
+                <option value="oneWeek">This Week</option>
+                <option value="oneMonth">This Month</option>
+                <option value="unlimited">All tracks</option>
+            </select>
         </div>
 	</div>
 	<!-- password forgotten popin -->
@@ -198,6 +207,7 @@
     <script type="text/javascript" src="public/js/messageLog.js"></script>
     <script type="text/javascript" src="public/js/settings.js"></script>
     <script type="text/javascript" src="public/js/initialization.js"></script>
+    <script type="text/javascript" src="public/js/geodataUploader.js"></script>
     <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=googleLoaded"></script>
     <script type="text/javascript" src="public/js/googleMap.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>

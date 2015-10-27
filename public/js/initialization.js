@@ -256,6 +256,7 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
     else{
         if(trackingIsActive || (!doNotTogglePeriodicSend&&!trackingIsActive) ){
             trackingIsActive = true;
+            startGeoDataUploadWorker(1000);   // uploaded data later, if internet connection is lost
             $("#trackLocationStatus").addClass("statusOn");
             $("#trackLocationStatus").removeClass("statusOff");
             $("#trackLocationStatus").removeClass("statusOffDark");
@@ -279,17 +280,17 @@ function sendLocation(){
     if(signedInUserId){
         // depricated --> https needed, see https://goo.gl/rStTGz
         navigator.geolocation.getCurrentPosition(function(position) {
-        // update current-location marker and center it
-        setMapCenter(position);
-        updateCurrentLocationOnMap(position);
-        // add new position to current track
-        updateCurrentTrackOnMap(position);
-        // send location to server
-        sendGeoDataToServer(position.timestamp,
-                            position.coords.accuracy,
-                            position.coords.latitude,
-                            position.coords.longitude,
-                            position.coords.speed);
+            // update current-location marker and center it
+            setMapCenter(position);
+            updateCurrentLocationOnMap(position);
+            // add new position to current track
+            updateCurrentTrackOnMap(position);
+            // send location to server
+            sendGeoDataToServer(position.timestamp,
+                                position.coords.accuracy,
+                                position.coords.latitude,
+                                position.coords.longitude,
+                                position.coords.speed);
         });
         // use watchPosition and move params like speed
         //  - ToDo  --- prio2
@@ -313,32 +314,6 @@ function getGeoDataFromServer(userId, accountType, accessToken) {
             }
         });
     }
-}
-
-function sendGeoDataToServer(timestamp, accuracy, latitude, longitude, speed) {
-  $.post('/geodata',{
-                         userId: signedInUserId,
-                         timestamp: timestamp,
-                         accuracy: accuracy,
-                         latitude:latitude,
-                         longitude: longitude,
-                         speed: speed
-                       }
-      )
-      .done(function(msg){
-        var messageText = msg.success;
-        if(msg.data && msg.data.length>0){
-          messageText += '\n' + JSON.stringify(msg.data);
-        }
-        $("#messageArea").text(messageText);
-      })
-      .fail(function(xhr, statusText, err){
-        var currentText = $("#messageArea").text();
-        var messageText = currentText + ' ------------> ' + 'Error: '+err;
-        $("#messageArea").text(messageText);
-      });
-    var messageText = 'Send -> Latitude:'+latitude+', Longitude: '+longitude+', Speed: '+speed+', Timestamp: '+timestamp+', Accuracy: '+accuracy;
-    $("#messageArea").text(messageText);
 }
 
 // Google Log-In
