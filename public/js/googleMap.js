@@ -1,4 +1,5 @@
 var map;
+var mapIsReadyToUse;
 var userPaths=[];
 var currentTrack;
 var geopointMarkers=[];
@@ -226,7 +227,7 @@ function updateCurrentLocationOnMap(currentPosition){
     }
     else{
         markerCurrentPosition.setPosition(currentlatlng);
-//        markerCurrentPosition.setTitle( "dummy" );
+        markerCurrentPosition.setTitle( "You are here!" );
     }
 }
 
@@ -352,6 +353,10 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
       mapTypeId: mapTypeId,
     };
     map = new google.maps.Map(document.getElementById("GoogleMapsCanvas"), myOptions);
+
+    // after rendering the map for the first time
+    google.maps.event.addListenerOnce(map, 'idle', function(){ mapIsReadyToUse = true; });
+//    map.addEventListener('tilesLoaded', function(){ mapIsReadyToUse = true; } );
 
     // listener for click event of map (not called, for clicks on shapes)
     map.addListener('click', mapClick);

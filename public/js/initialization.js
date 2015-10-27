@@ -42,40 +42,42 @@ document.getElementById('userAccountChangePictureUrlInput').onkeydown=pictureUrl
 
 
 function resizePage(){
-    if(document.getElementById("GoogleMapsCanvas").style.visibility === 'hidden'
-      || $("#GoogleMapsCanvas").hasClass('isInvisible')){
-        // sign-in resizing
-        if( $(window).width() < 540){
-            document.getElementById('introPageOverlayHideLeftBgrImg').style.visibility = 'hidden';
-            $('#introPageOverlayHideLeftBgrImg').addClass('isInvisible');
-            document.getElementById('introPageOverlay').style.visibility = 'hidden';
-            $('#introPageOverlay').addClass('isInvisible');
-            document.getElementById('introPageOverlaySmall').style.visibility = '';
-            $('#introPageOverlaySmall').removeClass('isInvisible');
-        }
-        else if( $(window).width() < 1024){
-            document.getElementById('introPageOverlay').style.visibility = 'hidden';
-            $('#introPageOverlay').addClass('isInvisible');
-            document.getElementById('introPageOverlaySmall').style.visibility = '';
-            $('#introPageOverlaySmall').removeClass('isInvisible');
+    if(!serverLoginRunning && !userIsSignedIn){
+        if(document.getElementById("GoogleMapsCanvas").style.visibility === 'hidden'
+          || $("#GoogleMapsCanvas").hasClass('isInvisible')){
+            // sign-in resizing
+            if( $(window).width() < 540){
+                document.getElementById('introPageOverlayHideLeftBgrImg').style.visibility = 'hidden';
+                $('#introPageOverlayHideLeftBgrImg').addClass('isInvisible');
+                document.getElementById('introPageOverlay').style.visibility = 'hidden';
+                $('#introPageOverlay').addClass('isInvisible');
+                document.getElementById('introPageOverlaySmall').style.visibility = '';
+                $('#introPageOverlaySmall').removeClass('isInvisible');
+            }
+            else if( $(window).width() < 1024){
+                document.getElementById('introPageOverlay').style.visibility = 'hidden';
+                $('#introPageOverlay').addClass('isInvisible');
+                document.getElementById('introPageOverlaySmall').style.visibility = '';
+                $('#introPageOverlaySmall').removeClass('isInvisible');
+            }
+            else{
+                document.getElementById('introPageOverlay').style.visibility = '';
+                $('#introPageOverlay').removeClass('isInvisible');
+                // hide small background image
+                document.getElementById('introPageOverlayHideLeftBgrImg').style.visibility = '';
+                $('#introPageOverlayHideLeftBgrImg').removeClass('isInvisible');
+                document.getElementById('introPageOverlaySmall').style.visibility = 'hidden';
+                $('#introPageOverlaySmall').addClass('isInvisible');
+            }
+            document.getElementById('appTitle').style.visibility = '';
+            $('#appTitle').removeClass('isInvisible');
         }
         else{
-            document.getElementById('introPageOverlay').style.visibility = '';
-            $('#introPageOverlay').removeClass('isInvisible');
-            // hide small background image
-            document.getElementById('introPageOverlayHideLeftBgrImg').style.visibility = '';
-            $('#introPageOverlayHideLeftBgrImg').removeClass('isInvisible');
-            document.getElementById('introPageOverlaySmall').style.visibility = 'hidden';
-            $('#introPageOverlaySmall').addClass('isInvisible');
+            document.getElementById('appTitle').style.visibility = 'hidden';
+            $('#appTitle').addClass('isInvisible');
+            // resize map / recenter map
+            // ToDo
         }
-        document.getElementById('appTitle').style.visibility = '';
-        $('#appTitle').removeClass('isInvisible');
-    }
-    else{
-        document.getElementById('appTitle').style.visibility = 'hidden';
-        $('#appTitle').addClass('isInvisible');
-        // resize map / recenter map
-        // ToDo
     }
 }
 
@@ -694,7 +696,9 @@ function facebookApiLoadAndSignIn(){
 }
 
 function googleLoaded(){
+    // oAuth Log-In
     if( getUserParameter('accountType') === "GOOGLE" ){
+        // Google
         googleApiSignIn();
     }
 }
@@ -726,11 +730,20 @@ function logOut(){
     return true;   // stop event propagation
 }
 
-function showSignInSpinner(){
+function showSignInOauthInfo(){
+    $('#signInOauthInfo').removeClass('isInvisible');
+    $('#signInSpinnerOauth').addClass('spinner');
+}
+
+function hideSignInOauthInfo(){
+    $('#signInOauthInfo').addClass('isInvisible');
+    $('#signInSpinnerOauth').removeClass('spinner');
+}
+
+function SignInOauthInfoignInSpinner(){
     document.getElementById('signInInfo').style.visibility = '';
     $('#signInInfo').removeClass('isInvisible');
     $('#signInSpinner').addClass('spinner');
-    
 }
 
 function hideSignInSpinner(){
@@ -938,8 +951,10 @@ function prepareSignInCallback(){
     $('#authorizeFrame').addClass('isInvisible');
     // hide into overlay
     document.getElementById('introPageOverlay').style.visibility = 'hidden';
+    // hide oAuth sign-in spinner
+    hideSignInOauthInfo();
     // show sign-in spinner
-    showSignInSpinner();
+    SignInOauthInfoignInSpinner();
 }
 
 function serverUserChangeCallback(accountType, userId, appUser){
@@ -1011,12 +1026,20 @@ $(document).ready(function() {
     // oAuth Log-In
     if( getUserParameter('accountType') === "FACEBOOK" ){
         // Facebook
+        showSignInOauthInfo();
         facebookApiLoadAndSignIn();
     }
     else if( getUserParameter('accountType') === "WINDOWSLIVE" ){
         // Windows Live
+        showSignInOauthInfo();
         windowsLiveApiLoadAndSignIn();
     }
+    else if( getUserParameter('accountType') === "GOOGLE" ){
+        // Google
+        showSignInOauthInfo();
+        // -> for sign-in, see function 'googleLoaded'
+    }
+
     else{
         // Show all Sign-In buttons
         showSignInButtons();

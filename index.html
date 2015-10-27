@@ -98,10 +98,15 @@
     </div>
 
     <!-- hide left part of the background image -->
-    <div id="introPageOverlayHideLeftBgrImg" class="introPageOverlayHideLeftBgrImg">
+    <div id="introPageOverlayHideLeftBgrImg" class="introPageOverlayHideLeftBgrImg"></div>
+
+    <!-- spinner : oAuth sign-in -->
+    <div id="signInOauthInfo" class="signInOauthInfo isInvisible">
+        <div class="signInOauthText">sign in...</div>
+        <div id="signInSpinnerOauth" class="signInSpinnerOauth"></div>
     </div>
-    
-    <!-- spinner and loading text (sign-in + geo-data load) -->
+
+    <!-- spinner and loading text : server sign-in + geo-data load -->
     <div id="signInInfo" class="signInInfo isInvisible">
         <div id="signInSpinner" class="signInSpinner"></div>
         <div class="loadingText">tracks are loading ...</div>

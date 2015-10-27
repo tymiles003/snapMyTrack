@@ -19,6 +19,31 @@ body{
     font-size: 125%;
     margin-top: 0.5em;
 }
+.signInOauthInfo{
+    position: absolute; 
+    z-index: 2510;
+    height: 0.50em;
+    top: 0.92em;
+    left: 7.50em;
+    font-size: 250%;
+}
+.signInOauthText{
+    position: absolute; 
+    width: 2.5em;
+    height: 0.50em;
+    font-size: 30%;
+    margin-right:2.0em;
+}
+.signInSpinnerOauth{
+    position: absolute; 
+    top: 0.1em;    
+    left: 0.75em;
+    width: 0.50em;
+    height: 0.50em;
+    background: url('../icon/icon_gear_settings.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
 .signInSpinner{
     width: 4em;
     height: 4em;
