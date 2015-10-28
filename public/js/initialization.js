@@ -276,7 +276,7 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
                 if(!trackingWatchId){
                     trackingWatchId = navigator.geolocation.watchPosition(function(position){
                         // success
-                        alert("sendLoc via 'watchPosition' API");
+//                        alert("sendLoc via 'watchPosition' API");
                         sendLocation(position);
                     }, function(err){
                         // error    
