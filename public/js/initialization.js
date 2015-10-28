@@ -13,6 +13,7 @@ var accessTokenFromUrl;
 var fbInitDone;
 var wlInitDone;
 var googleInitDone;
+var trackingWatchId;
 
 // 1) assign click events
 $('#userSettingsBtn').click(toggleSettings);
@@ -244,6 +245,12 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
 
     if(trackingIsActive && !doNotTogglePeriodicSend){
         trackingIsActive = false;
+        // turn off watching geolocation
+        if(trackingWatchId){
+            navigator.geolocation.clearWatch(trackingWatchId);
+            trackingWatchId = null;
+        }
+        // adjust theme        
         if(isThemeDark(userSettings.mapTypeId)){
             $("#trackLocationStatus").addClass("statusOffDark");
         }
@@ -261,12 +268,27 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
             $("#trackLocationStatus").removeClass("statusOff");
             $("#trackLocationStatus").removeClass("statusOffDark");
             $("#trackLocationStatus").addClass("pulser");
-//            navigator.geolocation.watchPosition(updateCurrentLocationOnMap);
-            sendLocation();
-            setTimeout( function(){
-                sendLocationPeriodically( null, true );
-            },
-            frequencySeconds*1000 );
+            if(1===1){
+                if(!trackingWatchId){
+                    trackingWatchId = navigator.geolocation.watchPosition(function(position){
+                        // success
+                        sendLocation(position);
+                    }, function(err){
+                        // error    
+                        console.log(err);
+                    }, { enableHighAccuracy: false,     // options
+                         timeout: 5000,
+                         maximumAge: 0                        
+                    });
+                }
+            }
+            else{
+                sendLocation();
+                setTimeout( function(){
+                    sendLocationPeriodically( null, true );
+                },
+                frequencySeconds*1000 );
+            }
         }
         else{
             return;    // periodic tracking has been switched off
@@ -274,29 +296,42 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
     }
 }
 
-function sendLocation(){
+function sendLocation(position){
     var self=this;
     if(trackingIsActive){
-    if(signedInUserId){
-        // depricated --> https needed, see https://goo.gl/rStTGz
-        navigator.geolocation.getCurrentPosition(function(position) {
-            // update current-location marker and center it
-            setMapCenter(position);
-            updateCurrentLocationOnMap(position);
-            // add new position to current track
-            updateCurrentTrackOnMap(position);
-            // send location to server
-            sendGeoDataToServer(position.timestamp,
-                                position.coords.accuracy,
-                                position.coords.latitude,
-                                position.coords.longitude,
-                                position.coords.speed);
-        });
-        // use watchPosition and move params like speed
-        //  - ToDo  --- prio2
-    }
-    else{
-        $("#messageArea").text('provide a unique user Id');
+        if(signedInUserId){
+            if(position){
+                // update current-location marker and center it
+                setMapCenter(position);
+                updateCurrentLocationOnMap(position);
+                // add new position to current track
+                updateCurrentTrackOnMap(position);
+                // send location to server
+                sendGeoDataToServer(position.timestamp,
+                                    position.coords.accuracy,
+                                    position.coords.latitude,
+                                    position.coords.longitude,
+                                    position.coords.speed);
+            }
+            else{
+                // depricated --> https needed, see https://goo.gl/rStTGz
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    // update current-location marker and center it
+                    setMapCenter(position);
+                    updateCurrentLocationOnMap(position);
+                    // add new position to current track
+                    updateCurrentTrackOnMap(position);
+                    // send location to server
+                    sendGeoDataToServer(position.timestamp,
+                                        position.coords.accuracy,
+                                        position.coords.latitude,
+                                        position.coords.longitude,
+                                        position.coords.speed);
+                });
+            }
+        }
+        else{
+            $("#messageArea").text('provide a unique user Id');
             showMessageLog(true);
         }
     }
@@ -357,6 +392,7 @@ function toggleUserAccountPopin(){
         document.getElementById('userAccountPicture').style.backgroundImage = "url('"+userPictureUrl+"')";
         $('#userAccountDisplayName').text(getFormattedUserDisplayName());
         $('#userAccountAccountType').text(userAccountType);
+        setAccountTypeTheme('userAccountAccountType');
     }
     else{
         $('#userAccountPopin').addClass('isInvisible');
@@ -390,6 +426,36 @@ function getFormattedUserDisplayName(userId){
 
 function userAccountClick(){
     toggleUserAccountPopin();
+}
+
+function setAccountTypeTheme(elementId){
+    if( getUserParameter('accountType') === "FACEBOOK" ){
+        // Facebook
+        $('#'+elementId).addClass('accountTypeThemeFACEBOOK');
+        $('#'+elementId).removeClass('accountTypeThemeWINDOWSLIVE');
+        $('#'+elementId).removeClass('accountTypeThemeGOOGLE');
+        $('#'+elementId).removeClass('accountTypeThemePASSWORD');
+    }
+    else if( getUserParameter('accountType') === "WINDOWSLIVE" ){
+        // Windows Live
+        $('#'+elementId).addClass('accountTypeThemeWINDOWSLIVE');
+        $('#'+elementId).removeClass('accountTypeThemeFACEBOOK');
+        $('#'+elementId).removeClass('accountTypeThemeGOOGLE');
+        $('#'+elementId).removeClass('accountTypeThemePASSWORD');
+    }
+    else if( getUserParameter('accountType') === "GOOGLE" ){
+        // Google
+        $('#'+elementId).addClass('accountTypeThemeGOOGLE');
+        $('#'+elementId).removeClass('accountTypeThemeFACEBOOK');
+        $('#'+elementId).removeClass('accountTypeThemeWINDOWSLIVE');
+        $('#'+elementId).removeClass('accountTypeThemePASSWORD');
+    }
+    else{
+        $('#'+elementId).addClass('accountTypeThemePASSWORD');
+        $('#'+elementId).removeClass('accountTypeThemeFACEBOOK');
+        $('#'+elementId).removeClass('accountTypeThemeWINDOWSLIVE');
+        $('#'+elementId).removeClass('accountTypeThemeGOOGLE');
+    }
 }
 
 function fillLogInUserFrame( userId, displayName, imageUrl ){

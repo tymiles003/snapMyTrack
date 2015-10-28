@@ -19,6 +19,34 @@ body{
     font-size: 125%;
     margin-top: 0.5em;
 }
+.accountTypeThemeFACEBOOK{
+    background-color:#47639e;
+    border: 2px solid #47639e;
+    -moz-border-radius: 0.5em;
+    -webkit-border-radius: 0.5em;
+    border-radius: 0.5em;
+}
+.accountTypeThemeGOOGLE{
+    background-color:#da4f46;
+    border: 2px solid #da4f46;
+    -moz-border-radius: 0.5em;
+    -webkit-border-radius: 0.5em;
+    border-radius: 0.5em;
+}
+.accountTypeThemeWINDOWSLIVE{
+    background-color:#6a797e;
+    border: 2px solid #6a797e;
+    -moz-border-radius: 0.5em;
+    -webkit-border-radius: 0.5em;
+    border-radius: 0.5em;
+}
+.accountTypeThemePASSWORD{
+    background-color:#ffc93b;
+    border: 2px solid #ffc93b;
+    -moz-border-radius: 0.5em;
+    -webkit-border-radius: 0.5em;
+    border-radius: 0.5em;
+}
 .signInOauthInfo{
     position: absolute; 
     z-index: 2510;
@@ -226,12 +254,13 @@ body{
     height:3.2em;
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    border: 2px solid #E9E9E9;
     border-radius: 0.5em;
 }
 .userAccountAccountType{
     margin-top:0.2em;
     font-size: 30%;
+    width: 8.0em;
+    text-align: center;
 }
 .buttonUserAccountClose{
     width: 2em;
