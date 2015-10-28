@@ -22,6 +22,7 @@ var colorPalette=[
 var mapZoomDefault = 15;
 var colorCurrentTrackBright = {name:"Tomato", code:"#FF6347"};
 var colorCurrentTrackDark = {name:"Tomato", code:"#FF6347"};
+var currentCenter;
 
 function displayGeopointsOnMap(geoPoints, currentPosition, mapTypeId){
     var geoInfo = getGeoInfo(geoPoints);
@@ -223,7 +224,6 @@ function updateCurrentLocationOnMap(currentPosition){
             map: map,
             title: "You are here!"
         });
-        
     }
     else{
         markerCurrentPosition.setPosition(currentlatlng);
@@ -231,10 +231,23 @@ function updateCurrentLocationOnMap(currentPosition){
     }
 }
 
-function setMapCenter(position){
+function adoptMapAfterResize(){
+    if(currentCenter){
+        setMapCenter(null, currentCenter);
+    }
+}
+
+function setMapCenter(position, latLng){
     if(position){
         var currentlatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-        map.setCenter(currentlatlng);
+        map.panTo(currentlatlng);
+//        map.setCenter(currentlatlng);
+        currentCenter = currentlatlng;
+    }
+    else if (latLng){
+        map.panTo(latLng);
+//        map.setCenter(latLng);
+        currentCenter = latLng;
     }
     else{
         // do not change center of map
@@ -345,6 +358,7 @@ function addUserPath( userCoordinates, isCurrentTrack ){
 }
 
 function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
+    currentCenter = center;
     var myOptions = {
       zoom: mapZoom,
       center: center,

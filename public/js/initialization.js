@@ -77,8 +77,11 @@ function resizePage(){
             document.getElementById('appTitle').style.visibility = 'hidden';
             $('#appTitle').addClass('isInvisible');
             // resize map / recenter map
-            // ToDo
+            adoptMapAfterResize();
         }
+    }
+    else if(mapIsReadyToUse){
+        adoptMapAfterResize();        
     }
 }
 
@@ -268,21 +271,23 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
             $("#trackLocationStatus").removeClass("statusOff");
             $("#trackLocationStatus").removeClass("statusOffDark");
             $("#trackLocationStatus").addClass("pulser");
-            if(1===1){
+            if( 'watchPosition' in navigator.geolocation){
                 if(!trackingWatchId){
                     trackingWatchId = navigator.geolocation.watchPosition(function(position){
                         // success
+                        alert("sendLoc via 'watchPosition' API");
                         sendLocation(position);
                     }, function(err){
                         // error    
                         console.log(err);
-                    }, { enableHighAccuracy: false,     // options
-                         timeout: 5000,
+                    }, { enableHighAccuracy: true,     // options
+                         timeout: 2000,
                          maximumAge: 0                        
                     });
                 }
             }
             else{
+                alert("browser does not support 'watchPosition' API");
                 sendLocation();
                 setTimeout( function(){
                     sendLocationPeriodically( null, true );
