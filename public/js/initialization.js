@@ -14,6 +14,7 @@ var fbInitDone;
 var wlInitDone;
 var googleInitDone;
 var trackingWatchId;
+var watchGeolocationNotSupported;
 
 // 1) assign click events
 $('#userSettingsBtn').click(toggleSettings);
@@ -271,7 +272,7 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
             $("#trackLocationStatus").removeClass("statusOff");
             $("#trackLocationStatus").removeClass("statusOffDark");
             $("#trackLocationStatus").addClass("pulser");
-            if( 'watchPosition' in navigator.geolocation){
+            if( 'watchPosition' in navigator.geolocation && !watchGeolocationNotSupported){    // i.e. Firefox on Android
                 if(!trackingWatchId){
                     trackingWatchId = navigator.geolocation.watchPosition(function(position){
                         // success
@@ -287,7 +288,7 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
                 }
             }
             else{
-                alert("browser does not support 'watchPosition' API");
+//                alert("browser does not support 'watchPosition' API");
                 sendLocation();
                 setTimeout( function(){
                     sendLocationPeriodically( null, true );
@@ -1067,6 +1068,11 @@ $(document).ready(function() {
     // check if browser supports geo-location
     if(!navigator.geolocation) {
         alert('Your browser does not support geo-location dervices. You will not be able to records tracks.');
+    }
+    else{
+        if( isRunningOnAndroidDevice() && isRunningOnFirefoxBrowser() ){
+            watchGeolocationNotSupported = true;
+        }
     }
 
     // oAuth Log-In
