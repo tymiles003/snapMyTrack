@@ -733,6 +733,8 @@ function windowsLiveLoginStatusCallback(response){
 
 function facebookApiLoadAndSignIn(){
     if(!fbInitDone){
+        // show oAuth sign-in info/spinner
+        showSignInOauthInfo();
         $.getScript('//connect.facebook.net/en_US/sdk.js', function(){
             if(!fbInitDone){
                 initializeFacebook();
@@ -759,6 +761,8 @@ function googleApiSignIn(){
 
 function windowsLiveApiLoadAndSignIn(){
     if(!wlInitDone){
+        // show oAuth sign-in info/spinner
+        showSignInOauthInfo();
         $.getScript('//js.live.net/v5.0/wl.js', function(){
             if(!wlInitDone){
                 initializeWindowsLive();
@@ -787,7 +791,7 @@ function hideSignInOauthInfo(){
     $('#signInSpinnerOauth').removeClass('spinner');
 }
 
-function SignInOauthInfoignInSpinner(){
+function showSignInSpinner(){
     document.getElementById('signInInfo').style.visibility = '';
     $('#signInInfo').removeClass('isInvisible');
     $('#signInSpinner').addClass('spinner');
@@ -818,6 +822,12 @@ function showSignInButtons(){
 }
 
 function prepareForSignIn(){
+    if(serverLoginRunning){
+        // ToDo -> stop running callbacks
+        // - scipt load for oauth sign in
+        // - oAuth sign in
+        // - server sign in
+    }
     removeUserParameter('accountType');   // local storage
     // show sign-in buttons
     showSignInButtons();
@@ -1001,7 +1011,7 @@ function prepareSignInCallback(){
     // hide oAuth sign-in spinner
     hideSignInOauthInfo();
     // show sign-in spinner
-    SignInOauthInfoignInSpinner();
+    showSignInSpinner();
 }
 
 function serverUserChangeCallback(accountType, userId, appUser){

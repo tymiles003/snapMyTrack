@@ -1,47 +1,36 @@
 var geodataUpoadQueue=[];
 
 function sendGeoDataToServer(timestamp, accuracy, latitude, longitude, speed) {
-    var geodataUpload = {    userId: signedInUserId,
-                             timestamp: timestamp,
-                             accuracy: accuracy,
-                             latitude:latitude,
-                             longitude: longitude,
-                             speed: speed
-                           };
-    if(navigator.onLine){
-        var messageText = 'Send -> Latitude:'+latitude+', Longitude: '+longitude+', Speed: '+speed+', Timestamp: '+timestamp+', Accuracy: '+accuracy;
-        $("#messageArea").text(messageText);
-        $.post('/geodata', geodataUpload
-        )
-        .done(function(msg){
-            var messageText = msg.success;
-            if(msg.data && msg.data.length>0){
-              messageText += '\n' + JSON.stringify(msg.data);
-            }
-            $("#messageArea").text(messageText);
-        })
-        .fail(function(xhr, statusText, err){
-            if(navigator.onLine){
-                var currentText = $("#messageArea").text();
-                var messageText = currentText + ' ------------> ' + 'Error: '+err;
-                $("#messageArea").text(messageText);
-            }
-            else{
-                // remember geo-point for later upload    
-                geodataUpoadQueue.push( geodataUpload );
-            }
-        });
-    }
-    else{
-        // remember geo-point for later upload              
-        geodataUpoadQueue.push( geodataUpload );
-    }
+    sendGeodataListToServer([
+                                {   userId: signedInUserId,
+                                    timestamp: timestamp,
+                                    accuracy: accuracy,
+                                    latitude:latitude,
+                                    longitude: longitude,
+                                    speed: speed }
+                            ]);
 }
 
 function sendGeodataUpoadQueue(){
-    var geodataUploadMulti = { geodataList: geodataUpoadQueue };
+    var geodataList=[];
+    if(geodataUpoadQueue && geodataUpoadQueue.length>0){
+        for(var i=0, len_i=geodataUpoadQueue.length; i<len_i; i++){
+            geodataList.push( { userId: geodataUpoadQueue[i].signedInUserId,
+                                timestamp: geodataUpoadQueue[i].timestamp,
+                                accuracy: geodataUpoadQueue[i].accuracy,
+                                latitude: geodataUpoadQueue[i].latitude,
+                                longitude: geodataUpoadQueue[i].longitude,
+                                speed: geodataUpoadQueue[i].speed }                
+                );
+        }
+        geodataUpoadQueue=[];
+        sendGeodataListToServer(geodataList);
+    }
+}
+
+function sendGeodataListToServer( geodataList ){
     if(navigator.onLine){
-        $.post('/geodata', geodataUploadMulti
+        $.post('/geodata', { geoDataMany: geodataList }
         )
         .done(function(msg){
             var messageText = msg.success;
@@ -58,12 +47,11 @@ function sendGeodataUpoadQueue(){
             }
             else{
                 // remember geo-point for later upload
-                for(var i=0, len_i=geodataUploadMulti.geodataList.length;i<len_i;i++){
-                    geodataUpoadQueue.push( geodataUploadMulti.geodataList[i] );
+                for(var i=0, len_i=geodataList.length;i<len_i;i++){
+                    geodataUpoadQueue.push( geodataList[i] );
                 }
             }
         });
-        geodataUpoadQueue = [];
     }    
 }
 
