@@ -3,19 +3,28 @@ var userSettings = {
     mapTypeId: 'roadmap',
     tracksToShow: 'unlimited'
 };
+
 //      mapTypeId: google.maps.MapTypeId.ROADMAP,
 //      mapTypeId: google.maps.MapTypeId.SATELLITE,
 //      mapTypeId: google.maps.MapTypeId.HYBRID,
 //      mapTypeId: google.maps.MapTypeId.TERRAIN,
 
 $('#mapTypeSelect').change(mapTypeOnChange);
+$('#tracksToShowSelect').change(tracksToShowOnChange);
 
 function mapTypeOnChange(evt){
     changeMapType( $('#mapTypeSelect').val() );
-//    toggleSettings(evt);
+}
+
+function tracksToShowOnChange(evt){
+    if($('#tracksToShowSelect').val() !== userSettings.tracksToShow){
+        showGeodataReloadSpinner();
+        getGeoDataFromServer(signedInUserId, userAccountType, accessTokenFromUrl, $('#tracksToShowSelect').val());
+    }
 }
 
 function toggleSettings(evt){
+    hidePopInsButOne('settingsPopin');
     if($('#settingsPopin').hasClass('isInvisible')){
         // Update DIV from userSettings
         $('#mapTypeSelect').val(userSettings.mapTypeId);
@@ -40,6 +49,7 @@ function toggleSettings(evt){
                                       userSettings.mapTypeId, userSettings.tracksToShow );
             // reload geo data
             if(geoDataOutdated){
+                showGeodataReloadSpinner();
                 getGeoDataFromServer(signedInUserId, userAccountType, accessTokenFromUrl, userSettings.tracksToShow);
             }
         }

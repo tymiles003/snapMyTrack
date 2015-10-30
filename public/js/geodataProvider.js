@@ -82,6 +82,7 @@ function getGeoDataFromServer(userId, accountType, accessToken, tracksToShow) {
                 updateGoogleMap(data.geoPoints, userSettings.mapTypeId);
                 setTimeout(function(){
                     hideSignInSpinner();
+                    hideGeodataReloadSpinner();
                     hideFooter(true);
                 },100);
             }

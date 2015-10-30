@@ -640,8 +640,8 @@ body{
     padding: 1.5em;
     height: 14em;
     width: 15em;
-    top: calc( 50vh - ( 14em / 2 ) );
-    left: calc( 50vw - ( 15em / 2 ) );
+    top: 3.0em;
+    left: calc( 100vw - ( 20.0em ) );
 }
 .popinLongtext{
     margin-top:0.5em;

@@ -86,6 +86,24 @@ function resizePage(){
     }
 }
 
+function hidePopInsButOne(doNotHideThisPopinId){
+    // hide settings pop-in
+    if( doNotHideThisPopinId !== 'settingsPopin'){
+//        document.getElementById('settingsPopin').style.visibility = 'hidden';
+        $('#settingsPopin').addClass('isInvisible');
+    }
+    // hide publish pop-in
+    if( doNotHideThisPopinId !== 'publishPopin'){
+//        document.getElementById('publishPopin').style.visibility = 'hidden';
+        $('#publishPopin').addClass('isInvisible');
+    }
+    // hide user account pop-in
+    if( doNotHideThisPopinId !== 'userAccountPopin'){//
+//        document.getElementById('userAccountPopin').style.visibility = 'hidden';
+        $('#userAccountPopin').addClass('isInvisible');
+    }
+}
+
 function disableUserChange(){
     if(userAccountType==='PASSWORD'){
         // picture url
@@ -378,6 +396,7 @@ function handleGoogleAuthResult(authResult) {
 }
 
 function toggleUserAccountPopin(){
+    hidePopInsButOne('userAccountPopin');
     if($('#userAccountPopin').hasClass('isInvisible')){
         $('#userAccountPopin').removeClass('isInvisible');
         $('#userAccountCloseBtn').click(toggleUserAccountPopin);
@@ -787,6 +806,14 @@ function hideSignInSpinner(){
     document.getElementById('signInInfo').style.visibility = 'hidden';
     $('#signInInfo').addClass('isInvisible');
     $('#signInSpinner').removeClass('spinner');
+}
+
+function showGeodataReloadSpinner(){
+    $('#userSettingsBtn').addClass('spinner');
+}
+
+function hideGeodataReloadSpinner(){
+    $('#userSettingsBtn').removeClass('spinner');
 }
 
 function showSignInButtons(){

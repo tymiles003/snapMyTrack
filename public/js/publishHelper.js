@@ -5,6 +5,7 @@ function togglePublish(){
     else{
         $('#publishPopin').addClass('isInvisible');
     }
+    hidePopInsButOne("publishPopin");
 }
 
 function publish(event){
