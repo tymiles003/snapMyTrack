@@ -343,20 +343,6 @@ function sendLocation(position){
     }
 }
 
-function getGeoDataFromServer(userId, accountType, accessToken) {
-    if(userIsSignedIn){   // user signed out while loading geo data
-        $.getJSON('/geodata?userId='+signedInUserId+'&accountType='+accountType+'&accessToken='+accessToken, function( data ) {
-            if (userIsSignedIn){   // user signed out while loading geo data
-                updateGoogleMap(data.geoPoints, userSettings.mapTypeId);
-                setTimeout(function(){
-                    hideSignInSpinner();
-                    hideFooter(true);
-                },100);
-            }
-        });
-    }
-}
-
 // Google Log-In
 function initializeGoogle() {
     var apiKey = 'AIzaSyBi3qbsG6PCHqzgF9HtBS_ciAJMjufNbgY';

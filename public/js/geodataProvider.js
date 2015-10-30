@@ -71,3 +71,20 @@ function startGeoDataUploadWorker(frequencyMs){
             );
     }
 }
+
+function getGeoDataFromServer(userId, accountType, accessToken, tracksToShow) {
+    if(userIsSignedIn){   // user signed out while loading geo data
+        $.getJSON('/geodata?userId='+signedInUserId
+                    +'&accountType='+accountType
+                    +'&accessToken='+accessToken
+                    +'&tracksToShow='+tracksToShow, function( data ) {
+            if (userIsSignedIn){   // user signed out while loading geo data
+                updateGoogleMap(data.geoPoints, userSettings.mapTypeId);
+                setTimeout(function(){
+                    hideSignInSpinner();
+                    hideFooter(true);
+                },100);
+            }
+        });
+    }
+}

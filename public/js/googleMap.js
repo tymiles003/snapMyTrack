@@ -359,18 +359,23 @@ function addUserPath( userCoordinates, isCurrentTrack ){
 
 function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
     currentCenter = center;
-    var myOptions = {
-      zoom: mapZoom,
-      center: center,
-      mapTypeControl: false,
-      navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
-      mapTypeId: mapTypeId,
-    };
-    map = new google.maps.Map(document.getElementById("GoogleMapsCanvas"), myOptions);
+    if(map){
+        // remove all tracks but the currently recording track
+        resetMap();        
+    }
+    else{
+        var myOptions = {
+                zoom: mapZoom,
+                center: center,
+                mapTypeControl: false,
+                navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+                mapTypeId: mapTypeId,
+            };
+        map = new google.maps.Map(document.getElementById("GoogleMapsCanvas"), myOptions);
+    }
 
     // after rendering the map for the first time
     google.maps.event.addListenerOnce(map, 'idle', function(){ mapIsReadyToUse = true; });
-//    map.addEventListener('tilesLoaded', function(){ mapIsReadyToUse = true; } );
 
     // listener for click event of map (not called, for clicks on shapes)
     map.addListener('click', mapClick);

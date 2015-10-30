@@ -27,13 +27,21 @@ function toggleSettings(evt){
         $('#settingsPopin').addClass('isInvisible');
         if( $('#mapTypeSelect').val() !== userSettings.mapTypeId
             || $('#tracksToShowSelect').val() !== userSettings.tracksToShow ){
+            var geoDataOutdated;
             userSettings.accountType = userAccountType;
             userSettings.userId = signedInUserId;
             userSettings.mapTypeId = $('#mapTypeSelect').val();
+            if($('#tracksToShowSelect').val() !== userSettings.tracksToShow){
+                geoDataOutdated=true;
+            }
             userSettings.tracksToShow = $('#tracksToShowSelect').val();
             changeMapType( userSettings.mapTypeId );
             sendUserSettingsToServer( userSettings.userId, userSettings.accountType,
-                                      userSettings.mapTypeId, userSettings.tracksToShow ); 
+                                      userSettings.mapTypeId, userSettings.tracksToShow );
+            // reload geo data
+            if(geoDataOutdated){
+                getGeoDataFromServer(signedInUserId, userAccountType, accessTokenFromUrl, userSettings.tracksToShow);
+            }
         }
     }
 }
@@ -54,7 +62,8 @@ function getUserSettingsFromServer(userId, accountType, doUpdateMap, accessToken
             updateUserSettings(data.userSettings[0]);
         }
         if(doUpdateMap){
-            getGeoDataFromServer(userId, accountType, accessToken);
+            var tracksToShow;
+            getGeoDataFromServer(userId, accountType, accessToken, userSettings.tracksToShow);
         }
     });
 }
