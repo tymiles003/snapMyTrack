@@ -147,9 +147,9 @@ body{
 .publishPopin{
     font-size: 135%;
     padding: 1.5em;
-    height: 20.0em;
+    height: 25.0em;
     width: 23.0em;
-    top: calc( 50vh - ( (20.0em)/2 ) );
+    top: calc( 50vh - ( (25.0em)/2 ) );
     left: calc( 50vw - ( (23.0em)/2 ) );
 }
 .buttonPublishClose{
@@ -451,7 +451,7 @@ body{
 } */
 .popinLabel{
     color:#FFFFFF;
-    font-size: 220%;
+    font-size: 180%;
 }
 .popinLabelSmall{
     color:#FFFFFF;
@@ -637,6 +637,7 @@ body{
     margin-top: 0.5em;
 }
 .popinUserSetting{
+    opacity:0.71;
     padding: 1.5em;
     height: 14em;
     width: 15em;
@@ -737,9 +738,9 @@ body{
 .popinMessageLog{
     font-size:175%;
     height: 8em;
-    width: 10em;
+    width: 14em;
     top: calc( 50vh - ( 8em / 2 ) );
-    left: calc( 50vw - ( 11em / 2 ) );
+    left: calc( 50vw - ( 14em / 2 ) );
 }
 .messageArea{
     padding-left: 0.45em;

@@ -298,10 +298,10 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
                         sendLocation(position);
                     }, function(err){
                         // error    
-                        console.log(err);
+                        console.log("watchPosition has failed: ",err);
                     }, { enableHighAccuracy: true,     // options
-                         timeout: 2000,
-                         maximumAge: 0                        
+                         timeout: 3000,
+                         maximumAge: 2000                        
                     });
                 }
             }

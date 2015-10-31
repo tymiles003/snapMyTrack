@@ -103,7 +103,7 @@ function resetMap(){
         }
         // geoPoint Markers
         for(var j=0,len_j=geopointMarkers.length;j<len_j;j++){
-            geopointMarkers[j].setMap(null);
+            geopointMarkers[j].marker.setMap(null);
         }
         // paths
         for(var k=0,len_k=userPaths.length;k<len_k;k++){
@@ -264,7 +264,7 @@ function updateCurrentTrackOnMap(currentPosition){
             lat: parseFloat(currentPosition.coords.latitude),
             lng: parseFloat(currentPosition.coords.longitude)
           });
-        addUserPath(coordinates, true);
+        addUserPath(coordinates, true, signedInUserId, userDisplayName);
     }
     else{
         // add point to track
@@ -323,7 +323,7 @@ function isTrackEnd(previousGeoPoint, currentGeoPoint){
     return trackEnd;
 }
 
-function addUserPath( userCoordinates, isCurrentTrack ){
+function addUserPath( userCoordinates, isCurrentTrack, userId, displayName){
     var trackColor;
     if(isCurrentTrack){
         trackColor = getCurrentTrackColor();
@@ -331,24 +331,24 @@ function addUserPath( userCoordinates, isCurrentTrack ){
     else{
         trackColor = getRandomColor();
     }
+    var iconSeq = [{ icon: pathIcon(trackColor),
+                    offset: '100%',
+                    strokeColor: "#000000",
+                    strokeOpacity :1,
+                    repeat: "6px"
+    }];
     var userPath = new google.maps.Polyline({
         path: userCoordinates,
-        geodesic: true,
+        geodesic: false,
         strokeColor: trackColor,
-        //                      strokeColor: getColorOfUser(geoPoints[i].userId),
-        strokeOpacity: 1.0,
-        strokeWeight: 4,
+        strokeOpacity: 0.60,
+        strokeWeight: 1.75,
+        icons: iconSeq
     });
     userPath.setMap(map);
-/*        ( function(){
-        addListener(userPath, 'click', i, geoPoints[i].userId, geoPoints[i].displayName); 
-    })();
     ( function(){
-        addListener(userPath, 'mouseover', i, geoPoints[i].userId, geoPoints[i].displayName); 
+        addListener(userPath, 'click', userId, displayName); 
     })();
-    ( function(){
-        addListener(userPath, 'mouseout', i, geoPoints[i].userId, geoPoints[i].displayName); 
-    })();  */
     if(isCurrentTrack){
         currentTrack = userPath;
     }
@@ -368,6 +368,10 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
                 zoom: mapZoom,
                 center: center,
                 mapTypeControl: false,
+                zoomControl: true,
+                scaleControl: true,
+                streetViewControl: false,
+                rotateControl: true,                
                 navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
                 mapTypeId: mapTypeId,
             };
@@ -387,7 +391,7 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
         for(var i=0,len=geoPoints.length;i<len;i++){
             if( isTrackEnd(previousGeoPoint, geoPoints[i]) ){
                 if(userCoordinates.length > 1){
-                    addUserPath( userCoordinates, false );
+                    addUserPath(userCoordinates, false, geoPoints[i].userId, geoPoints[i].displayName);
                 }
                 else if (userCoordinates.length === 1){
                     // only one point, display a marker instead of a path
@@ -405,7 +409,7 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
             // always make sure to display last track
             if( i+1 === geoPoints.length ){
                 if(userCoordinates.length > 1){
-                    addUserPath( userCoordinates, false );
+                    addUserPath(userCoordinates, false, geoPoints[i].userId, geoPoints[i].displayName);
                 }
                 else if (userCoordinates.length === 1){
                     // only one point, display a marker instead of a path
@@ -464,15 +468,15 @@ function mapClick(event){
     return false;    // stop event propagation
 }
 
-function createUserLabelClass(className, color){
+function createMarkerClass(className, color){
     var style = document.createElement('style');
     style.type = 'text/css';
     style.innerHTML = '.' + className + ' { '
                       + 'color: ' + color + ';'
-                      + 'font-size: 200%;'
-                      + 'border: 1px solid #ffffff;'
+                      + 'font-size: 80%;'
+                      + 'border: 1px solid #C3C3C3;'
                       + 'border-radius: 4.5px;'
-                      + 'background-color: 484848;'
+                      + 'background-color:#484848;'
                       + 'padding-left: 0.5em;'
                       + 'padding-right: 0.5em;'
                       + 'padding-top: 0.2em;'
@@ -481,45 +485,58 @@ function createUserLabelClass(className, color){
     document.getElementsByTagName('head')[0].appendChild(style);
 }
 
-function addGeopointMarker(latitude,longitude,timestamp,displayName){
+function addGeopointMarker(latitude, longitude, timestamp, displayName){
     var latLng = new google.maps.LatLng(latitude,longitude);
     var titleDate = new Date( parseFloat(timestamp) );
-//    var titleDateString = titleDate.toUTCString();
-    var titleDateString = titleDate.toLocaleString();
-//    alert( titleDateString+" - lat: "+latitude+'long: '+longitude);
-    geopointMarkers.push( new google.maps.Marker({
-        position: latLng,
-        map: map,
-        title: displayName+' ('+titleDateString+')'
-    }));
+    var titleDateString = titleDate.toLocaleDateString();
+    addGeopointMarkerGeneric("singlePoint", latLng, null, displayName, titleDateString);        
 }
 
-/* function addGeopointMarker(geoPoint, userId, displayName){
-    var color = getColorOfUser(userId);
-    var userGeopointLabelClassName = "geoPointLabel_" + userId;
-    createUserLabelClass( userGeopointLabelClassName, color);
-    var myIcon = pinSymbolUserId( color );
-    var latLng = new google.maps.LatLng(geoPoint.latitude, geoPoint.longitude);
+function addGeopointMarkerGeneric(type, latLng, userId, displayName, labelText){
+    var className;
+    var color;
+    var labelContent;
+    // userId
+    if(userId){
+        color = getColorOfUser(userId);
+        className = "geoPointLabel_" + userId;
+    }
+    // label content
+    if(labelText){
+        labelContent = labelText;
+    }
+    // type
+    if(type){
+        if(type === "singlePoint"){
+            color = "5656AA";
+            className = type;
+        }
+    }
+    // marker class
+    createMarkerClass(className, color);
+    // icon
+    var myIcon = pinSymbolUserId(color);
+    // create marker 
     var geopointMarker = new MarkerWithLabel({
         position: latLng,
         map: map,
-//        draggable: true,
-//        raiseOnDrag: true,
-        labelContent: displayName,
+        labelContent: labelContent,
         labelAnchor: latLng,
-        labelClass: userGeopointLabelClassName,
+        labelClass: className,
         labelInBackground: false,
         icon: myIcon
     });
-    geopointMarkers.push({ userId: userId,
-                           displayName: displayName,
-                           marker: geopointMarker });
-}   */
+    geopointMarkers.push({  type: type,
+                            userId: userId,
+                            displayName: displayName,
+                            labelText: labelText,
+                            marker: geopointMarker });
+}
 
 function pathMouseOver(event, pathId, userId, displayName){
     var color = getColorOfUser(userId);
     var userLabelClassName = "label_" + userId;
-    createUserLabelClass( userLabelClassName, color);
+    createMarkerClass( userLabelClassName, color);
     var myIcon = pinSymbolUserId( color );
     var tooltipMarker = new MarkerWithLabel({
         position: event.latLng,
@@ -551,6 +568,21 @@ function pathClick(event, pathId, userId, displayName){
     infoWindow.setContent(contentString);
     infoWindow.setPosition(event.latLng);
     infoWindow.open(map);
+}
+
+function circlePath(cx, cy, r){
+    return 'M '+cx+' '+cy+' m -'+r+', 0 a '+r+','+r+' 0 1,0 '+(r*2)+',0 a '+r+','+r+' 0 1,0 -'+(r*2)+',0';
+}
+
+function pathIcon(color) {
+    return {
+        path: circlePath(0,0,0.5),
+        fillColor: color,
+        fillOpacity: 1,
+        strokeColor: color,
+        strokeWeight: 2,
+        scale: 2
+    };
 }
 
 function pinSymbolUserId(color) {

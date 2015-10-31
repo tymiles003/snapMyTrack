@@ -3,6 +3,7 @@ var userSettings = {
     mapTypeId: 'roadmap',
     tracksToShow: 'unlimited'
 };
+var settingsAtPopinLaunch;
 
 //      mapTypeId: google.maps.MapTypeId.ROADMAP,
 //      mapTypeId: google.maps.MapTypeId.SATELLITE,
@@ -18,6 +19,7 @@ function mapTypeOnChange(evt){
 
 function tracksToShowOnChange(evt){
     if($('#tracksToShowSelect').val() !== userSettings.tracksToShow){
+        userSettings.tracksToShow = $('#tracksToShowSelect').val();
         showGeodataReloadSpinner();
         getGeoDataFromServer(signedInUserId, userAccountType, accessTokenFromUrl, $('#tracksToShowSelect').val());
     }
@@ -26,6 +28,12 @@ function tracksToShowOnChange(evt){
 function toggleSettings(evt){
     hidePopInsButOne('settingsPopin');
     if($('#settingsPopin').hasClass('isInvisible')){
+        // remember settings
+        settingsAtPopinLaunch={
+            userId: userSettings.userId,
+            mapTypeId: userSettings.mapTypeId,
+            tracksToShow: userSettings.tracksToShow
+        };
         // Update DIV from userSettings
         $('#mapTypeSelect').val(userSettings.mapTypeId);
         $('#tracksToShowSelect').val(userSettings.tracksToShow);
@@ -34,24 +42,21 @@ function toggleSettings(evt){
     }
     else{
         $('#settingsPopin').addClass('isInvisible');
-        if( $('#mapTypeSelect').val() !== userSettings.mapTypeId
-            || $('#tracksToShowSelect').val() !== userSettings.tracksToShow ){
-            var geoDataOutdated;
+        if( $('#mapTypeSelect').val() !== settingsAtPopinLaunch.mapTypeId
+            || $('#tracksToShowSelect').val() !== settingsAtPopinLaunch.tracksToShow ){
             userSettings.accountType = userAccountType;
             userSettings.userId = signedInUserId;
-            userSettings.mapTypeId = $('#mapTypeSelect').val();
-            if($('#tracksToShowSelect').val() !== userSettings.tracksToShow){
-                geoDataOutdated=true;
-            }
-            userSettings.tracksToShow = $('#tracksToShowSelect').val();
-            changeMapType( userSettings.mapTypeId );
-            sendUserSettingsToServer( userSettings.userId, userSettings.accountType,
-                                      userSettings.mapTypeId, userSettings.tracksToShow );
-            // reload geo data
-            if(geoDataOutdated){
+            if($('#tracksToShowSelect').val() !== settingsAtPopinLaunch.tracksToShow){
+                userSettings.tracksToShow = $('#tracksToShowSelect').val();
                 showGeodataReloadSpinner();
                 getGeoDataFromServer(signedInUserId, userAccountType, accessTokenFromUrl, userSettings.tracksToShow);
             }
+            if( $('#mapTypeSelect').val() !== settingsAtPopinLaunch.mapTypeId ){
+                userSettings.mapTypeId = $('#mapTypeSelect').val();
+                changeMapType( userSettings.mapTypeId );
+            }
+            sendUserSettingsToServer( userSettings.userId, userSettings.accountType,
+                                      userSettings.mapTypeId, userSettings.tracksToShow );
         }
     }
 }
@@ -98,7 +103,9 @@ function sendUserSettingsToServer(userId, accountType, mapTypeId, tracksToShow) 
         var messageText = currentText + ' ------------> ' + 'Error: '+err;
         $("#messageArea").text(messageText);
       });
-    var messageText = 'Send -> MapTypeId: '+mapTypeId;
+    var messageText = 'Send ->'
+                        + '\n' + 'mapTypeId:    ' + mapTypeId
+                        + '\n' + 'tracksToShow: ' + tracksToShow;
     $("#messageArea").text(messageText);
     if(isDevelopment_mode){
         showMessageLog(true);

@@ -52,20 +52,29 @@
 	<div id='publishPopin' class='popin publishPopin boxShadowPopover isInvisible'>
         <div id="publishCloseBtn" class="buttonPublishClose"></div>
         <div class="popinLongtextBig">We will send an email with a link.</div>
+        <div class="popinLongtextVerySmall">Not a SnapMyTrack user? ... they can also see your shared track.</div>
         <div>
             <input id="publishEmailInput" class="emailInput publishInput" placeholder="Email">
         </div>
-        <div class="popinLongtextBig">For how long to publish?</div>
+        <div class="popinLongtextBig">How long to publish?</div>
         <select id="publishPeriodSelect" class="mySelect">
-            <option value="snap" selected>Snap (Display Once)</option>
+            <option value="snap" selected>Snap (Show Once)</option>
             <option value="oneHour">One Hour</option>
             <option value="oneDay">One Day</option>
             <option value="oneWeek">One Week</option>
             <option value="oneMonth">One Month</option>
             <option value="unlimited">Unlimited</option>
         </select>
+        <div class="popinLongtextBig">Which tracks to publish?</div>
+        <select id="publishTrackSelect" class="mySelect">
+            <option value="latestTrack">Latest track</option>
+            <option value="oneHour">Last hour</option>
+            <option value="oneDay">Today</option>
+            <option value="oneWeek">This Week</option>
+            <option value="oneMonth">This Month</option>
+            <option value="unlimited">All tracks</option>
+        </select>
         <div id="publishSend" class="publishSend">Send</div>
-        <div class="popinLongtextVerySmall">Not a SnapMyTrack user? ... they can also see your shared track.</div>
 	</div>
 	<!-- settings popin -->
 	<div id='settingsPopin' class='popin popinUserSetting boxShadowPopover isInvisible'>
@@ -80,7 +89,7 @@
             </select>
             <div id="tracksToShow" class="popinLabel tracksToShow">Tracks to show:</div>
             <select id="tracksToShowSelect" class="mySelect">
-<!--                <option value="latestTrack">Latest track</option>    -->
+                <option value="latestTrack">Latest track</option>
                 <option value="oneHour">Last hour</option>
                 <option value="oneDay">Today</option>
                 <option value="oneWeek">This Week</option>
