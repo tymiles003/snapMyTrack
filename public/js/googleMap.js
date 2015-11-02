@@ -331,20 +331,28 @@ function addUserPath( userCoordinates, isCurrentTrack, userId, displayName){
     else{
         trackColor = getRandomColor();
     }
-    var iconSeq = [{ icon: pathIcon(trackColor),
-                    offset: '100%',
-                    strokeColor: "#000000",
-                    strokeOpacity :1,
-                    repeat: "6px"
-    }];
-    var userPath = new google.maps.Polyline({
+    
+    var polyline = {
         path: userCoordinates,
         geodesic: false,
         strokeColor: trackColor,
-        strokeOpacity: 0.60,
-        strokeWeight: 1.75,
-        icons: iconSeq
-    });
+        strokeOpacity: 1.00,
+        strokeWeight: 2.50
+    };
+    
+    // make all paths but the current 'dotted'
+    if(!isCurrentTrack){
+        polyline.strokeOpacity = 0.60;
+        polyline.strokeWeight = 1.75;
+        polyline.icons = [{ icon: pathIcon(trackColor),
+                            offset: '100%',
+                            strokeColor: "#000000",
+                            strokeOpacity :1,
+                            repeat: "6px"
+                        }];
+    }
+
+    var userPath = new google.maps.Polyline(polyline);
     userPath.setMap(map);
     ( function(){
         addListener(userPath, 'click', userId, displayName); 

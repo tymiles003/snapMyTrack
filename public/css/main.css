@@ -1,4 +1,5 @@
 body{
+    background-color:#363636;
     color:#BFBFBF;
     margin:0;
     padding:0;
@@ -68,14 +69,14 @@ body{
     left: 0.75em;
     width: 0.50em;
     height: 0.50em;
-    background: url('../icon/icon_gear_settings.png');
+    background: url('../icon/svg/cycle.svg');
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }
 .signInSpinner{
     width: 4em;
     height: 4em;
-    background: url('../icon/icon_gear_settings.png');
+    background: url('../icon/svg/cycle.svg');
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }
@@ -155,7 +156,7 @@ body{
 .buttonPublishClose{
     width: 2em;
     height: 2em;
-    background: url('../icon/icon_close.png');
+    background-image: url(../icon/svg/circle-with-cross.svg);
     background-repeat: no-repeat;
     background-size: 100% 100%;
     float: right;
@@ -168,12 +169,20 @@ body{
     margin-top: 0.3em;
 }
 .publishIconBright{
-    background: url('../icon/icon_publish.png');
+/*    mask: url('../icon/svg/share.svg');
+    mask-image: url('../icon/svg/share.svg');
+    -webkit-mask-image: url('../icon/svg/share.svg');
+    background-color:#FFFFFF;    */
+    background-image: url('../icon/svg/share.svg');
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }
 .publishIconDark{
-    background: url('../icon/icon_publish_dark.png');
+/*    mask: url('../icon/svg/share.svg');
+    mask-image: url('../icon/svg/share.svg');
+    -webkit-mask-image: url('../icon/svg/share.svg');
+    background-color:#363636;   */
+    background-image: url('../icon/svg/share_dark.svg');
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }
@@ -222,12 +231,12 @@ body{
     margin-top:0.3em;
 }
 .settingsIconBright{
-    background: url('../icon/icon_gear_settings.png');
+    background: url('../icon/svg/cog.svg');
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }
 .settingsIconDark{
-    background: url('../icon/icon_gear_settings_dark.png');
+    background: url('../icon/svg/cog_dark.svg');
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }
@@ -265,7 +274,7 @@ body{
 .buttonUserAccountClose{
     width: 2em;
     height: 2em;
-    background: url('../icon/icon_close.png');
+    background: url('../icon/svg/circle-with-cross.svg');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     float: right;
@@ -275,7 +284,7 @@ body{
 .buttonUserSettingsClose{
     width: 2em;
     height: 2em;
-    background: url('../icon/icon_close.png');
+    background: url('../icon/svg/circle-with-cross.svg');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     float: right;
@@ -283,7 +292,7 @@ body{
 .buttonPasswordForgottenClose{
     width: 2em;
     height: 2em;
-    background: url('../icon/icon_close.png');
+    background: url('../icon/svg/circle-with-cross.svg');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     float: right;
@@ -784,16 +793,16 @@ body{
 }
 
 @keyframes spin {
-    from { transform:rotate(0deg); }
-    to { transform:rotate(360deg); }
+    from { transform:rotate(360deg); }
+    to { transform:rotate(0deg); }
 }
 @-moz-keyframes spin {
-    from { -moz-transform: rotate(0deg); }
-    to { -moz-transform: rotate(360deg); }
+    from { -moz-transform: rotate(360deg); }
+    to { -moz-transform: rotate(0deg); }
 }
 @-webkit-keyframes spin {
-    from { -webkit-transform: rotate(0deg); }
-    to { -webkit-transform: rotate(360deg); }
+    from { -webkit-transform: rotate(360deg); }
+    to { -webkit-transform: rotate(0deg); }
 }
 
 .pulser{

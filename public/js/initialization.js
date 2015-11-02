@@ -496,15 +496,15 @@ function fillLogInUserFrame( userId, displayName, imageUrl ){
             image.classList.add('userPictureSmall');
             heading.appendChild(image);
             heading.onclick = userAccountClick;
-            if(document.getElementById('userDisplayName')){
-                document.getElementById('userDisplayName').style.visibility='hidden';
-            }
             document.getElementById('loginUser').appendChild(heading);
+        }
+        if(document.getElementById('userDisplayName')){
+            document.getElementById('userDisplayName').style.visibility='hidden';
+            $('#userDisplayName').addClass('isInvisible');
         }
     }
     else if(displayName){
         if(document.getElementById('userImage')){
-//            document.getElementById('userImage').style.visibility='gone';
             $('#userImage').addClass('isInvisible');
         }
         if(!document.getElementById('userDisplayName')){
@@ -523,6 +523,7 @@ function fillLogInUserFrame( userId, displayName, imageUrl ){
         }
         else{
             document.getElementById('userDisplayName').style.visibility='';
+            $('#userDisplayName').removeClass('isInvisible');
             $('#userDisplayName').text(displayName);
         }
     }
