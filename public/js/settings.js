@@ -80,6 +80,11 @@ function getUserSettingsFromServer(userId, accountType, doUpdateMap, accessToken
             var tracksToShow;
             getGeoDataFromServer(userId, accountType, accessToken, userSettings.tracksToShow);
         }
+    })
+    .fail( function(xhr, statusText, err){
+        var currentText = $("#messageArea").text();
+        var messageText = currentText + ' ------------> ' + 'Error (/usersettings, GET): '+err;
+        $("#messageArea").text(messageText);
     });
 }
 
@@ -100,7 +105,7 @@ function sendUserSettingsToServer(userId, accountType, mapTypeId, tracksToShow) 
       })
       .fail(function(xhr, statusText, err){
         var currentText = $("#messageArea").text();
-        var messageText = currentText + ' ------------> ' + 'Error: '+err;
+        var messageText = currentText + ' ------------> ' + 'Error (/usersettings, POST): '+err;
         $("#messageArea").text(messageText);
       });
     var messageText = 'Send ->'
