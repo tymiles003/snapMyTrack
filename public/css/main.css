@@ -53,7 +53,7 @@ body{
     z-index: 2510;
     height: 0.50em;
     top: 0.92em;
-    left: 7.50em;
+    left: 7.00em;
     font-size: 250%;
 }
 .signInOauthText{
@@ -139,7 +139,7 @@ body{
     background-color: #363636;
 }
 .appTitle{
-    font-size: 250%;
+    font-size: 225%;
     margin-top: 0.75em;
 }
 .titleBar{
@@ -149,9 +149,9 @@ body{
     font-size: 135%;
     padding: 1.5em;
     height: 25.0em;
-    width: 23.0em;
+    width: 16.5em;
     top: calc( 50vh - ( (25.0em)/2 ) );
-    left: calc( 50vw - ( (23.0em)/2 ) );
+    left: calc( 50vw - ( (16.5em)/2 ) );
 }
 .buttonPublishClose{
     width: 2em;
@@ -190,7 +190,7 @@ body{
     margin-top:0.5em;
 }
 .publishSend{
-    width: 12.4em;
+    width: 10.4em;
     background: #ffc93b;
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -203,7 +203,7 @@ body{
     text-align: center;
     border: 1px solid #ffc93b;
     border-radius: 2.5px;
-    margin-top: 2.0em;
+    margin-top: 0.85em;
     margin-bottom: 0.3em;
 }
 .userAccountLogout{
@@ -303,9 +303,9 @@ body{
     margin-top:1.00em;
 }
 .authorizeWithFacebookBtn{
-    width: 20.3em;
+    width: 18.3em;
     height: 3.20em;
-    margin-left: 0.34em;
+    margin-left: 0.39em;
     background: url('../icon/signIn/facebookSignIn.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -317,7 +317,7 @@ body{
     transition: background-color 0.3s ease-in, color 0.3s ease-in;
 } */
 .authorizeWithGoogleBtn{
-    width: 21.2em;
+    width: 19.1em;
     height: 4.00em;
     margin-left: 0;
     background: url('../icon/signIn/btn_google+_signin_dark_normal_web.png');
@@ -331,7 +331,7 @@ body{
     transition: background-color 0.3s ease-in, color 0.3s ease-in;
 } */
 .authorizeWithWindowsBtn{
-    width: 20.25em;
+    width: 18.25em;
     height: 3.20em;
     margin-left: 0.345em;
     margin-bottom: 0.35em;
@@ -364,7 +364,7 @@ body{
     color: #FFFFFF;
 }
 .authorizeWithMailPassword{
-    width: 13.82em;
+    width: 12.40em;
     height: 1.35em;
     background: #ffc93b;
     background-repeat: no-repeat;
@@ -381,7 +381,7 @@ body{
     border-radius: 2.5px;
 }
 .passwordFrame{
-    width: 19.20em;
+    width: 18.30em;
     background: #c1c1c1;
     margin-left: 0.34em;
     margin-top: 0.3em;
@@ -391,6 +391,19 @@ body{
 }
 .emailInput, .passwordInput{
     width: 12.29em;
+    font-size: 150%;
+    margin-bottom: 0.3em;
+    margin-right: 0;
+    padding-top: 0.3em;
+    padding-bottom: 0.45em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: center;
+    border: 1px solid #FFFFFF;
+    border-radius: 4.5px;
+}
+.emailInputPopin{
+    width: 10.50em;
     font-size: 150%;
     margin-bottom: 0.3em;
     margin-right: 0;

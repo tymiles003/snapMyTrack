@@ -63,9 +63,9 @@ function getSize(latitudes, longitudes) {
   var size = {};
 
   // latitude
-  size.width = latitudes[latitudes.length-1] - latitudes[0];
+  size.height = latitudes[latitudes.length-1] - latitudes[0];
   // longitude
-  size.height = longitudes[longitudes.length-1] - longitudes[0];
+  size.width = longitudes[longitudes.length-1] - longitudes[0];
 
   return size;
 }

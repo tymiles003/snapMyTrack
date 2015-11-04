@@ -9,7 +9,7 @@ var infoWindow;
 var userColor=[];
 var colorPalette=[
       {name:"Aquamarine", code:"#7FFFD4"},
-      {name:"Coral", code:"#FF7F50"},
+      {name:"DarkViolet", code:"#9400D3"},
       {name:"CornflowerBlue", code:"#6495ED"},
       {name:"Gold", code:"#FFD700"},
       {name:"GoldenRod", code:"#DAA520"},
@@ -24,10 +24,10 @@ var colorCurrentTrackBright = {name:"Tomato", code:"#FF6347"};
 var colorCurrentTrackDark = {name:"Tomato", code:"#FF6347"};
 var currentCenter;
 
-function displayGeopointsOnMap(geoPoints, currentPosition, mapTypeId){
+function displayGeopointsOnMap(geoPoints, currentPosition, mapTypeId, tracksToShow){
     var geoInfo = getGeoInfo(geoPoints);
     var latlng = new google.maps.LatLng(geoInfo.centerPoint.lat, geoInfo.centerPoint.lng);
-    var zoomRaw = Math.floor(1000*geoInfo.size.width+geoInfo.size.height);
+    var zoomRaw = Math.floor(1000*(geoInfo.size.width+geoInfo.size.height));
     var mapZoom = mapZoomDefault;
     if(zoomRaw < 3){
         mapZoom = 18;
@@ -41,20 +41,11 @@ function displayGeopointsOnMap(geoPoints, currentPosition, mapTypeId){
     else if(zoomRaw < 6){
         mapZoom = 15;
     }
-    else if(zoomRaw < 8){
+    else if(zoomRaw < 18){
         mapZoom = 14;
     }
-    else if(zoomRaw < 10){
-        mapZoom = 14;
-    }
-    else if(zoomRaw < 15){
+    else if(zoomRaw < 75){
         mapZoom = 13;
-    }
-    else if(zoomRaw < 25){
-        mapZoom = 13;
-    }
-    else if(zoomRaw < 50){
-        mapZoom = 12;
     }
     else if(zoomRaw < 200){
         mapZoom = 10;
@@ -62,19 +53,19 @@ function displayGeopointsOnMap(geoPoints, currentPosition, mapTypeId){
     else{
         mapZoom = 9;
     }
-    renderMap(latlng, currentPosition, geoPoints, mapZoom, mapTypeId);
+    renderMap(latlng, currentPosition, geoPoints, mapZoom, mapTypeId, tracksToShow);
 }
 
-function updateGoogleMap( geoPoints, mapTypeId ){
+function updateGoogleMap( geoPoints, mapTypeId, tracksToShow ){
     if(geoPoints.length>0){
-        displayGeopointsOnMap(geoPoints, null, mapTypeId);
+        displayGeopointsOnMap(geoPoints, null, mapTypeId, tracksToShow);
         setTimeout(function() { setCurrentLocationOnMap(); }, 10);
     }
     else{
         navigator.geolocation.getCurrentPosition(
             function(position) {
                 var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                renderMap(latlng, position, geoPoints, mapZoomDefault, mapTypeId);
+                renderMap(latlng, position, geoPoints, mapZoomDefault, mapTypeId, tracksToShow);
             },
             function(err){
                 if (err.code == 1) {
@@ -348,7 +339,7 @@ function addUserPath( userCoordinates, isCurrentTrack, userId, displayName){
                             offset: '100%',
                             strokeColor: "#000000",
                             strokeOpacity :1,
-                            repeat: "6px"
+                            repeat: "8px"
                         }];
     }
 
@@ -365,11 +356,12 @@ function addUserPath( userCoordinates, isCurrentTrack, userId, displayName){
     }
 }
 
-function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId){
+function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId, tracksToShow){
     currentCenter = center;
     if(map){
         // remove all tracks but the currently recording track
-        resetMap();        
+        resetMap();
+        map.setZoom(mapZoom);
     }
     else{
         var myOptions = {
@@ -588,7 +580,7 @@ function pathIcon(color) {
         fillColor: color,
         fillOpacity: 1,
         strokeColor: color,
-        strokeWeight: 2,
+        strokeWeight: 4,
         scale: 2
     };
 }

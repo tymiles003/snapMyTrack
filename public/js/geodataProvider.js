@@ -79,7 +79,7 @@ function getGeoDataFromServer(userId, accountType, accessToken, tracksToShow) {
                     +'&accessToken='+accessToken
                     +'&tracksToShow='+tracksToShow, function( data ) {
             if (userIsSignedIn){   // user signed out while loading geo data
-                updateGoogleMap(data.geoPoints, userSettings.mapTypeId);
+                updateGoogleMap(data.geoPoints, userSettings.mapTypeId, tracksToShow);
                 setTimeout(function(){
                     hideSignInSpinner();
                     hideGeodataReloadSpinner();

@@ -291,19 +291,7 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
             $("#trackLocationStatus").removeClass("statusOffDark");
             $("#trackLocationStatus").addClass("pulser");
             if( 'watchPosition' in navigator.geolocation && !watchGeolocationNotSupported){    // i.e. Firefox on Android
-                if(!trackingWatchId){
-                    trackingWatchId = navigator.geolocation.watchPosition(function(position){
-                        // success
-//                        alert("sendLoc via 'watchPosition' API");
-                        sendLocation(position);
-                    }, function(err){
-                        // error    
-                        console.log("watchPosition has failed: ",err);
-                    }, { enableHighAccuracy: true,     // options
-                         timeout: 3000,
-                         maximumAge: 2000                        
-                    });
-                }
+                startWatchPosition();
             }
             else{
 //                alert("browser does not support 'watchPosition' API");
@@ -317,6 +305,46 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
         else{
             return;    // periodic tracking has been switched off
         }
+    }
+}
+
+function scheduleWatchPosition(rescheduleSeconds){
+    setTimeout( function(){
+        if(navigator.onLine){
+            startWatchPosition();
+        }
+        else{
+            scheduleWatchPosition();
+        }
+    }
+    , rescheduleSeconds);
+}
+
+function startWatchPosition(){
+    if(!trackingWatchId){
+        trackingWatchId = navigator.geolocation.watchPosition(function(position){
+            // success
+    //        alert("sendLoc via 'watchPosition' API");
+            sendLocation(position);
+        }, function(err){
+            // error    
+            trackingWatchId=null;
+            console.log("watchPosition has failed: ",err.message + ', code: '+err.code);
+            switch(err.code) {
+                case err.TIMEOUT:{
+                    if(navigator.onLine){
+                        startWatchPosition();    
+                    }
+                    else{
+                        // try again in 15 seconds
+                        scheduleWatchPosition(15000);
+                    }
+                }
+            }
+        }, { enableHighAccuracy: false,     // options
+             timeout: 3000,
+             maximumAge: 60000                        
+        });
     }
 }
 
