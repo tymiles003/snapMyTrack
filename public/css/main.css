@@ -381,7 +381,7 @@ body{
     border-radius: 2.5px;
 }
 .passwordFrame{
-    width: 18.30em;
+    width: 17.30em;
     background: #c1c1c1;
     margin-left: 0.34em;
     margin-top: 0.3em;
@@ -390,7 +390,7 @@ body{
     border-radius: 2.5px;
 }
 .emailInput, .passwordInput{
-    width: 12.29em;
+    width: 11.10em;
     font-size: 150%;
     margin-bottom: 0.3em;
     margin-right: 0;
@@ -429,7 +429,7 @@ body{
     border-radius: 4.5px;
 }
 .passwordSend{
-    width: 12.4em;
+    width: 11.10em;
     background: #ffc93b;
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -493,7 +493,7 @@ body{
     border-radius: 4.5px;
 }
 .userInputSmall{
-    width: 12.00em;
+    width: 10.35em;
     font-size: 135%;
     margin-bottom: 0.3em;
     margin-right: 0;
@@ -663,7 +663,7 @@ body{
     padding: 1.5em;
     height: 14em;
     width: 15em;
-    top: 3.0em;
+    top: 3.75em;
     left: calc( 100vw - ( 20.0em ) );
 }
 .popinLongtext{
@@ -695,9 +695,9 @@ body{
     z-index: 2700;
     font-size: 135%;
     padding: 1.5em;
-    height: 17.0em;
+    height: 15.0em;
     width: 10.0em;
-    top: calc( 50vh - ( (17.0em)/2 ) );
+    top: calc( 50vh - ( (15.0em)/2 ) );
     left: calc( 50vw - ( (10.0em)/2 ) );
 }
 .userAccountDisplayName{
@@ -733,16 +733,16 @@ body{
 }
 .popinPasswordForgotten{
     padding: 1.5em;
-    height: 20em;
-    width: 16em;
-    top: calc( 50vh - ( (20em)/2 ) );
-    left: calc( 50vw - ( (16em)/2 ) );
+    height: 17em;
+    width: 14em;
+    top: calc( 50vh - ( (17em)/2 ) );
+    left: calc( 50vw - ( (14em)/2 ) );
 }
 .passwordForgottenEmail{
     margin-top:1.0em;
 }
 .passwordForgottenSendBtn{
-    width: 9.5em;
+    width: 10.27em;
     background: #ffc93b;
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -755,7 +755,7 @@ body{
     text-align: center;
     border: 1px solid #ffc93b;
     border-radius: 2.5px;
-    margin-top:1.0em;
+    margin-top:2.0em;
 }
 .popinMessageLog{
     font-size:175%;

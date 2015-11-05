@@ -27,7 +27,7 @@ var currentCenter;
 function displayGeopointsOnMap(geoPoints, currentPosition, mapTypeId, tracksToShow){
     var geoInfo = getGeoInfo(geoPoints);
     var latlng = new google.maps.LatLng(geoInfo.centerPoint.lat, geoInfo.centerPoint.lng);
-    var zoomRaw = Math.floor(1000*(geoInfo.size.width+geoInfo.size.height));
+/*    var zoomRaw = Math.floor(1000*(geoInfo.size.width+geoInfo.size.height));
     var mapZoom = mapZoomDefault;
     if(zoomRaw < 3){
         mapZoom = 18;
@@ -53,7 +53,8 @@ function displayGeopointsOnMap(geoPoints, currentPosition, mapTypeId, tracksToSh
     else{
         mapZoom = 9;
     }
-    renderMap(latlng, currentPosition, geoPoints, mapZoom, mapTypeId, tracksToShow);
+    renderMap(latlng, currentPosition, geoPoints, mapZoom, mapTypeId, tracksToShow); */
+    renderMap(latlng, currentPosition, geoPoints, mapTypeId, tracksToShow);
 }
 
 function updateGoogleMap( geoPoints, mapTypeId, tracksToShow ){
@@ -65,7 +66,7 @@ function updateGoogleMap( geoPoints, mapTypeId, tracksToShow ){
         navigator.geolocation.getCurrentPosition(
             function(position) {
                 var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                renderMap(latlng, position, geoPoints, mapZoomDefault, mapTypeId, tracksToShow);
+                renderMap(latlng, position, geoPoints, mapTypeId, tracksToShow);
             },
             function(err){
                 if (err.code == 1) {
@@ -356,17 +357,17 @@ function addUserPath( userCoordinates, isCurrentTrack, userId, displayName){
     }
 }
 
-function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId, tracksToShow){
+function renderMap(center, currentPosition, geoPoints, mapTypeId, tracksToShow){
     currentCenter = center;
     if(map){
         // remove all tracks but the currently recording track
         resetMap();
-        map.setZoom(mapZoom);
+//        map.setZoom(mapZoomDefault);
     }
     else{
         var myOptions = {
-                zoom: mapZoom,
                 center: center,
+//                zoom: mapZoomDefault,
                 mapTypeControl: false,
                 zoomControl: true,
                 scaleControl: true,
@@ -425,6 +426,20 @@ function renderMap(center, currentPosition, geoPoints, mapZoom, mapTypeId, track
 
     if(currentPosition){
         updateCurrentLocationOnMap(currentPosition);
+    }
+
+    if(geoPoints.length>0){
+        var mapBounds = new google.maps.LatLngBounds();
+        for(var j=0, len_j=geoPoints.length; j<len_j; j++){
+            mapBounds.extend(new google.maps.LatLng(geoPoints[j].latitude, geoPoints[j].longitude));
+        }
+    //    map.setCenter(mapBounds.getCenter());
+    //    map.panToBounds(mapBounds);
+        map.fitBounds(mapBounds);
+    }
+    else if (currentPosition){
+        map.setCenter(new google.maps.LatLng(currentPosition.coords.latitude, currentPosition.coords.longitude));
+        map.setZoom(mapZoomDefault);
     }
 
     infoWindow = new google.maps.InfoWindow();
