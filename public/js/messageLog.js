@@ -4,13 +4,19 @@ function toggleMessageLog(){
     }
     else{
         $('#messageLogPopin').addClass('isInvisible');
+//        $('#messageAreaCloseBtn').addClass('isInvisible');
     }
 }
 
-function showMessageLog( isToastMode ){
+function toggleMessageLogSignIn(){
+    toggleMessageLog();
+    launchSignInPage();
+}
+
+function showMessageLog( isToastMode, signInAtClose ){
     if($('#messageLogPopin').hasClass('isInvisible')){
-        $('#messageLogPopin').removeClass('isInvisible');
         if(isToastMode){
+            $('#messageAreaCloseBtn').addClass('isInvisible');
             setTimeout(function(){
                     $('#messageLogPopin').animate({opacity:0.01}, 1250, function(){
                             $('#messageLogPopin').addClass('isInvisible');
@@ -20,6 +26,17 @@ function showMessageLog( isToastMode ){
                 },
                 1000 );
         }
+        else{
+            if(signInAtClose){
+                $('#messageAreaGotoSingInScreenBtn').removeClass('isInvisible');
+                $('#messageAreaCloseBtn').addClass('isInvisible');
+            }
+            else{
+                $('#messageAreaCloseBtn').removeClass('isInvisible');
+                $('#messageAreaGotoSingInScreenBtn').addClass('isInvisible');
+            }
+        }
+        $('#messageLogPopin').removeClass('isInvisible');
     }
 }
 

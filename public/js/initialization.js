@@ -24,6 +24,8 @@ $('#passwordForgottenSendBtn').click(sendPasswordForgottenEmail);
 $('#publishBtn').click(togglePublish);
 $('#publishSend').click(publish);
 $('#publishCloseBtn').click(togglePublish);
+$('#messageAreaCloseBtn').click(toggleMessageLog);
+$('#messageAreaGotoSingInScreenBtn').click(toggleMessageLogSignIn);
 $('#trackLocation').click(sendLocationPeriodically);
 $('#trackLocationStatus').click(sendLocationPeriodically);
 $('#authorizeWithMailPasswordBtn').click(passwordLoginButtonClick);
@@ -988,10 +990,14 @@ function serverLoginCallback(response){
         if(response.status === 'connected'){
             serverLogInSuccessfull( response.data );     // response.date = 'appUser'
         }
+        else if ( response.data.access_token_expired ){
+            hideSignInSpinner();
+            $("#messageArea").text("Published track has expired. Contact your friend to publish more tracks for you.");
+            showMessageLog(false, true);
+        }
         else{
             hideSignInSpinner();
-            var messageText = 'Sign-In has failed, check user Id and password';
-            $("#messageArea").text(messageText);
+            $("#messageArea").text('Sign-In has failed, check user Id and password');
             showMessageLog(true);
         }
     }

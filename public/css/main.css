@@ -189,6 +189,24 @@ body{
 .publishInput{
     margin-top:0.5em;
 }
+.messageAreaClose{
+    width: 7.0em;
+    background: #ffc93b;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    color:#ffffff;
+    font-size: 150%;
+    padding-top: 0.3em;
+    padding-bottom: 0.30em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: center;
+    border: 1px solid #ffc93b;
+    border-radius: 2.5px;
+    margin-left: 0.25em;
+    margin-top: 0.25em;
+    margin-bottom: 0.3em;
+}
 .publishSend{
     width: 10.4em;
     background: #ffc93b;
@@ -759,10 +777,10 @@ body{
 }
 .popinMessageLog{
     font-size:175%;
-    height: 8em;
-    width: 14em;
-    top: calc( 50vh - ( 8em / 2 ) );
-    left: calc( 50vw - ( 14em / 2 ) );
+    height: 7.50em;
+    width: 13em;
+    top: calc( 50vh - ( 7.50em / 2 ) );
+    left: calc( 50vw - ( 13em / 2 ) );
 }
 .messageArea{
     padding-left: 0.45em;

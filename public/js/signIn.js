@@ -7,6 +7,13 @@ function togglePasswordForgotten(){
     }
 }
 
+function launchSignInPage(){
+	var params = window.location.href.split('?');
+	if(params && params[0] && params[0].length>0){
+        window.location = params[0];
+	}
+}
+
 function sendLogonDataToServer(accountType, userId, password, accessToken, callback) {
     // account types:
     //   - FACEBOOK
@@ -21,26 +28,28 @@ function sendLogonDataToServer(accountType, userId, password, accessToken, callb
                        }
     )
     .done(function(response){
-/*        var messageText = response.success;
-        if(response.data && response.data.length>0){
-          messageText += '\n' + JSON.stringify(response.data);
-        }
-        $("#messageArea").text(messageText);   */
         callback(response);
     })
     .fail(function(xhr, statusText, err){
+        var errorProcessed;
+        if(xhr.responseJSON){
+            if(xhr.responseJSON.status==='auth_failed'){
+                if(xhr.responseJSON.data.access_token_expired){
+                    callback({ status: 'requestFailed',
+                               data: xhr.responseJSON.data 
+                    });
+                    return;
+                }
+            }
+        }
         var currentText = $("#messageArea").text();
         var messageText = currentText + ' ------------> ' + 'Error: ' + err;
         $("#messageArea").text(messageText);
         callback({ status: 'requestFailed',
                    data: messageText 
-        });
+        });            
     });
     var messageText = 'Send -> Account Type: ' + accountType + ' , UserId: ' + userId + ' , Password: xxxxxx';
-/*    $("#messageArea").text(messageText);
-      if(isDevelopment_mode){
-        showMessageLog(true);
-    }    */
 }
 
 function sendUserChangeDataToServer(accountType, userId, password, displayName, userPicture, pictureUrl, serverUserChangeCallback ){
