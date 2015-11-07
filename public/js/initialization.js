@@ -1,6 +1,7 @@
 // initialization
 
 var isDevelopment_mode=false;   // add some dev. info ( success/error messages )
+var useGeoWatch=false;
 var trackingIsActive=false;
 var serverLoginRunning=false;
 var serverLoginUserId;   // user for which latest login request has been sent to server (currently only needed to debugging)
@@ -26,6 +27,7 @@ $('#publishSend').click(publish);
 $('#publishCloseBtn').click(togglePublish);
 $('#messageAreaCloseBtn').click(toggleMessageLog);
 $('#messageAreaGotoSingInScreenBtn').click(toggleMessageLogSignIn);
+$('#messageAreaGotoSingInCloseScreenBtn').click(toggleMessageLogSignIn);
 $('#trackLocation').click(sendLocationPeriodically);
 $('#trackLocationStatus').click(sendLocationPeriodically);
 $('#authorizeWithMailPasswordBtn').click(passwordLoginButtonClick);
@@ -258,9 +260,11 @@ function initializeUi(event, accountType, userId){     // get user settings and 
 
 function sendLocationPeriodically(event, doNotTogglePeriodicSend){
     var frequencySeconds = 2;   // send every 'frequencySeconds' seconds
+
+    // check if sign-in via access token (and w/o oAuth)
     if(!signedInUserId){
-        $("#messageArea").text('Add "User Id" for tracking.\nThe user id can be any sequence of characters.');
-        showMessageLog(true);
+        $("#messageArea").text("Sign in to record and publish tracks (Facebook, Google, Microsoft or Email).");
+        showMessageLog(false, false, true);
         return;
     }
     else{
@@ -268,6 +272,7 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
     }
 
     if(trackingIsActive && !doNotTogglePeriodicSend){
+        // turn off tracking
         trackingIsActive = false;
         // turn off watching geolocation
         if(trackingWatchId){
@@ -286,17 +291,17 @@ function sendLocationPeriodically(event, doNotTogglePeriodicSend){
     }
     else{
         if(trackingIsActive || (!doNotTogglePeriodicSend&&!trackingIsActive) ){
+            // turn on tracking
             trackingIsActive = true;
             startGeoDataUploadWorker(1000);   // uploaded data later, if internet connection is lost
             $("#trackLocationStatus").addClass("statusOn");
             $("#trackLocationStatus").removeClass("statusOff");
             $("#trackLocationStatus").removeClass("statusOffDark");
             $("#trackLocationStatus").addClass("pulser");
-            if( 'watchPosition' in navigator.geolocation && !watchGeolocationNotSupported){    // i.e. Firefox on Android
+            if( useGeoWatch && 'watchPosition' in navigator.geolocation && !watchGeolocationNotSupported){    // i.e. Firefox on Android
                 startWatchPosition();
             }
             else{
-//                alert("browser does not support 'watchPosition' API");
                 sendLocation();
                 setTimeout( function(){
                     sendLocationPeriodically( null, true );
@@ -386,7 +391,7 @@ function sendLocation(position){
         }
         else{
             $("#messageArea").text('provide a unique user Id');
-            showMessageLog(true);
+            showMessageLog(true, false, false);
         }
     }
 }
@@ -595,6 +600,7 @@ function serverLogInSuccessfull(appUser){
     
     if(appUser.accountType === "PASSWORD"){
         var displayName = appUser.displayName;
+        // derive display name from user id (email)
         if( !displayName || displayName.length === 0){
             displayName = getFormattedUserDisplayName(appUser.userId);
         }
@@ -993,12 +999,12 @@ function serverLoginCallback(response){
         else if ( response.data.access_token_expired ){
             hideSignInSpinner();
             $("#messageArea").text("Published track has expired. Contact your friend to publish more tracks for you.");
-            showMessageLog(false, true);
+            showMessageLog(false, true, false);
         }
         else{
             hideSignInSpinner();
             $("#messageArea").text('Sign-In has failed, check user Id and password');
-            showMessageLog(true);
+            showMessageLog(true, false, false);
         }
     }
 }
@@ -1125,7 +1131,8 @@ $(document).ready(function() {
 
     // check if browser supports geo-location
     if(!navigator.geolocation) {
-        alert('Your browser does not support geo-location dervices. You will not be able to records tracks.');
+        $("#messageArea").text('Browser has no geo-location services. You can look at tracks but cannot record new tracks.');
+        showMessageLog(false, false, false);
     }
     else{
         if( isRunningOnAndroidDevice() && isRunningOnFirefoxBrowser() ){

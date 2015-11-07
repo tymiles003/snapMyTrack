@@ -13,7 +13,7 @@ function toggleMessageLogSignIn(){
     launchSignInPage();
 }
 
-function showMessageLog( isToastMode, signInAtClose ){
+function showMessageLog( isToastMode, signInAtClose, registerAtClose){
     if($('#messageLogPopin').hasClass('isInvisible')){
         if(isToastMode){
             $('#messageAreaCloseBtn').addClass('isInvisible');
@@ -27,13 +27,19 @@ function showMessageLog( isToastMode, signInAtClose ){
                 1000 );
         }
         else{
+            $('#messageAreaCloseBtn').addClass('isInvisible');
+            $('#messageAreaGotoSingInScreenBtn').addClass('isInvisible');
+            $('#messageAreaGotoSingInCloseScreenBtn').addClass('isInvisible');
+            // show close button (with 'sign-in' at click)
             if(signInAtClose){
-                $('#messageAreaGotoSingInScreenBtn').removeClass('isInvisible');
-                $('#messageAreaCloseBtn').addClass('isInvisible');
+                $('#messageAreaGotoSingInCloseScreenBtn').removeClass('isInvisible');
             }
             else{
                 $('#messageAreaCloseBtn').removeClass('isInvisible');
-                $('#messageAreaGotoSingInScreenBtn').addClass('isInvisible');
+            }
+            // show sign-in button
+            if(registerAtClose){
+                $('#messageAreaGotoSingInScreenBtn').removeClass('isInvisible');
             }
         }
         $('#messageLogPopin').removeClass('isInvisible');

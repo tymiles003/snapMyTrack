@@ -140,7 +140,7 @@ body{
 }
 .appTitle{
     font-size: 225%;
-    margin-top: 0.75em;
+    margin-top: 0.50em;
 }
 .titleBar{
     width: calc( 100vw - 1.5em );
@@ -195,11 +195,11 @@ body{
     background-repeat: no-repeat;
     background-size: 100% 100%;
     color:#ffffff;
-    font-size: 150%;
-    padding-top: 0.3em;
-    padding-bottom: 0.30em;
-    padding-left: 0.15em;
-    padding-right: 0.15em;
+    font-size: 125%;
+    padding-top: 0.20em;
+    padding-bottom: 0.20em;
+    padding-left: 0.10em;
+    padding-right: 0.10em;
     text-align: center;
     border: 1px solid #ffc93b;
     border-radius: 2.5px;
@@ -378,7 +378,7 @@ body{
 .authorizeWithWindowsBtnLabel{
     display: table-cell;
     vertical-align: middle;
-    font-size: 145%;
+    font-size: 130%;
     color: #FFFFFF;
 }
 .authorizeWithMailPassword{
@@ -413,7 +413,7 @@ body{
     margin-bottom: 0.3em;
     margin-right: 0;
     padding-top: 0.3em;
-    padding-bottom: 0.45em;
+    padding-bottom: 0.3em;
     padding-left: 0.15em;
     padding-right: 0.15em;
     text-align: center;
@@ -462,7 +462,7 @@ body{
     border-radius: 2.5px;
 }
 .passwordForgottenFrame{
-    margin-left: 8.0em;
+    margin-left: 7.0em;
     padding-bottom: 0.5em;
 }
 .buttonPaddingTop{
@@ -611,9 +611,9 @@ body{
 }
 .homePageLink{
     position: absolute;
+    z-index:950;
     bottom:1.8em;
     right:4.0em;
-    z-index:1100;
     font-size: 85%;
 }
 .homeFooter{
@@ -776,17 +776,19 @@ body{
     margin-top:2.0em;
 }
 .popinMessageLog{
-    font-size:175%;
-    height: 7.50em;
-    width: 13em;
-    top: calc( 50vh - ( 7.50em / 2 ) );
-    left: calc( 50vw - ( 13em / 2 ) );
+    position: absolute; 
+    z-index: 4000;
+    font-size: 160%;
+    height: 11.00em;
+    width: 10.5em;
+    top: calc( 45vh - ( 11.0em / 2 ) );
+    left: calc( 50vw - ( 10.5em / 2 ) );
 }
 .messageArea{
-    padding-left: 0.45em;
-    padding-right: 0.45em;
-    padding-top: 0.45em;
-    padding-bottom: 0.45em;
+    padding-left: 0.35em;
+    padding-right: 0.35em;
+    padding-top: 0.35em;
+    padding-bottom: 0.35em;
     white-space: pre-line;
 }
 .isInvisible{

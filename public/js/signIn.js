@@ -10,7 +10,9 @@ function togglePasswordForgotten(){
 function launchSignInPage(){
 	var params = window.location.href.split('?');
 	if(params && params[0] && params[0].length>0){
-        window.location = params[0];
+        var location = params[0];
+//        location += '?accessTokenUnregisteredUser='+accessTokenFromUrl;
+        window.location = location;
 	}
 }
 
