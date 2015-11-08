@@ -1,7 +1,7 @@
 function togglePublish(){
     // check if sign-in via access token (and w/o oAuth)
     if(!signedInUserId){
-        $("#messageArea").text("Sign in to record and publish tracks (Facebook, Google, Microsoft or Email).");
+        $("#messageArea").text("Sign in to record or publish tracks (Facebook, Google, Microsoft or Email).");
         showMessageLog(false, false, true);
         return;
     }
