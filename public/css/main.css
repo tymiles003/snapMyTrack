@@ -591,12 +591,12 @@ body{
     transition: background-color 0.3s ease-in, color 0.3s ease-in;
 }
 .mySelect{
-    font-size: 175%;
+    font-size: 150%;
     margin-top: 0.3em;
-    margin-bottom: 0.3em;
-    margin-right: 0.3em;
-    padding-top: 0.3em;
-    padding-bottom: 0.45em;
+    margin-bottom: 0.2em;
+    margin-right: 0.2em;
+    padding-top: 0.2em;
+    padding-bottom: 0.3em;
     padding-left: 0.15em;
     padding-right: 0.15em;
     text-align: center;
@@ -688,8 +688,8 @@ body{
     margin-top:0.5em;
 }
 .popinLongtextBig{
-    margin-top:0.5em;
-    font-size: 135%;
+    margin-top:0.25em;
+    font-size: 125%;
 }
 .popinLongtextVerySmall{
     margin-top:0.5em;
