@@ -27,33 +27,6 @@ var currentCenter;
 function displayGeopointsOnMap(geoPoints, currentPosition, mapTypeId, tracksToShow){
     var geoInfo = getGeoInfo(geoPoints);
     var latlng = new google.maps.LatLng(geoInfo.centerPoint.lat, geoInfo.centerPoint.lng);
-/*    var zoomRaw = Math.floor(1000*(geoInfo.size.width+geoInfo.size.height));
-    var mapZoom = mapZoomDefault;
-    if(zoomRaw < 3){
-        mapZoom = 18;
-    }
-    if(zoomRaw < 4){
-        mapZoom = 17;
-    }
-    if(zoomRaw < 5){
-        mapZoom = 16;
-    }
-    else if(zoomRaw < 6){
-        mapZoom = 15;
-    }
-    else if(zoomRaw < 18){
-        mapZoom = 14;
-    }
-    else if(zoomRaw < 75){
-        mapZoom = 13;
-    }
-    else if(zoomRaw < 200){
-        mapZoom = 10;
-    }
-    else{
-        mapZoom = 9;
-    }
-    renderMap(latlng, currentPosition, geoPoints, mapZoom, mapTypeId, tracksToShow); */
     renderMap(latlng, currentPosition, geoPoints, mapTypeId, tracksToShow);
 }
 
@@ -503,7 +476,13 @@ function createMarkerClass(className, color){
 function addGeopointMarker(latitude, longitude, timestamp, displayName){
     var latLng = new google.maps.LatLng(latitude,longitude);
     var titleDate = new Date( parseFloat(timestamp) );
-    var titleDateString = titleDate.toLocaleDateString();
+    var titleDateString;
+    if(userSettings.tracksToShow === 'latestLocation'){
+        titleDateString = titleDate.toLocaleString();
+    }
+    else{
+        titleDateString = titleDate.toLocaleDateString();
+    }
     addGeopointMarkerGeneric("singlePoint", latLng, null, displayName, titleDateString);        
 }
 

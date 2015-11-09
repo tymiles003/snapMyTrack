@@ -14,14 +14,15 @@ $('#mapTypeSelect').change(mapTypeOnChange);
 $('#tracksToShowSelect').change(tracksToShowOnChange);
 
 function mapTypeOnChange(evt){
-    changeMapType( $('#mapTypeSelect').val() );
+    userSettings.mapTypeId = $('#mapTypeSelect').val();
+    changeMapType( userSettings.mapTypeId );
 }
 
 function tracksToShowOnChange(evt){
     if($('#tracksToShowSelect').val() !== userSettings.tracksToShow){
         userSettings.tracksToShow = $('#tracksToShowSelect').val();
         showGeodataReloadSpinner();
-        getGeoDataFromServer(signedInUserId, userAccountType, accessTokenFromUrl, $('#tracksToShowSelect').val());
+        getGeoDataFromServer(signedInUserId, userAccountType, accessTokenFromUrl, userSettings.tracksToShow);
     }
 }
 
@@ -42,22 +43,25 @@ function toggleSettings(evt){
     }
     else{
         $('#settingsPopin').addClass('isInvisible');
+        // update user settings (server)
         if( $('#mapTypeSelect').val() !== settingsAtPopinLaunch.mapTypeId
             || $('#tracksToShowSelect').val() !== settingsAtPopinLaunch.tracksToShow ){
             userSettings.accountType = userAccountType;
             userSettings.userId = signedInUserId;
-            if($('#tracksToShowSelect').val() !== settingsAtPopinLaunch.tracksToShow){
-                userSettings.tracksToShow = $('#tracksToShowSelect').val();
-                showGeodataReloadSpinner();
-                getGeoDataFromServer(signedInUserId, userAccountType, accessTokenFromUrl, userSettings.tracksToShow);
-            }
-            if( $('#mapTypeSelect').val() !== settingsAtPopinLaunch.mapTypeId ){
-                userSettings.mapTypeId = $('#mapTypeSelect').val();
-                changeMapType( userSettings.mapTypeId );
-            }
             sendUserSettingsToServer( userSettings.userId, userSettings.accountType,
                                       userSettings.mapTypeId, userSettings.tracksToShow );
         }
+        // update UI (popin closed while update was running)
+/*        if(userSettings.tracksToShow !== $('#tracksToShowSelect').val()){
+            userSettings.tracksToShow = $('#tracksToShowSelect').val();
+            showGeodataReloadSpinner();
+            getGeoDataFromServer(signedInUserId, userAccountType, accessTokenFromUrl, userSettings.tracksToShow);
+        }
+        if( userSettings.mapTypeId !== settingsAtPopinLaunch.mapTypeId ){
+            if( userSettings.mapTypeId !== $('#mapTypeSelect').val() ){
+                changeMapType( userSettings.mapTypeId );
+            }
+        }   */
     }
 }
 
