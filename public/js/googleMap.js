@@ -2,6 +2,7 @@ var map;
 var mapIsReadyToUse;
 var userPaths=[];
 var currentTrack;
+var currentBounds;
 var geopointMarkers=[];
 var tooltipMarkers=[];
 var markerCurrentPosition;
@@ -23,6 +24,8 @@ var mapZoomDefault = 15;
 var colorCurrentTrackBright = {name:"Tomato", code:"#FF6347"};
 var colorCurrentTrackDark = {name:"Tomato", code:"#FF6347"};
 var currentCenter;
+// var initialLoadCenter;
+// var initialLoadZoom;
 
 function displayGeopointsOnMap(geoPoints, currentPosition, mapTypeId, tracksToShow){
     var geoInfo = getGeoInfo(geoPoints);
@@ -62,6 +65,8 @@ function hideMap(){
 
 function resetMap(){
     if(map){
+//        var initialLoadCenter = null;
+//        var initialLoadZoom = null;
         // markers
         for(var i=0,len_i=tooltipMarkers.length;i<len_i;i++){
             tooltipMarkers[i].marker.setMap(null);
@@ -197,9 +202,10 @@ function updateCurrentLocationOnMap(currentPosition){
 }
 
 function adoptMapAfterResize(){
-    if(currentCenter){
-        setMapCenter(null, currentCenter);
-    }
+//    if( !initialLoadZoom || initialLoadZoom === map.getZoom() ){
+//        && ( !initialLoadCenter || getDistanceFromLatLonInKmGapi(initialLoadCenter, map.getCenter()) < 0.25 )){
+        map.fitBounds(currentBounds);
+//    }
 }
 
 function setMapCenter(position, latLng){
@@ -229,7 +235,7 @@ function updateCurrentTrackOnMap(currentPosition){
             lat: parseFloat(currentPosition.coords.latitude),
             lng: parseFloat(currentPosition.coords.longitude)
           });
-        addUserPath(coordinates, true, signedInUserId, userDisplayName);
+        addUserPath(coordinates, null, null, true, signedInUserId, userDisplayName);
     }
     else{
         // add point to track
@@ -241,6 +247,13 @@ function updateCurrentTrackOnMap(currentPosition){
 function addPointToTrack(currentTrack, currentlatlng){
     var path = currentTrack.getPath();
     path.push(currentlatlng);
+}
+
+function getDistanceFromLatLonInKmGapi(currentGeoPoint, previousGeoPoint) {
+    return getDistanceFromLatLonInKm( { latitude: currentGeoPoint.lat(), 
+                                        longitude: currentGeoPoint.lng() },
+                                      { latitude: previousGeoPoint.lat(),
+                                        longitude: previousGeoPoint.lng() } );
 }
 
 function getDistanceFromLatLonInKm(currentGeoPoint, previousGeoPoint) {
@@ -288,8 +301,12 @@ function isTrackEnd(previousGeoPoint, currentGeoPoint){
     return trackEnd;
 }
 
-function addUserPath( userCoordinates, isCurrentTrack, userId, displayName){
+function addUserPath( userCoordinates, trackInfo, trackId, isCurrentTrack, userId, displayName){
     var trackColor;
+    var displayText = displayName;
+    if(!displayText){
+        displayText = "Track "+trackId ();
+    }
     if(isCurrentTrack){
         trackColor = getCurrentTrackColor();
     }
@@ -320,7 +337,7 @@ function addUserPath( userCoordinates, isCurrentTrack, userId, displayName){
     var userPath = new google.maps.Polyline(polyline);
     userPath.setMap(map);
     ( function(){
-        addListener(userPath, 'click', userId, displayName); 
+        addListener(userPath, 'click', trackId, userId, displayText); 
     })();
     if(isCurrentTrack){
         currentTrack = userPath;
@@ -357,15 +374,19 @@ function renderMap(center, currentPosition, geoPoints, mapTypeId, tracksToShow){
 
     // listener for click event of map (not called, for clicks on shapes)
     map.addListener('click', mapClick);
-    
+
+    // listener for click event of map (not called, for clicks on shapes)
+    // google.maps.event.addListener(map, 'dblclick', function(){ mapZoomed(); });
+
     userPaths=[];
     var previousGeoPoint;
     var userCoordinates=[];
     if(geoPoints && geoPoints.length>0){
         for(var i=0,len=geoPoints.length;i<len;i++){
-            if( isTrackEnd(previousGeoPoint, geoPoints[i]) ){
+            if( previousGeoPoint && previousGeoPoint.trackId !== geoPoints[i].trackId ){
+//            if( isTrackEnd(previousGeoPoint, geoPoints[i]) ){
                 if(userCoordinates.length > 1){
-                    addUserPath(userCoordinates, false, geoPoints[i].userId, geoPoints[i].displayName);
+                    addUserPath(userCoordinates, geoPoints[i].trackInfo, geoPoints[i].trackId, false, geoPoints[i].userId, geoPoints[i].displayName);
                 }
                 else if (userCoordinates.length === 1){
                     // only one point, display a marker instead of a path
@@ -383,7 +404,7 @@ function renderMap(center, currentPosition, geoPoints, mapTypeId, tracksToShow){
             // always make sure to display last track
             if( i+1 === geoPoints.length ){
                 if(userCoordinates.length > 1){
-                    addUserPath(userCoordinates, false, geoPoints[i].userId, geoPoints[i].displayName);
+                    addUserPath(userCoordinates, geoPoints[i].trackInfo, geoPoints[i].trackId, false, geoPoints[i].userId, geoPoints[i].displayName);
                 }
                 else if (userCoordinates.length === 1){
                     // only one point, display a marker instead of a path
@@ -402,13 +423,24 @@ function renderMap(center, currentPosition, geoPoints, mapTypeId, tracksToShow){
     }
 
     if(geoPoints.length>0){
-        var mapBounds = new google.maps.LatLngBounds();
+        currentBounds = new google.maps.LatLngBounds();
         for(var j=0, len_j=geoPoints.length; j<len_j; j++){
-            mapBounds.extend(new google.maps.LatLng(geoPoints[j].latitude, geoPoints[j].longitude));
+            currentBounds.extend(new google.maps.LatLng(geoPoints[j].latitude, geoPoints[j].longitude));
         }
-    //    map.setCenter(mapBounds.getCenter());
-    //    map.panToBounds(mapBounds);
-        map.fitBounds(mapBounds);
+//        if( (!initialLoadZoom || initialLoadZoom === map.getZoom() )
+//            && ( !initialLoadCenter )){   // || getDistanceFromLatLonInKmGapi(initialLoadCenter, map.getCenter()) < 0.25 )){
+            map.fitBounds(currentBounds);
+//        }
+/*        if(!initialLoadCenter || !initialLoadZoom){
+            setTimeout( function(){
+                if(!initialLoadCenter){
+                    initialLoadCenter = map.getCenter();
+                }
+                if(!initialLoadZoom){
+                    initialLoadZoom = map.getZoom();
+                }
+            }, 0);
+        }   */
     }
     else if (currentPosition){
         map.setCenter(new google.maps.LatLng(currentPosition.coords.latitude, currentPosition.coords.longitude));
@@ -427,20 +459,20 @@ function renderMap(center, currentPosition, geoPoints, mapTypeId, tracksToShow){
     $("#GoogleMapsCanvas").removeClass('isInvisible');
 }
 
-function addListener( userPath, eventName, idx, userId, displayName){
+function addListener( userPath, eventName, idx, userId, displayText){
     if(eventName==='click'){
         userPath.addListener('click', function(event){ 
-            pathClick( event, idx, userId, displayName ); 
+            pathClick( event, idx, userId, displayText ); 
         });
     }
     else if(eventName==='mouseover'){
         userPath.addListener('mouseover', function(event){ 
-            pathMouseOver( event, idx, userId, displayName ); 
+            pathMouseOver( event, idx, userId, displayText ); 
         });
     }
     else if(eventName==='mouseout'){
         userPath.addListener('mouseout', function(event){ 
-            pathMouseOut( event, idx, userId, displayName ); 
+            pathMouseOut( event, idx, userId, displayText ); 
         });
     }
 }
@@ -557,8 +589,8 @@ function pathMouseOut(event, pathId, userId, displayName){
     }
 }
 
-function pathClick(event, pathId, userId, displayName){
-    contentString = '<div class="pathTooltip">'+displayName+'</div>';
+function pathClick(event, pathId, userId, displayText){
+    contentString = '<div class="pathTooltip">'+displayText+'</div>';
     infoWindow.setContent(contentString);
     infoWindow.setPosition(event.latLng);
     infoWindow.open(map);
