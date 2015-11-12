@@ -24,25 +24,38 @@ var mapZoomDefault = 15;
 var colorCurrentTrackBright = {name:"Tomato", code:"#FF6347"};
 var colorCurrentTrackDark = {name:"Tomato", code:"#FF6347"};
 var currentCenter;
+var currentTrackInfo;
 // var initialLoadCenter;
 // var initialLoadZoom;
 
-function displayGeopointsOnMap(geoPoints, currentPosition, mapTypeId, tracksToShow){
-    var geoInfo = getGeoInfo(geoPoints);
-    var latlng = new google.maps.LatLng(geoInfo.centerPoint.lat, geoInfo.centerPoint.lng);
-    renderMap(latlng, currentPosition, geoPoints, mapTypeId, tracksToShow);
+function getPictureUrlForUser(userId){
+    var pictureUrl;
+    if(currentTrackInfo){
+        for(var i=0, len_i=currentTrackInfo.appUser.length; i<len_i; i++){
+            if(currentTrackInfo.appUser[i].userId === userId){
+               pictureUrl = currentTrackInfo.appUser[i].pictureUrl; 
+            }
+        }        
+    }
+    return pictureUrl;
 }
 
-function updateGoogleMap( geoPoints, mapTypeId, tracksToShow ){
+function displayGeopointsOnMap(geoPoints, trackInfo, currentPosition, mapTypeId, tracksToShow){
+    var geoInfo = getGeoInfo(geoPoints);
+    var latlng = new google.maps.LatLng(geoInfo.centerPoint.lat, geoInfo.centerPoint.lng);
+    renderMap(latlng, currentPosition, geoPoints, trackInfo, mapTypeId, tracksToShow);
+}
+
+function updateGoogleMap( geoPoints, trackInfo, mapTypeId, tracksToShow ){
     if(geoPoints.length>0){
-        displayGeopointsOnMap(geoPoints, null, mapTypeId, tracksToShow);
+        displayGeopointsOnMap(geoPoints, trackInfo, null, mapTypeId, tracksToShow);
         setTimeout(function() { setCurrentLocationOnMap(); }, 10);
     }
     else{
         navigator.geolocation.getCurrentPosition(
             function(position) {
                 var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                renderMap(latlng, position, geoPoints, mapTypeId, tracksToShow);
+                renderMap(latlng, position, geoPoints, trackInfo, mapTypeId, tracksToShow);
             },
             function(err){
                 if (err.code == 1) {
@@ -189,11 +202,34 @@ function updateCurrentLocationOnMap(currentPosition){
     
     var currentlatlng = new google.maps.LatLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
     if (!markerCurrentPosition){
-        markerCurrentPosition = new google.maps.Marker({
-            position: currentlatlng,
-            map: map,
-            title: "You are here!"
-        });
+        var pictureUrl = getPictureUrlForUser(signedInUserId);
+        if(!pictureUrl){
+            pictureUrl = userPictureUrl;
+        }
+        if(pictureUrl){
+            var myIcon = {
+                url: pictureUrl,
+//                size: new google.maps.Size(20, 20),
+//                origin: new google.maps.Point(0, 0),
+//                anchor: new google.maps.Point(0, 20)
+                scaledSize: new google.maps.Size(32, 32)
+            };
+//            var myShape = 
+            markerCurrentPosition = new google.maps.Marker({
+                position: currentlatlng,
+                map: map,
+                title: "You are here!",
+                icon: myIcon,
+//                shape: myShape
+            });
+        }
+        else{
+            markerCurrentPosition = new google.maps.Marker({
+                position: currentlatlng,
+                map: map,
+                title: "You are here!"
+            });
+        }
     }
     else{
         markerCurrentPosition.setPosition(currentlatlng);
@@ -337,7 +373,7 @@ function addUserPath( userCoordinates, trackInfo, trackId, isCurrentTrack, userI
     var userPath = new google.maps.Polyline(polyline);
     userPath.setMap(map);
     ( function(){
-        addListener(userPath, 'click', trackId, userId, displayText); 
+        addCustomListener(userPath, 'click', trackId, userId, displayText); 
     })();
     if(isCurrentTrack){
         currentTrack = userPath;
@@ -347,8 +383,9 @@ function addUserPath( userCoordinates, trackInfo, trackId, isCurrentTrack, userI
     }
 }
 
-function renderMap(center, currentPosition, geoPoints, mapTypeId, tracksToShow){
+function renderMap(center, currentPosition, geoPoints, trackInfo, mapTypeId, tracksToShow){
     currentCenter = center;
+    currentTrackInfo = trackInfo;
     if(map){
         // remove all tracks but the currently recording track
         resetMap();
@@ -459,7 +496,7 @@ function renderMap(center, currentPosition, geoPoints, mapTypeId, tracksToShow){
     $("#GoogleMapsCanvas").removeClass('isInvisible');
 }
 
-function addListener( userPath, eventName, idx, userId, displayText){
+function addCustomListener( userPath, eventName, idx, userId, displayText){
     if(eventName==='click'){
         userPath.addListener('click', function(event){ 
             pathClick( event, idx, userId, displayText ); 
@@ -591,6 +628,10 @@ function pathMouseOut(event, pathId, userId, displayName){
 
 function pathClick(event, pathId, userId, displayText){
     contentString = '<div class="pathTooltip">'+displayText+'</div>';
+    var pictureUrl = getPictureUrlForUser(userId);
+    if(pictureUrl){
+        contentString += '<img src="'+pictureUrl+'">';
+    }
     infoWindow.setContent(contentString);
     infoWindow.setPosition(event.latLng);
     infoWindow.open(map);

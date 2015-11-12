@@ -1,6 +1,6 @@
 // initialization
 
-var isDevelopment_mode=false;   // add some dev. info ( success/error messages )
+var isDevelopment_mode=true;   // add some dev. info ( success/error messages )
 var useGeoWatch=false;
 var trackingIsActive=false;
 var serverLoginRunning=false;
@@ -327,6 +327,14 @@ function scheduleWatchPosition(rescheduleSeconds){
     , rescheduleSeconds);
 }
 
+function getGeolocationOptions(){
+    // see https://developer.mozilla.org/en-US/docs/Web/API/PositionOptions
+    return { enableHighAccuracy: true,
+           timeout: Number.POSITIVE_INFINITY,
+           maximumAge: 0                        
+        };  
+}
+
 function startWatchPosition(){
     if(!trackingWatchId){
         trackingWatchId = navigator.geolocation.watchPosition(function(position){
@@ -348,10 +356,7 @@ function startWatchPosition(){
                     }
                 }
             }
-        }, { enableHighAccuracy: false,     // options
-             timeout: 3000,
-             maximumAge: 60000                        
-        });
+        }, getGeolocationOptions() );
     }
 }
 
@@ -374,7 +379,7 @@ function sendLocation(position){
             }
             else{
                 // depricated --> https needed, see https://goo.gl/rStTGz
-                navigator.geolocation.getCurrentPosition(function(position) {
+                navigator.geolocation.getCurrentPosition( function(position) {
                     // update current-location marker and center it
                     setMapCenter(position);
                     updateCurrentLocationOnMap(position);
@@ -386,7 +391,11 @@ function sendLocation(position){
                                         position.coords.latitude,
                                         position.coords.longitude,
                                         position.coords.speed);
-                });
+                },
+                function(err){
+                    console.log('Track recording -> getCurrentPosition has failed: ',err);
+                },
+                getGeolocationOptions() );
             }
         }
         else{
@@ -606,6 +615,12 @@ function serverLogInSuccessfull(appUser){
         }
         // update user admin data (display name, picture url)
         fillLogInUserFrame(appUser.userId, displayName, appUser.pictureUrl);
+    }
+    else{
+        if(userPictureUrl && !appUser.pictureUrl){
+            // save picture url on server (use it for Google maps markers)
+            sendUserChangeDataToServer(appUser.accountType, appUser.userId, null, appUser.displayName, null, userPictureUrl, oAuthUserPictureUrlChangeCallback);
+        }
     }
     // initial display of map
     showGeoData( null, appUser.accountType, appUser.userId );
@@ -1085,6 +1100,16 @@ function serverUserChangeCallback(accountType, userId, appUser){
     }
 }
 
+function oAuthUserPictureUrlChangeCallback(accountType, userId, appUser){
+    if(appUser){
+        // nothing to do here
+    }
+    else{
+        // update issues
+        // -> see message po-over
+    }
+}
+
 function passwordUserChange(){
     var accountType = 'PASSWORD';
     var userId = document.getElementById('emailInput').value;
@@ -1100,7 +1125,7 @@ function passwordUserChange(){
     }
     fillLogInUserFrame(userId, displayName, userPicture);
     serverLoginRunning = true;
-    sendUserChangeDataToServer(accountType, userId, password, displayName, userPicture, pictureUrl, serverUserChangeCallback );
+    sendUserChangeDataToServer(accountType, userId, password, displayName, userPicture, pictureUrl, serverUserChangeCallback);
     return false;    // stop event propagation
 }
 
