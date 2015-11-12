@@ -10,4 +10,4 @@ Development environment:
 - SecureShell (https://chrome.google.com/webstore/search/secure%20shell, SSH via browser) -> needed to set environment variable on OpenShift
 - GitHub (I am pushing to Github and OpenShift)
 
-Remark: IDEs Codenvy(not free/monthly limit 20GBH) and Nitrous (proxy support missing) are great, too ... if you can live with the 'limitations'.  
+Remark: IDEs Codenvy(not free/monthly limit 20GBH) and Nitrous (proxy support missing / they deleted my workspace after two weeks) are good, too ... if you can live with the 'limitations'.  
