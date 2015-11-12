@@ -340,7 +340,9 @@ function startWatchPosition(){
         trackingWatchId = navigator.geolocation.watchPosition(function(position){
             // success
     //        alert("sendLoc via 'watchPosition' API");
-            sendLocation(position);
+            if( positionQualityOk(position) ){
+                sendLocation(position);
+            }
         }, function(err){
             // error    
             trackingWatchId=null;
@@ -380,17 +382,19 @@ function sendLocation(position){
             else{
                 // depricated --> https needed, see https://goo.gl/rStTGz
                 navigator.geolocation.getCurrentPosition( function(position) {
-                    // update current-location marker and center it
-                    setMapCenter(position);
-                    updateCurrentLocationOnMap(position);
-                    // add new position to current track
-                    updateCurrentTrackOnMap(position);
-                    // send location to server
-                    sendGeoDataToServer(position.timestamp,
-                                        position.coords.accuracy,
-                                        position.coords.latitude,
-                                        position.coords.longitude,
-                                        position.coords.speed);
+                    if( positionQualityOk(position) ){
+                        // update current-location marker and center it
+                        setMapCenter(position);
+                        updateCurrentLocationOnMap(position);
+                        // add new position to current track
+                        updateCurrentTrackOnMap(position);
+                        // send location to server
+                        sendGeoDataToServer(position.timestamp,
+                                            position.coords.accuracy,
+                                            position.coords.latitude,
+                                            position.coords.longitude,
+                                            position.coords.speed);
+                    }
                 },
                 function(err){
                     console.log('Track recording -> getCurrentPosition has failed: ',err);

@@ -29,6 +29,15 @@ function removeUserParameter(param){
     return paramSupported;
 }
 
+function positionQualityOk(position){
+    if(position.accuracy<=250){     // location inside a 250 meter circle (radius), 95% significance level
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
 function getGeoInfo(geoPoints) {
 
   var latitudes=[];

@@ -67,7 +67,7 @@ function updateGoogleMap( geoPoints, trackInfo, mapTypeId, tracksToShow ){
                     return;
                 }
             },
-            { enableHighAccuracy: true}
+            getGeolocationOptions()
         );
     }
 }
