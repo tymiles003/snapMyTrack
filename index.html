@@ -31,14 +31,22 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <script src="//js.live.net/v5.0/wl.js"></script>
     <script type="text/javascript" src="public/js/lib/ua-parser.min.js"></script>
+    <script type="text/javascript" src="public/js/userAgentTools.js"></script>
+    <script type="text/javascript" src="public/js/uiHelper.js"></script>
+    <script type="text/javascript" src="public/js/signIn.js"></script>
+    <script type="text/javascript" src="public/js/publishHelper.js"></script>
+    <script type="text/javascript" src="public/js/messageLog.js"></script>
   </head>
   <body>
     <!-- messages popin -->
 	<div id='messageLogPopin' class='popin popinMessageLog boxShadowPopover isInvisible'>
         <div id="messageArea" class="messageArea"></div>
-        <div id="messageAreaCloseBtn" class="messageAreaClose isInvisible">Close</div>
+        <div id="messageAreaCloseBtn" class="messageAreaBtn isInvisible">Close</div>
         <div id="messageAreaGotoSingInCloseScreenBtn" class="messageAreaClose isInvisible">Close</div>
         <div id="messageAreaGotoSingInScreenBtn" class="messageAreaClose isInvisible">Sign In</div>
+        <div id="messageAreaRemoveSelectedTracksBtn" class="messageAreaBtn isInvisible">Remove Tracks</div>
+        <div id="messageAreaRemoveAccountBtn" class="messageAreaBtn isInvisible">Remove Account</div>
+        <div id="messageAreaCancelBtn" class="messageAreaBtn isInvisible">Cancel</div>
 	</div>
 	<!-- user account popin -->
 	<div id='userAccountPopin' class='popin userAccountPopin boxShadowPopover isInvisible'>
@@ -50,6 +58,7 @@
         <input id="userAccountChangeNameInput" class="userAccountChangeNameInput isInvisible" placeholder="Add a display name">
         <div id="userAccountAccountType" class="userAccountAccountType">account type</div>
         <div id="userAccountLogout" class="userAccountLogout">Sign Out</div>
+        <div id="userAccountRemove" class="userAccountRemove">Remove Account</div>
 	</div>
 	<!-- publish popin -->
 	<div id='publishPopin' class='popin publishPopin boxShadowPopover isInvisible'>
@@ -70,7 +79,8 @@
         </select>
         <div class="popinLongtextBig">Which tracks to publish?</div>
         <select id="publishTrackSelect" class="mySelect">
-            <option value="latestLocation">Latest Location</option>
+            <option value="selectedTracks">Selected tracks</option>
+            <option value="latestLocation">Latest location</option>
             <option value="latestTrack">Latest track</option>
             <option value="oneHour">Last hour</option>
             <option value="oneDay">Today</option>
@@ -101,6 +111,7 @@
                 <option value="oneMonth">This Month</option>
                 <option value="unlimited">All tracks</option>
             </select>
+            <div id="settingsTrackRemoveBtn" class="settingsTrackRemove">Remove Selected Tracks</div>
         </div>
 	</div>
 	<!-- password forgotten popin -->
@@ -211,22 +222,17 @@
 						   href="http://dsignmatters.com">
 						<img class="designMattersImage" src="public/icon/dsignmatters_icon_round_50.png">DsignMatters</a> , Germany 69190 Walldorf, Zum Brühl 33, Phone: +49-6227-890723, Email: <a class="mailLink" href='mailto://dsignmatters@outlook.com' tabindex=9000>info@dsignmatters.com</a>
 			</div>
-		<div class="footerLine">Last-Updated: November 13th 2015, 12:28 am</div>
+		<div class="footerLine">Last-Updated: November 15th 2015, 16:21 pm</div>
 		</div>
 	</div>
 
     <!-- initialization -->
-    <script type="text/javascript" src="public/js/userAgentTools.js"></script>
-    <script type="text/javascript" src="public/js/uiHelper.js"></script>
-    <script type="text/javascript" src="public/js/signIn.js"></script>
-    <script type="text/javascript" src="public/js/publishHelper.js"></script>
-    <script type="text/javascript" src="public/js/messageLog.js"></script>
     <script type="text/javascript" src="public/js/settings.js"></script>
     <script type="text/javascript" src="public/js/initialization.js"></script>
     <script type="text/javascript" src="public/js/geodataProvider.js"></script>
-    <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=googleLoaded"></script>
-    <script type="text/javascript" src="public/js/googleMap.js"></script>
+<!--    <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=googleLoaded"></script>  -->
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
     <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerwithlabel/src/markerwithlabel.js"></script>
+    <script type="text/javascript" src="public/js/googleMap.js"></script>
   </body>
 </html>

@@ -89,3 +89,7 @@ function getGeoDataFromServer(userId, accountType, accessToken, tracksToShow) {
         });
     }
 }
+
+function removeSelectedTracks(){
+    alert("Remove selected tracks: Under construction, will be added in a few days ... we aplogize");
+}

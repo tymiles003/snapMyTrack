@@ -35,10 +35,18 @@ $('body').click(resetPasswordLogin);
 $('#emailInput').click(function(){return false});    // stop propagation of click event to 'body'
 $('#passwordInput').click(function(){return false});    // stop propagation of click event to 'body'
 $('#userAccountLogout').click(logOut);
-$('#homePageLink').click(navigateToHomepagePage);
 $('#userAccountDisplayName').click(toggleDisplayName);
 $('#userAccountPicture').click(togglePictureUrl);
 $('#userAccountPopin').click(disableUserChange);
+$('#userAccountRemove').click(removeAccountClick);
+$('#homePageLink').click(navigateToHomepagePage);
+
+function removeAccountClick(){
+    setMessageLogText('Your SnapMyTrack account will get removed. All tracks will get deleted and published links will show "Account deleted by owner".');
+    hidePopInsButOne('messageLogPopin');
+    showMessageLogToConfirm(true, false);
+}
+
 $('#userAccountChangeNameInput').click(function(){return false});   // stop event propagation
 $('#userAccountChangePictureUrlInput').click(function(){return false});   // stop event propagation
 document.getElementById('passwordInput').onkeydown=passwordEnter;
@@ -93,18 +101,18 @@ function resizePage(){
 function hidePopInsButOne(doNotHideThisPopinId){
     // hide settings pop-in
     if( doNotHideThisPopinId !== 'settingsPopin'){
-//        document.getElementById('settingsPopin').style.visibility = 'hidden';
         $('#settingsPopin').addClass('isInvisible');
     }
     // hide publish pop-in
     if( doNotHideThisPopinId !== 'publishPopin'){
-//        document.getElementById('publishPopin').style.visibility = 'hidden';
         $('#publishPopin').addClass('isInvisible');
     }
     // hide user account pop-in
     if( doNotHideThisPopinId !== 'userAccountPopin'){//
-//        document.getElementById('userAccountPopin').style.visibility = 'hidden';
         $('#userAccountPopin').addClass('isInvisible');
+    }
+    if( doNotHideThisPopinId !== 'messageLogPopin'){//
+        $('#messageLogPopin').addClass('isInvisible');
     }
 }
 
@@ -413,7 +421,7 @@ function sendLocation(position){
 function initializeGoogle() {
     var apiKey = 'AIzaSyBi3qbsG6PCHqzgF9HtBS_ciAJMjufNbgY';
     gapi.client.setApiKey(apiKey);
-    googleInitDone = true;
+    googleInitDone = true;        
 }
 
 function getGoogleLoginStatus(callback, immediate){
@@ -598,7 +606,12 @@ function makeGoogleApiCall() {
 }
 
 function googelLoginButtonClick(event){
-    googleApiSignIn();
+    if( !googleInitDone ){
+        googleApiLoadAndSignIn();
+    }
+    else{
+        googleApiSignIn();
+    }
 }
 
 // server Log-In
@@ -805,19 +818,40 @@ function facebookApiLoadAndSignIn(){
     }
 }
 
-function googleLoaded(){
-    // oAuth Log-In
-    if( getUserParameter('accountType') === "GOOGLE" ){
-        // Google
-        googleApiSignIn();
+function googleApiLoadAndSignIn(){
+// src="https://apis.google.com/js/client.js?onload=googleLoaded"></script>  -->
+    if(!googleInitDone){
+        // show oAuth sign-in info/spinner
+        showSignInOauthInfo();
+        $.ajaxSetup({ cache: true });
+        $.getScript('https://apis.google.com/js/client:plusone.js?onload=googleApiSignIn', function(){
+//        $.getScript('//apis.google.com/js/client.js?onload=googleApiSignIn', function(){
+            googleApiSignIn();
+        });
+        $.ajaxSetup({ cache: true });
     }
 }
 
-function googleApiSignIn(){
-    if(!googleInitDone){
-        initializeGoogle();
+function googleApiSignIn( tryCounter ){
+    if(gapi.client){
+        if(!googleInitDone){
+            initializeGoogle();
+        }
+        getGoogleLoginStatus(handleGoogleAuthResult, true);
     }
-    getGoogleLoginStatus(handleGoogleAuthResult, true);
+    else{
+        if(!googleInitDone){
+            if(!tryCounter){
+                tryCounter=1;
+            }
+            if( tryCounter<3 ){
+                setTimeout( function(){
+                    googleApiSignIn( tryCounter );
+                },
+                1000);
+            }
+        }
+    }
 }
 
 function windowsLiveApiLoadAndSignIn(){
@@ -1017,7 +1051,8 @@ function serverLoginCallback(response){
         }
         else if ( response.data.access_token_expired ){
             hideSignInSpinner();
-            $("#messageArea").text("Published track has expired. Contact your friend to publish more tracks for you.");
+            setMessageLogText("Published track has expired. Contact your friend to publish more tracks for you.");
+//            $("#messageArea").text("Published track has expired. Contact your friend to publish more tracks for you.");
             showMessageLog(false, true, false);
         }
         else{
@@ -1183,7 +1218,7 @@ $(document).ready(function() {
     else if( getUserParameter('accountType') === "GOOGLE" ){
         // Google
         showSignInOauthInfo();
-        // -> for sign-in, see function 'googleLoaded'
+        googleApiLoadAndSignIn();
     }
 
     else{

@@ -12,6 +12,8 @@ var settingsAtPopinLaunch;
 
 $('#mapTypeSelect').change(mapTypeOnChange);
 $('#tracksToShowSelect').change(tracksToShowOnChange);
+$('#settingsTrackRemoveBtn').click(removeSelectedTracksClick);
+
 
 function mapTypeOnChange(evt){
     userSettings.mapTypeId = $('#mapTypeSelect').val();
@@ -24,6 +26,12 @@ function tracksToShowOnChange(evt){
         showGeodataReloadSpinner();
         getGeoDataFromServer(signedInUserId, userAccountType, accessTokenFromUrl, userSettings.tracksToShow);
     }
+}
+
+function removeSelectedTracksClick(){
+    setMessageLogText('All selected tracks will be removed from our servers.');
+    hidePopInsButOne('messageLogPopin');
+    showMessageLogToConfirm(false, true);
 }
 
 function toggleSettings(evt){

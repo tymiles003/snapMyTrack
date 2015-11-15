@@ -3,6 +3,10 @@ body{
     color:#BFBFBF;
     margin:0;
     padding:0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 .map{
     position: absolute; 
@@ -189,8 +193,26 @@ body{
 .publishInput{
     margin-top:0.5em;
 }
+.messageAreaBtn{
+    width: 10.0em;
+    background: #ffc93b;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    color:#ffffff;
+    font-size: 125%;
+    padding-top: 0.20em;
+    padding-bottom: 0.20em;
+    padding-left: 0.10em;
+    padding-right: 0.10em;
+    text-align: center;
+    border: 1px solid #ffc93b;
+    border-radius: 2.5px;
+    margin-left: 0.25em;
+    margin-top: 0.25em;
+    margin-bottom: 0.3em;
+}
 .messageAreaClose{
-    width: 7.0em;
+    width: 10.0em;
     background: #ffc93b;
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -229,8 +251,8 @@ body{
     background: #ffc93b;
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    color:#ffffff;
     font-size: 150%;
+    color:#ffffff;
     padding-top: 0.3em;
     padding-bottom: 0.30em;
     padding-left: 0.15em;
@@ -238,7 +260,45 @@ body{
     text-align: center;
     border: 1px solid #ffc93b;
     border-radius: 2.5px;
-    margin-top: 2.0em;
+    margin-top: 0.5em;
+    margin-bottom: 0.3em;
+}
+.userAccountRemove{
+    position: absolute;
+    right: 1.0em;
+    bottom: 0.5em;
+    width: 8.0em;
+    background: #363636;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    font-size: 70%;
+    color:#ffffff;
+    padding-top: 0.3em;
+    padding-bottom: 0.30em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: center;
+    border: 1px solid #646464;
+    border-radius: 2.5px;
+    margin-bottom: 0.3em;
+}
+.settingsTrackRemove{
+    position: absolute;
+    right: 1.0em;
+    bottom: 0.5em;
+    width: 13.0em;
+    background: #363636;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    font-size: 70%;
+    color:#ffffff;
+    padding-top: 0.3em;
+    padding-bottom: 0.30em;
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+    text-align: center;
+    border: 1px solid #646464;
+    border-radius: 2.5px;
     margin-bottom: 0.3em;
 }
 .buttonUserSettings{
@@ -778,11 +838,11 @@ body{
 .popinMessageLog{
     position: absolute; 
     z-index: 4000;
-    font-size: 160%;
-    height: 11.00em;
-    width: 10.5em;
-    top: calc( 45vh - ( 11.0em / 2 ) );
-    left: calc( 50vw - ( 10.5em / 2 ) );
+    height: 14.00em;
+    width: 15.00em;
+    font-size: 100%;
+    top: calc( 45vh - ( 14.0em / 2 ) );
+    left: calc( 50vw - ( 15.0em / 2 ) );
 }
 .messageArea{
     padding-left: 0.35em;
@@ -790,6 +850,12 @@ body{
     padding-top: 0.35em;
     padding-bottom: 0.35em;
     white-space: pre-line;
+}
+.messageTextFontLarge{
+    font-size: 110%;
+}
+.messageTextFontNormal{
+    font-size: 160%;
 }
 .isInvisible{
     display: none;

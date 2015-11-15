@@ -23,6 +23,8 @@ var colorPalette=[
 var mapZoomDefault = 15;
 var colorCurrentTrackBright = {name:"Tomato", code:"#FF6347"};
 var colorCurrentTrackDark = {name:"Tomato", code:"#FF6347"};
+var colorSelectedTrackBright = {name:"DeepPink", code:"#FF1493"};
+var colorSelectedTrackDark = {name:"DeepPink", code:"#FF1493"};
 var currentCenter;
 var currentTrackInfo;
 // var initialLoadCenter;
@@ -90,7 +92,7 @@ function resetMap(){
         }
         // paths
         for(var k=0,len_k=userPaths.length;k<len_k;k++){
-            userPaths[k].setMap(null);
+            userPaths[k].polyline.setMap(null);
         }
     }
     else{
@@ -99,7 +101,7 @@ function resetMap(){
     }
 }
 
-function getCurrentTrackColor(){
+function getTrackColorCurrent(){
     if(!map) return;
     if( isThemeDark( map.getMapTypeId() ) ){    
         col = colorCurrentTrackDark.code;
@@ -110,7 +112,18 @@ function getCurrentTrackColor(){
     return col;
 }
 
-function getRandomColor(){
+function getTrackColorSelected(){
+    if(!map) return;
+    if( isThemeDark( map.getMapTypeId() ) ){    
+        col = colorSelectedTrackDark.code;
+    }
+    else{
+        col = colorSelectedTrackBright.code;
+    }
+    return col;
+}
+
+function getNewColor(){
     var nextColor = colorPalette[userColor.length % colorPalette.length].code;    // Take care, there might be insufficient colors -> reuse them
     userColor.push({ userId: 'random'+userColor.length,
                      color: nextColor });
@@ -281,7 +294,7 @@ function updateCurrentTrackOnMap(currentPosition){
 }
 
 function addPointToTrack(currentTrack, currentlatlng){
-    var path = currentTrack.getPath();
+    var path = currentTrack.polyline.getPath();
     path.push(currentlatlng);
 }
 
@@ -337,20 +350,20 @@ function isTrackEnd(previousGeoPoint, currentGeoPoint){
     return trackEnd;
 }
 
-function addUserPath( userCoordinates, trackInfo, trackId, isCurrentTrack, userId, displayName){
+function addUserPath( userCoordinates, trackInfo, trackNumber, isCurrentTrack, userId, displayName){
     var trackColor;
     var displayText = displayName;
     if(!displayText){
-        displayText = "Track "+trackId ();
+        displayText = "Track "+trackNumber ();
     }
     if(isCurrentTrack){
-        trackColor = getCurrentTrackColor();
+        trackColor = getTrackColorCurrent();
     }
     else{
-        trackColor = getRandomColor();
+        trackColor = getNewColor();
     }
     
-    var polyline = {
+    var polylineOptions = {
         path: userCoordinates,
         geodesic: false,
         strokeColor: trackColor,
@@ -360,27 +373,54 @@ function addUserPath( userCoordinates, trackInfo, trackId, isCurrentTrack, userI
     
     // make all paths but the current 'dotted'
     if(!isCurrentTrack){
-        polyline.strokeOpacity = 0.60;
-        polyline.strokeWeight = 1.75;
-        polyline.icons = [{ icon: pathIcon(trackColor),
-                            offset: '100%',
-                            strokeColor: "#000000",
-                            strokeOpacity :1,
-                            repeat: "8px"
-                        }];
+        polylineOptions.strokeOpacity = 0.60;
+        polylineOptions.strokeWeight = 1.75;
+        polylineOptions.icons = getTrackIcons( trackColor, isCurrentTrack, false);
     }
 
-    var userPath = new google.maps.Polyline(polyline);
-    userPath.setMap(map);
+    var userPolyline = new google.maps.Polyline(polylineOptions);
+    userPolyline.setMap(map);
     ( function(){
-        addCustomListener(userPath, 'click', trackId, userId, displayText); 
+        addCustomListener(userPolyline, 'click', trackNumber, userId, displayText); 
     })();
     if(isCurrentTrack){
-        currentTrack = userPath;
+        currentTrack = { trackNumber: trackNumber,
+                         polyline: userPolyline,
+                         selected: false,
+                         trackColor: trackColor,
+                         userId: userId,
+                         displayName: displayName
+        };
     }
     else{
-        userPaths.push(userPath);
+        userPaths.push({ trackNumber: trackNumber,
+                         polyline: userPolyline,
+                         selected: false,
+                         trackColor: trackColor,
+                         userId: userId,
+                         displayName: displayName
+        });
     }
+}
+
+function getTrackIcons(trackColor, isCurrentTrack, isSelected){
+    var opt;
+    if(isCurrentTrack){
+        opt = []; 
+    }
+    else{
+        opt = [{ icon: pathIcon(trackColor),
+                 offset: '100%',
+                 strokeColor: "#000000",
+                 strokeOpacity :1,
+                 repeat: "10px"
+            }];
+        if(isSelected){
+            opt=[];
+//            opt.strokeColor=getTrackColorSelected();
+        }
+    }
+    return opt;
 }
 
 function renderMap(center, currentPosition, geoPoints, trackInfo, mapTypeId, tracksToShow){
@@ -420,10 +460,10 @@ function renderMap(center, currentPosition, geoPoints, trackInfo, mapTypeId, tra
     var userCoordinates=[];
     if(geoPoints && geoPoints.length>0){
         for(var i=0,len=geoPoints.length;i<len;i++){
-            if( previousGeoPoint && previousGeoPoint.trackId !== geoPoints[i].trackId ){
+            if( previousGeoPoint && previousGeoPoint.trackNumber !== geoPoints[i].trackNumber ){
 //            if( isTrackEnd(previousGeoPoint, geoPoints[i]) ){
                 if(userCoordinates.length > 1){
-                    addUserPath(userCoordinates, geoPoints[i].trackInfo, geoPoints[i].trackId, false, geoPoints[i].userId, geoPoints[i].displayName);
+                    addUserPath(userCoordinates, geoPoints[i].trackInfo, geoPoints[i].trackNumber, false, geoPoints[i].userId, geoPoints[i].displayName);
                 }
                 else if (userCoordinates.length === 1){
                     // only one point, display a marker instead of a path
@@ -441,7 +481,7 @@ function renderMap(center, currentPosition, geoPoints, trackInfo, mapTypeId, tra
             // always make sure to display last track
             if( i+1 === geoPoints.length ){
                 if(userCoordinates.length > 1){
-                    addUserPath(userCoordinates, geoPoints[i].trackInfo, geoPoints[i].trackId, false, geoPoints[i].userId, geoPoints[i].displayName);
+                    addUserPath(userCoordinates, geoPoints[i].trackInfo, geoPoints[i].trackNumber, false, geoPoints[i].userId, geoPoints[i].displayName);
                 }
                 else if (userCoordinates.length === 1){
                     // only one point, display a marker instead of a path
@@ -496,20 +536,20 @@ function renderMap(center, currentPosition, geoPoints, trackInfo, mapTypeId, tra
     $("#GoogleMapsCanvas").removeClass('isInvisible');
 }
 
-function addCustomListener( userPath, eventName, idx, userId, displayText){
+function addCustomListener( userPath, eventName, trackNumber, userId, displayText){
     if(eventName==='click'){
         userPath.addListener('click', function(event){ 
-            pathClick( event, idx, userId, displayText ); 
+            pathClick( event, trackNumber, userId, displayText ); 
         });
     }
     else if(eventName==='mouseover'){
         userPath.addListener('mouseover', function(event){ 
-            pathMouseOver( event, idx, userId, displayText ); 
+            pathMouseOver( event, trackNumber, userId, displayText ); 
         });
     }
     else if(eventName==='mouseout'){
         userPath.addListener('mouseout', function(event){ 
-            pathMouseOut( event, idx, userId, displayText ); 
+            pathMouseOut( event, trackNumber, userId, displayText ); 
         });
     }
 }
@@ -626,15 +666,52 @@ function pathMouseOut(event, pathId, userId, displayName){
     }
 }
 
-function pathClick(event, pathId, userId, displayText){
-    contentString = '<div class="pathTooltip">'+displayText+'</div>';
-    var pictureUrl = getPictureUrlForUser(userId);
-    if(pictureUrl){
-        contentString += '<img src="'+pictureUrl+'">';
+function pathClick(event, trackNumber, userId, displayText){
+    // set selected path
+    for(var i=0, len_i=userPaths.length; i<len_i;i++){
+        if(userPaths[i].trackNumber===trackNumber){
+            if(userPaths[i].selected){
+                userPaths[i].selected=false;
+                // change stroke/color
+                userPaths[i].polyline.setOptions({"strokeWeight": 2.5});
+                userPaths[i].polyline.setOptions({"strokeOpacity": 1.00});
+                userPaths[i].polyline.setOptions({"strokeColor": userPaths[i].trackColor});
+                userPaths[i].polyline.setOptions({"icons": getTrackIcons( userPaths[i].trackColor, false, false)});
+            }
+            else{
+                userPaths[i].selected=true;
+                // change stroke/color
+                userPaths[i].polyline.setOptions({"strokeWeight": 4.0});
+                userPaths[i].polyline.setOptions({"strokeOpacity": 1.00});
+                userPaths[i].polyline.setOptions({"strokeColor": getTrackColorSelected()});
+                userPaths[i].polyline.setOptions({"icons": getTrackIcons( getTrackColorSelected(), false, true)});
+            }
+        }
     }
-    infoWindow.setContent(contentString);
-    infoWindow.setPosition(event.latLng);
-    infoWindow.open(map);
+    // info window
+    if( tracksOfMultipleUsers() ){
+        contentString = '<div class="pathTooltip">'+displayText+'</div>';
+        var pictureUrl = getPictureUrlForUser(userId);
+        if(pictureUrl){
+            contentString += '<img src="'+pictureUrl+'">';
+        }
+        infoWindow.setContent(contentString);
+        infoWindow.setPosition(event.latLng);
+        infoWindow.open(map);
+    }
+}
+
+function tracksOfMultipleUsers(){
+    var uniqueUserId;
+    for(var j=0, len_j=userPaths.length; j<len_j;j++){
+        if(!uniqueUserId){
+            uniqueUserId=userPaths[j].userId;
+        }
+        else if(uniqueUserId !== userPaths[j].userId){
+            return true;
+        }
+    }
+    return false;    
 }
 
 function circlePath(cx, cy, r){

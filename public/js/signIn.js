@@ -16,6 +16,10 @@ function launchSignInPage(){
 	}
 }
 
+function removeAccount(){
+    alert("Remove account: Under construction, will be added in a few days ... we aplogize");
+}
+
 function sendLogonDataToServer(accountType, userId, password, accessToken, callback) {
     // account types:
     //   - FACEBOOK
