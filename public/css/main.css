@@ -73,14 +73,14 @@ body{
     left: 0.75em;
     width: 0.50em;
     height: 0.50em;
-    background: url('../icon/svg/cycle.svg');
+    background: url('../icon/svg/cog.svg');
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }
 .signInSpinner{
     width: 4em;
     height: 4em;
-    background: url('../icon/svg/cycle.svg');
+    background: url('../icon/svg/cog.svg');
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }

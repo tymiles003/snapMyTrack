@@ -10,8 +10,7 @@
         "body-parser":  "latest",
         "type-is":      "latest",
         "mongodb":      "latest",
-        "sqlite3":      "latest",
-        "http":         "latest",
+        "bluebird":     "latest",
         "sendgrid":     "latest"
 	},
 	"devDependencies": {

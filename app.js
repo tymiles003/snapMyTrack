@@ -51,10 +51,14 @@ postHandlerSignIn.registerHandlerRequestPasswordResetPost(app);
 postHandlerSignIn.registerHandlerUserUpdatePasswordPost(app);
 // update public data (user display name, picture url)
 postHandlerSignIn.registerHandlerUserUpdatePublicDataPost(app);
+// remove account
+postHandlerSignIn.registerHandlerRemoveAccountPost(app);
 // update user settings
 postHandlerSettings.registerHandlerUserSettingsPost(app);
 // add new geo data to DB (recording of track)
-postHandlerGeodata.registerHandlerGeodataPost(app);
+postHandlerGeodata.registerHandlerGeodataAddPost(app);
+// remove geo data to DB (recording of track)
+postHandlerGeodata.registerHandlerGeodataRemovePost(app);
 // publish/snap tracks
 postHandlerPublish.registerHandlerPublishPost(app);
 

@@ -30,7 +30,7 @@ function sendGeodataUpoadQueue(){
 
 function sendGeodataListToServer( geodataList ){
     if(navigator.onLine){
-        $.post('/geodata', { geoDataMany: geodataList }
+        $.post('/geodataAdd', { geoDataMany: geodataList }
         )
         .done(function(msg){
             var messageText = msg.success;
@@ -53,6 +53,36 @@ function sendGeodataListToServer( geodataList ){
             }
         });
     }    
+}
+
+function removeGeodataFromServer(geodata, userId, displayName, polyline){
+    var geoDataTimestamp=[];
+    if(!geodata || geodata.length===0){
+        return;
+    }
+    // get the list of timestamps
+    for(var i=0, len_i=geodata.length; i<len_i;i++){
+        geoDataTimestamp.push(geodata[i].timestamp);
+    }
+    // show busy indicator
+    showGeodataReloadSpinner();
+    $.post('/geodataRemove', { userId: userId,
+                               displayName: displayName,
+                               geoDataTimestamp: geoDataTimestamp }
+    )
+    .done(function(msg){
+        // hide busy indicator
+        hideGeodataReloadSpinner();
+        // remove deleted tracks from map
+        polyline.setMap(null);
+    })
+    .fail(function(xhr, statusText, err){
+        // hide busy indicator
+        hideGeodataReloadSpinner();
+        var currentText = $("#messageArea").text();
+        var messageText = currentText + ' ------------> ' + 'Error: '+err;
+        $("#messageArea").text(messageText);
+    });
 }
 
 function geoDataUploader(){
@@ -91,5 +121,11 @@ function getGeoDataFromServer(userId, accountType, accessToken, tracksToShow) {
 }
 
 function removeSelectedTracks(){
-    alert("Remove selected tracks: Under construction, will be added in a few days ... we aplogize");
+    if(!signedInUserId) return;
+
+    for(var i=0, len_i=userPaths.length;i<len_i;i++){
+        if(userPaths[i].selected){
+            removeGeodataFromServer(userPaths[i].geoPoints, userPaths[i].userId, userPaths[i].displayName, userPaths[i].polyline);
+        }
+    }
 }

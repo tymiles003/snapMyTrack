@@ -284,7 +284,7 @@ function updateCurrentTrackOnMap(currentPosition){
             lat: parseFloat(currentPosition.coords.latitude),
             lng: parseFloat(currentPosition.coords.longitude)
           });
-        addUserPath(coordinates, null, null, true, signedInUserId, userDisplayName);
+        addUserPath(coordinates, null, null, null, true, signedInUserId, userDisplayName);
     }
     else{
         // add point to track
@@ -350,7 +350,7 @@ function isTrackEnd(previousGeoPoint, currentGeoPoint){
     return trackEnd;
 }
 
-function addUserPath( userCoordinates, trackInfo, trackNumber, isCurrentTrack, userId, displayName){
+function addUserPath( userCoordinates, geoPointsOfTrack, trackInfo, trackNumber, isCurrentTrack, userId, displayName){
     var trackColor;
     var displayText = displayName;
     if(!displayText){
@@ -389,7 +389,8 @@ function addUserPath( userCoordinates, trackInfo, trackNumber, isCurrentTrack, u
                          selected: false,
                          trackColor: trackColor,
                          userId: userId,
-                         displayName: displayName
+                         displayName: displayName,
+                         geoPoints: geoPointsOfTrack
         };
     }
     else{
@@ -398,7 +399,8 @@ function addUserPath( userCoordinates, trackInfo, trackNumber, isCurrentTrack, u
                          selected: false,
                          trackColor: trackColor,
                          userId: userId,
-                         displayName: displayName
+                         displayName: displayName,
+                         geoPoints: geoPointsOfTrack
         });
     }
 }
@@ -458,12 +460,13 @@ function renderMap(center, currentPosition, geoPoints, trackInfo, mapTypeId, tra
     userPaths=[];
     var previousGeoPoint;
     var userCoordinates=[];
+    var geoPointsOfTrack=[];
     if(geoPoints && geoPoints.length>0){
         for(var i=0,len=geoPoints.length;i<len;i++){
             if( previousGeoPoint && previousGeoPoint.trackNumber !== geoPoints[i].trackNumber ){
 //            if( isTrackEnd(previousGeoPoint, geoPoints[i]) ){
                 if(userCoordinates.length > 1){
-                    addUserPath(userCoordinates, geoPoints[i].trackInfo, geoPoints[i].trackNumber, false, geoPoints[i].userId, geoPoints[i].displayName);
+                    addUserPath(userCoordinates, geoPointsOfTrack, geoPoints[i].trackInfo, geoPoints[i].trackNumber, false, geoPoints[i].userId, geoPoints[i].displayName);
                 }
                 else if (userCoordinates.length === 1){
                     // only one point, display a marker instead of a path
@@ -471,17 +474,23 @@ function renderMap(center, currentPosition, geoPoints, trackInfo, mapTypeId, tra
                 }
                 previousGeoPoint=null;
                 userCoordinates=[];
+                geoPointsOfTrack=[];
             }
             
             userCoordinates.push( {
                 lat: parseFloat(geoPoints[i].latitude),
                 lng: parseFloat(geoPoints[i].longitude)
             });
+            geoPointsOfTrack.push({userId: geoPoints[i].userId,
+                                   timestamp: geoPoints[i].timestamp,
+                                   latitude: geoPoints[i].latitude,
+                                   longitude: geoPoints[i].longitude
+            });
 
             // always make sure to display last track
             if( i+1 === geoPoints.length ){
                 if(userCoordinates.length > 1){
-                    addUserPath(userCoordinates, geoPoints[i].trackInfo, geoPoints[i].trackNumber, false, geoPoints[i].userId, geoPoints[i].displayName);
+                    addUserPath(userCoordinates, geoPointsOfTrack, geoPoints[i].trackInfo, geoPoints[i].trackNumber, false, geoPoints[i].userId, geoPoints[i].displayName);
                 }
                 else if (userCoordinates.length === 1){
                     // only one point, display a marker instead of a path

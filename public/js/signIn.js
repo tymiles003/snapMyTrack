@@ -17,7 +17,13 @@ function launchSignInPage(){
 }
 
 function removeAccount(){
-    alert("Remove account: Under construction, will be added in a few days ... we aplogize");
+    if(userAccountType === 'PASSWORD'){
+        var password = document.getElementById('passwordInput').value;
+        removeUserAccountFromServer(userAccountType, signedInUserId, password, userDisplayName);
+    }
+    else{
+        removeUserAccountFromServer(userAccountType, signedInUserId, null, userDisplayName);
+    }
 }
 
 function sendLogonDataToServer(accountType, userId, password, accessToken, callback) {
@@ -115,4 +121,41 @@ function sendPasswordForgottenEmail(){
     
     // close popin
     togglePasswordForgotten();
+}
+
+function removeUserAccountFromServer(accountType, userId, password, displayName){
+    var userAccountData = { 'accountType': accountType,
+                            'userId': userId,
+                            'password': password,
+                            'displayName' : displayName
+    };
+    
+    // show busy indicator
+    showGeodataReloadSpinner();
+
+    $.post('/accountRemove', userAccountData)
+    .done(function(response){
+        // hide busy indicator
+        hideGeodataReloadSpinner();
+        var messageText = response.success;
+        if(response.data && response.data.length>0){
+            messageText += '\n' + JSON.stringify(response.data);
+        }
+        $("#messageArea").text(messageText);
+        serverUserChangeCallback(accountType, userId, response.data);
+    })
+    .fail(function(xhr, statusText, err){
+        // hide busy indicator
+        hideGeodataReloadSpinner();
+        var currentText = $("#messageArea").text();
+        var messageText = currentText + ' ------------> ' + 'Error: '+err;
+        $("#messageArea").text(messageText);
+        serverUserChangeCallback(accountType, userId, null);
+    });
+    
+    var messageText = 'Remove account of user ' + userData.userId;
+    $("#messageArea").text(messageText);
+    if(isDevelopment_mode){
+        showMessageLog(true);
+    }
 }
