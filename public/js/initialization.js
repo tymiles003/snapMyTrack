@@ -54,7 +54,6 @@ document.getElementById('passwordForgottenEmail').onkeydown=resetPasswordEnter;
 document.getElementById('userAccountChangeNameInput').onkeydown=displayNameEnter;
 document.getElementById('userAccountChangePictureUrlInput').onkeydown=pictureUrlEnter;
 
-
 function resizePage(){
     if(!serverLoginRunning && !userIsSignedIn){
         if(document.getElementById("GoogleMapsCanvas").style.visibility === 'hidden'
@@ -427,7 +426,7 @@ function initializeGoogle() {
 function getGoogleLoginStatus(callback, immediate){
     window.setTimeout( function(){
         var clientId = '444771318616-gfpg8jouu25l05frrtrj8l3len0ei8pr.apps.googleusercontent.com';
-        var scopes = 'https://www.googleapis.com/auth/plus.me';
+        var scopes = 'https://www.googleapis.com/auth/plus.me, https://www.googleapis.com/auth/userinfo.email';
         gapi.auth.authorize({   client_id: clientId,
                                 scope: scopes,
                                 immediate: immediate
@@ -443,7 +442,11 @@ function handleGoogleAuthResult(authResult) {
     if (authResult && !authResult.error) {
         userAccountType = 'GOOGLE';
         makeGoogleApiCall();
-    } else {
+    }
+    else if(authResult && authResult.error==="immediate_failed" && authResult.error_subtype==="access_denied"){
+        // ToDo
+    }
+    else {
         if(!userIsSignedIn && !serverLoginRunning){
             authorizeWithGoogleButton.onclick = googelLoginButtonClick;
             authorizeWithGoogleButton.style.visibility = '';
@@ -597,7 +600,8 @@ function makeGoogleApiCall() {
         request.then(function(resp) {
             if(!userIsSignedIn){    // make sure we not already looged in with GOOGLE, WINDOWSLIVE, ...
                 // log-in SnapMyTrack server
-                serverLoginSend( 'GOOGLE', resp.result.id, resp.result.displayName, resp.result.image.url, accessTokenFromUrl);
+                var email = "";   // ToDo
+                serverLoginSend( 'GOOGLE', resp.result.id, resp.result.displayName, resp.result.image.url, email, accessTokenFromUrl);
             }
         }, function(reason) {
             console.log('Error: ' + reason.result.error.message);
@@ -671,21 +675,19 @@ function facebookLoginStatusCallbackForManualLogon(response) {
             facebookLoginCallback(response);
         }
         else{
-            FB.login(facebookLoginCallback);
+            FB.login(facebookLoginCallback, {scope:'email,user_friends'});
         }
     }
 }
 
 function makeFacebookApiCall() {
-    FB.api('/me', function(response) {
+    FB.api('/me?fields=name,email,picture', function(response) {
         var displayName = response.name;
         var userId = response.id;
-        FB.api('/me/picture', function(response) {
-            if(!userIsSignedIn){    // make sure we not already looged in with GOOGLE, WINDOWSLIVE, ...
-                // log-in SnapMyTrack server
-                serverLoginSend( 'FACEBOOK', userId, displayName, response.data.url, accessTokenFromUrl );
-            }
-        });
+        if(!userIsSignedIn){    // make sure we not already looged in with GOOGLE, WINDOWSLIVE, ...
+            // log-in SnapMyTrack server
+            serverLoginSend( 'FACEBOOK', userId, displayName, response.picture.data.url, response.email, accessTokenFromUrl );
+        }
     });
 }
 
@@ -705,6 +707,9 @@ function facebookLoginStatusCallback(response){
         if (response.status === 'connected') {
             userAccountType = 'FACEBOOK';
             makeFacebookApiCall();
+        }
+        else if(response.status === "not_authorized"){
+            FB.getLoginStatus(facebookLoginStatusCallbackForManualLogon);
         }
         else {
             var authorizeWithFacebookButton = document.getElementById('authorizeWithFacebookBtn');
@@ -761,14 +766,15 @@ function makeWindowsLiveApiCall() {
                 function(pictureResponse){
                     if(!userIsSignedIn){    // make sure we not already looged in with GOOGLE, WINDOWSLIVE, ...
                         // log-in SnapMyTrack server
-                        serverLoginSend( 'WINDOWSLIVE', userId, displayName, pictureResponse.location, accessTokenFromUrl);
+                        var email="";    // ToDo
+                        serverLoginSend( 'WINDOWSLIVE', userId, displayName, pictureResponse.location, email, accessTokenFromUrl);
                     }
                 },
                 function(pictureResponseFailed){
                     if(!userIsSignedIn){    // make sure we not already looged in with GOOGLE, WINDOWSLIVE, ...
                         console.log('WL.api(me/picture) error: ', responseFailed);
                         // log-in SnapMyTrack server
-                        serverLoginSend( 'WINDOWSLIVE', userId, displayName, null, accessTokenFromUrl);
+                        serverLoginSend( 'WINDOWSLIVE', userId, displayName, null, null, accessTokenFromUrl);
                     }
                 }
             );
@@ -794,6 +800,9 @@ function windowsLiveLoginStatusCallback(response){
         if (response.status === 'connected') {
             userAccountType = 'WINDOWSLIVE';
             makeWindowsLiveApiCall();
+        }
+        else if(response.status === "not_authorized"){
+            // ToDo
         }
         else {
             if(!userIsSignedIn && !serverLoginRunning){
@@ -1063,7 +1072,7 @@ function serverLoginCallback(response){
     }
 }
 
-function serverLoginSend(accountType, userId, displayName, pictureUrl, accessToken){
+function serverLoginSend(accountType, userId, displayName, pictureUrl, email, accessToken){
     if(!serverLoginRunning){
         // show user data
         userAccountType = accountType;
@@ -1175,7 +1184,7 @@ window.onload = function() {
             // one-time access, no sign in needed
             //  - show register button to become a snapMyTrack user
             //  - show info messages, when clicking "Record" or "Publish"
-            serverLoginSend("", "", "", "", accessTokenFromUrl);            
+            serverLoginSend("", "", "", "", "", accessTokenFromUrl);            
         }    
         else if( getUserParameter('accountType') === "PASSWORD" ){
             // sign-in via email/password
