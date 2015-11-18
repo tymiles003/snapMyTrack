@@ -424,12 +424,13 @@ function initializeGoogle() {
 }
 
 function getGoogleLoginStatus(callback, immediate){
+    // set immediate = false to show oAuth popup
     window.setTimeout( function(){
         var clientId = '444771318616-gfpg8jouu25l05frrtrj8l3len0ei8pr.apps.googleusercontent.com';
-        var scopes = 'https://www.googleapis.com/auth/plus.me, https://www.googleapis.com/auth/userinfo.email';
-        gapi.auth.authorize({   client_id: clientId,
-                                scope: scopes,
-                                immediate: immediate
+        var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email';
+        gapi.auth.authorize({ client_id: clientId,
+                              scope: scopes,
+                              immediate: immediate
                             },
                             callback);
     }
@@ -444,7 +445,13 @@ function handleGoogleAuthResult(authResult) {
         makeGoogleApiCall();
     }
     else if(authResult && authResult.error==="immediate_failed" && authResult.error_subtype==="access_denied"){
-        // ToDo
+        userAccountType = 'GOOGLE';
+        if( !googleInitDone ){
+            googleApiLoadAndSignIn();
+        }
+        else{
+            getGoogleLoginStatus(handleGoogleAuthResult, false);
+        }
     }
     else {
         if(!userIsSignedIn && !serverLoginRunning){
@@ -599,8 +606,14 @@ function makeGoogleApiCall() {
         });
         request.then(function(resp) {
             if(!userIsSignedIn){    // make sure we not already looged in with GOOGLE, WINDOWSLIVE, ...
+                var email = "";
+                for(var i=0,len_i=resp.result.emails.length;i<len_i;i++){
+                    if(resp.result.emails[i].type === "account"){
+                        email = resp.result.emails[i].value;
+                        break;
+                    }
+                }
                 // log-in SnapMyTrack server
-                var email = "";   // ToDo
                 serverLoginSend( 'GOOGLE', resp.result.id, resp.result.displayName, resp.result.image.url, email, accessTokenFromUrl);
             }
         }, function(reason) {
@@ -747,7 +760,8 @@ function windowsLiveLoginButtonClick(){
         windowsLiveApiLoadAndSignIn();
     }
     else{
-        WL.login(windowsLiveLoginCallback);
+        var scope = {scope:["wl.signin", "wl.basic", "wl.emails"]};
+        WL.login(scope, windowsLiveLoginCallback);
     }
 }
 
@@ -759,6 +773,13 @@ function makeWindowsLiveApiCall() {
         function (response){
             var userId = response.id;
             var displayName = response.name;    //  response.first_name, response.last_name
+            var email = "";
+            if(response.emails.preferred){
+                email = response.emails.preferred;
+            }
+            else if(response.emails.account){
+                email = response.emails.account;
+            }
             WL.api({
                 path: "me/picture",
                 method: "GET"
@@ -766,7 +787,6 @@ function makeWindowsLiveApiCall() {
                 function(pictureResponse){
                     if(!userIsSignedIn){    // make sure we not already looged in with GOOGLE, WINDOWSLIVE, ...
                         // log-in SnapMyTrack server
-                        var email="";    // ToDo
                         serverLoginSend( 'WINDOWSLIVE', userId, displayName, pictureResponse.location, email, accessTokenFromUrl);
                     }
                 },
@@ -774,7 +794,7 @@ function makeWindowsLiveApiCall() {
                     if(!userIsSignedIn){    // make sure we not already looged in with GOOGLE, WINDOWSLIVE, ...
                         console.log('WL.api(me/picture) error: ', responseFailed);
                         // log-in SnapMyTrack server
-                        serverLoginSend( 'WINDOWSLIVE', userId, displayName, null, null, accessTokenFromUrl);
+                        serverLoginSend( 'WINDOWSLIVE', userId, displayName, null, email, accessTokenFromUrl);
                     }
                 }
             );
@@ -801,8 +821,9 @@ function windowsLiveLoginStatusCallback(response){
             userAccountType = 'WINDOWSLIVE';
             makeWindowsLiveApiCall();
         }
-        else if(response.status === "not_authorized"){
-            // ToDo
+        else if(response.status === "notConnected"){
+            var scope = {scope:["wl.signin", "wl.basic", "wl.emails"]};
+            WL.login(scope, windowsLiveLoginCallback);
         }
         else {
             if(!userIsSignedIn && !serverLoginRunning){
@@ -828,13 +849,11 @@ function facebookApiLoadAndSignIn(){
 }
 
 function googleApiLoadAndSignIn(){
-// src="https://apis.google.com/js/client.js?onload=googleLoaded"></script>  -->
     if(!googleInitDone){
         // show oAuth sign-in info/spinner
         showSignInOauthInfo();
         $.ajaxSetup({ cache: true });
         $.getScript('https://apis.google.com/js/client:plusone.js?onload=googleApiSignIn', function(){
-//        $.getScript('//apis.google.com/js/client.js?onload=googleApiSignIn', function(){
             googleApiSignIn();
         });
         $.ajaxSetup({ cache: true });
