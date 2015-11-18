@@ -94,7 +94,7 @@ body{
 .introPageOverlaySmall{
     font-size: 125%;
     margin-top: 0.5em;
-    margin-left: 0.868686em;
+    margin-left: 0.425em;
 }
 .introPageOverlayHideLeftBgrImg{
     position: absolute; 
@@ -106,12 +106,16 @@ body{
     height:25.0em;
 }
 .hugeTitle{
-    font-size: 175%;
+    font-size: 200%;
     color:#EFEFEF;
 }
 .smallTitle{
-    font-size: 100%;
+    font-size: 115%;
     color:#EFEFEF;
+}
+.tinyTitle{
+    font-size: 65%;
+    color:#BFBFBF;
 }
 .overlay{
     position: absolute; 
@@ -381,37 +385,65 @@ body{
     margin-top:1.00em;
 }
 .authorizeWithFacebookBtn{
-    width: 18.3em;
-    height: 3.20em;
-    margin-left: 0.39em;
-    background: url('../icon/signIn/facebookSignIn.png');
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-}
-/* .authorizeWithFacebookBtn:hover,
-.authorizeWithFacebookBtn:active{
-	background: #b8b8b8;
-	border: 1px solid #b8b8b8;
-    transition: background-color 0.3s ease-in, color 0.3s ease-in;
-} */
-.authorizeWithGoogleBtn{
-    width: 19.1em;
-    height: 4.00em;
-    margin-left: 0;
-    background: url('../icon/signIn/btn_google+_signin_dark_normal_web.png');
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-}
-/*.authorizeWithGoogleBtn:hover,
-.authorizeWithGoogleBtn:active{
-	background: #b8b8b8;
-	border: 1px solid #b8b8b8;
-    transition: background-color 0.3s ease-in, color 0.3s ease-in;
-} */
-.authorizeWithWindowsBtn{
     width: 18.25em;
     height: 3.20em;
     margin-left: 0.345em;
+    margin-bottom: 0.35em;
+    background: #3b5998;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    border: 1px solid #3b5998;
+    border-radius: 2.5px;
+}
+.authorizeWithFacebookBtnImg{
+    width: 2.10em;
+    height: 2.10em;
+    background: url('../icon/signIn/facebookLogo.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    margin-left:0.43em;
+    margin-right:0.50em;
+    margin-top:0.50em;
+}
+.authorizeWithFacebookBtnLabel{
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 130%;
+    color: #FFFFFF;
+    padding-bottom: 0.2em;
+}
+.authorizeWithGoogleBtn{
+    width: 18.20em;
+    height: 3.20em;
+    margin-left: 0.40em;
+    margin-bottom: 0.35em;
+    background: #cf3c28;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    border: 1px solid #cf3c28;
+    border-radius: 2.5px;
+}
+.authorizeWithGoogleBtnImg{
+    width: 2.10em;
+    height: 2.10em;
+    background: url('../icon/signIn/g+icon_red.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    margin-left:0.43em;
+    margin-right:0.50em;
+    margin-top:0.50em;
+}
+.authorizeWithGoogleBtnLabel{
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 130%;
+    color: #FFFFFF;
+    padding-bottom: 0.2em;
+}
+.authorizeWithWindowsBtn{
+    width: 18.20em;
+    height: 3.20em;
+    margin-left: 0.375em;
     margin-bottom: 0.35em;
     background: #6a797e;
     background-repeat: no-repeat;
@@ -419,12 +451,6 @@ body{
     border: 1px solid #6a797e;
     border-radius: 2.5px;
 }
-/* .authorizeWithWindowsBtn:hover,
-.authorizeWithWindowsBtn:active{
-	background: #b8b8b8;
-	border: 1px solid #b8b8b8;
-    transition: background-color 0.3s ease-in, color 0.3s ease-in;
-} */
 .authorizeWithWindowsBtnImg{
     width: 2.10em;
     height: 2.10em;
@@ -440,21 +466,21 @@ body{
     vertical-align: middle;
     font-size: 130%;
     color: #FFFFFF;
+    padding-bottom: 0.2em;
 }
 .authorizeWithMailPassword{
-    width: 12.40em;
+    width: 10.15em;
     height: 1.35em;
     background: #ffc93b;
     background-repeat: no-repeat;
     background-size: 100% 100%;
     color:#FFFFFF;
     font-size: 145%;
-    margin-left:0.2em;
+    margin-left:0.275em;
     padding-top: 0.60em;
-    padding-bottom: 0.45em;
-    padding-left: 0.10em;
+    padding-bottom: 0.2em;
+    padding-left: 2.30em;
     padding-right: 0.10em;
-    text-align: center;
     border: 1px solid #ffc93b;
     border-radius: 2.5px;
 }
@@ -481,7 +507,7 @@ body{
     border-radius: 4.5px;
 }
 .emailInputPopin{
-    width: 10.50em;
+    width: 8.50em;
     font-size: 150%;
     margin-bottom: 0.3em;
     margin-right: 0;
@@ -492,6 +518,10 @@ body{
     text-align: center;
     border: 1px solid #FFFFFF;
     border-radius: 4.5px;
+}
+.socialSendBtn{
+    width: 2.50em;
+    height: 2.50em;
 }
 .passwordInputSmall{
     width: 16.0em;

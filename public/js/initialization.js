@@ -25,6 +25,7 @@ $('#passwordForgottenSendBtn').click(sendPasswordForgottenEmail);
 $('#publishBtn').click(togglePublish);
 $('#publishSend').click(publish);
 $('#publishCloseBtn').click(togglePublish);
+$('#socialSendBtn').click(facebookSend);
 $('#messageAreaCloseBtn').click(toggleMessageLog);
 $('#messageAreaGotoSingInScreenBtn').click(toggleMessageLogSignIn);
 $('#messageAreaGotoSingInCloseScreenBtn').click(toggleMessageLogSignIn);
@@ -694,6 +695,7 @@ function facebookLoginStatusCallbackForManualLogon(response) {
 }
 
 function makeFacebookApiCall() {
+    // get name, picture and email
     FB.api('/me?fields=name,email,picture', function(response) {
         var displayName = response.name;
         var userId = response.id;
@@ -702,6 +704,16 @@ function makeFacebookApiCall() {
             serverLoginSend( 'FACEBOOK', userId, displayName, response.picture.data.url, response.email, accessTokenFromUrl );
         }
     });
+    // get Facebook friends (contact info) -> needed to publish tracks
+/*    FB.api('me/invitable_friends', function(response) {
+        var displayName = response;
+    });
+    FB.api('me/taggable_friends', function(response) {
+        var displayName = response;
+    });
+    FB.api('me/friends', function(response) {
+        var displayName = response;
+    });   */
 }
 
 function facebookLoginCallback(response){

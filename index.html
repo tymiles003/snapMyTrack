@@ -35,6 +35,7 @@
     <script type="text/javascript" src="public/js/uiHelper.js"></script>
     <script type="text/javascript" src="public/js/signIn.js"></script>
     <script type="text/javascript" src="public/js/publishHelper.js"></script>
+    <script type="text/javascript" src="public/js/socialShare.js"></script>
     <script type="text/javascript" src="public/js/messageLog.js"></script>
   </head>
   <body>
@@ -65,8 +66,9 @@
         <div id="publishCloseBtn" class="buttonPublishClose"></div>
         <div class="popinLongtextBig">We send an email with a link.</div>
         <div class="popinLongtextVerySmall">Not a SnapMyTrack user? ... they can also see your shared track.</div>
-        <div>
+        <div id="socialPublish" class="horizontalContainer">
             <input id="publishEmailInput" class="emailInputPopin publishInput" placeholder="Email">
+            <div id="socialSendBtn" class="socialSendBtn"></div>
         </div>
         <div class="popinLongtextBig">How long to publish?</div>
         <select id="publishPeriodSelect" class="mySelect">
@@ -164,13 +166,23 @@
         </div>
         <div id="introPageOverlaySmall" class="introPageOverlaySmall isInvisible">
             <div class="smallTitle">Share your location</div>
-            <div>with family, friends ... the world</div>  
-            <div>simple and secure</div>
+            <div class="tinyTitle">with family, friends ... the world</div>  
+            <div class="tinyTitle">simple and secure</div>
         </div>
         <!-- Login -->
         <div id="authorizeFrame" class="authorizeFrame">
-            <div id="authorizeWithFacebookBtn" class="authorizeWithFacebookBtn"></div>
-            <div id="authorizeWithGoogleBtn" class="authorizeWithGoogleBtn"></div>
+            <div id="authorizeWithFacebookBtn" class="authorizeWithFacebookBtn horizontalContainer">
+                <div id="authorizeWithFacebookBtnImg" class="authorizeWithFacebookBtnImg"></div>
+                <div>
+                    <p id="authorizeWithFacebookBtnLabel" class="authorizeWithFacebookBtnLabel">Sign in with Facebook</p>
+                </div>
+            </div>
+            <div id="authorizeWithGoogleBtn" class="authorizeWithGoogleBtn horizontalContainer">
+                <div id="authorizeWithGoogleBtnImg" class="authorizeWithGoogleBtnImg"></div>
+                <div>
+                    <p id="authorizeWithGoogleBtnLabel" class="authorizeWithGoogleBtnLabel">Sign in with Google</p>
+                </div>
+            </div>
             <div id="authorizeWithWindowsBtn" class="authorizeWithWindowsBtn horizontalContainer">
                 <div id="authorizeWithWindowsBtnImg" class="authorizeWithWindowsBtnImg"></div>
                 <div>
@@ -220,7 +232,7 @@
 			<div class="addressContainer">
       			<a id="linkToDsignMatters" href="http://dsignmatters.com"><img class="designMattersImage" src="public/icon/dsignmatters_icon_round_50.png">DsignMatters</a> , Germany 69190 Walldorf, Zum Brühl 33, Phone: +49-6227-890723, Email: <a class="mailLink" href='mailto://dsignmatters@outlook.com' tabindex=9000>info@dsignmatters.com</a>
 			</div>
-		<div class="footerLine">Last-Updated: November 17th 2015, 11:41 pm</div>
+		<div class="footerLine">Last-Updated: November 18th 2015, 10:52 pm</div>
 		</div>
 	</div>
 

@@ -84,6 +84,5 @@ var server = app.listen(port,ipaddress, function(){
         console.log('-----');
         console.log('Listening on port %d', server.address().port);
         console.log('i.e. Koding:    http://umkk1a021936.michaelbiermann.koding.io:'+server.address().port);
-        console.log('i.e. Nitrous:   http://geotracker-js-131771.nitrousapp.com:'+server.address().port);
         console.log('i.e. Codenvy:   -> for Codenvy see test URL shown in IDE');
    });
