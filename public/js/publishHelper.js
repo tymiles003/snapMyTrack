@@ -1,3 +1,8 @@
+function publishPopinClick(){
+    hideEmailSend();
+    return false;
+}
+
 function togglePublish(){
     // check if sign-in via access token (and w/o oAuth)
     if(!signedInUserId){
@@ -5,9 +10,9 @@ function togglePublish(){
         showMessageLog(false, false, true);
         return;
     }
-
     if($('#publishPopin').hasClass('isInvisible')){
         $('#publishPopin').removeClass('isInvisible');
+        $('#socialSendInfoBtn').click(toggleShareInfo);
     }
     else{
         $('#publishPopin').addClass('isInvisible');

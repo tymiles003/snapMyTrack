@@ -25,16 +25,22 @@ $('#passwordForgottenSendBtn').click(sendPasswordForgottenEmail);
 $('#publishBtn').click(togglePublish);
 $('#publishSend').click(publish);
 $('#publishCloseBtn').click(togglePublish);
-$('#socialSendBtn').click(facebookSend);
+$('#publishPopin').click(publishPopinClick);
+$('#socialShareFacebookBtn').click(facebookSend);
+$('#socialShareGoogleBtn').click(googleSend);
+$('#socialShareEmailBtn').click(toggleEmailSend);
 $('#messageAreaCloseBtn').click(toggleMessageLog);
 $('#messageAreaGotoSingInScreenBtn').click(toggleMessageLogSignIn);
 $('#messageAreaGotoSingInCloseScreenBtn').click(toggleMessageLogSignIn);
 $('#trackLocation').click(sendLocationPeriodically);
 $('#trackLocationStatus').click(sendLocationPeriodically);
-$('#authorizeWithMailPasswordBtn').click(passwordLoginButtonClick);
+$('#authorizeWithEmailBtn').click(passwordLoginButtonClick);
 $('body').click(resetPasswordLogin);
+$('#publishEmailInput').click(function(){return false});    // stop propagation of click event to 'body'
 $('#emailInput').click(function(){return false});    // stop propagation of click event to 'body'
 $('#passwordInput').click(function(){return false});    // stop propagation of click event to 'body'
+$('#publishTrackSelect').click(function(){return false});    // stop propagation of click event to 'body'
+$('#publishPeriodSelect').click(function(){return false});    // stop propagation of click event to 'body'
 $('#userAccountLogout').click(logOut);
 $('#userAccountDisplayName').click(toggleDisplayName);
 $('#userAccountPicture').click(togglePictureUrl);
@@ -128,6 +134,15 @@ function disableUserChange(){
             toggleDisplayName();
         }
     }    
+}
+
+function toggleShareInfo(){
+    if( $('#socialShareInfoFrame').hasClass('isInvisible') ){
+        $('#socialShareInfoFrame').removeClass('isInvisible');
+    }
+    else{
+        $('#socialShareInfoFrame').addClass('isInvisible');
+    }
 }
 
 function toggleDisplayName(){
@@ -961,7 +976,7 @@ function showSignInButtons(){
     document.getElementById('authorizeWithWindowsBtn').onclick = windowsLiveLoginButtonClick;
     document.getElementById('authorizeWithWindowsBtnLabel').onclick = windowsLiveLoginButtonClick;
     // PASSWORD
-    document.getElementById('authorizeWithMailPasswordBtn').style.visibility = '';
+    document.getElementById('authorizeWithEmailBtn').style.visibility = '';
 }
 
 function prepareForSignIn(){
@@ -1044,7 +1059,7 @@ function passwordLoginButtonClick(){
     $('#passwordSend').removeClass('isInvisible');
     document.getElementById('passwordFrame').style.visibility = '';
     $('#passwordFrame').removeClass('isInvisible');
-    document.getElementById('authorizeWithMailPasswordBtn').style.visibility = 'hidden';
+    document.getElementById('authorizeWithEmailBtn').style.visibility = 'hidden';
     document.getElementById('passwordForgotten').onclick = passwordForgotten;
     document.getElementById('passwordSend').onclick = passwordLoginSend;
     hideFooter();
@@ -1064,7 +1079,7 @@ function resetPasswordLogin(){
     }
     if(document.getElementById('passwordFrame').style.visibility === ''){
         if(!serverLoginRunning){
-            document.getElementById('authorizeWithMailPasswordBtn').style.visibility = '';
+            document.getElementById('authorizeWithEmailBtn').style.visibility = '';
         }
         document.getElementById('emailInput').style.visibility = 'hidden';
         document.getElementById('passwordInput').style.visibility = 'hidden';
@@ -1150,7 +1165,7 @@ function prepareSignInCallback(){
     document.getElementById('authorizeWithWindowsBtn').style.visibility = 'hidden';
     document.getElementById('authorizeWithFacebookBtn').style.visibility = 'hidden';
     document.getElementById('authorizeWithGoogleBtn').style.visibility = 'hidden';
-    document.getElementById('authorizeWithMailPasswordBtn').style.visibility = 'hidden';
+    document.getElementById('authorizeWithEmailBtn').style.visibility = 'hidden';
     // hide authorization frame
     document.getElementById('authorizeFrame').style.visibility = 'hidden';
     $('#authorizeFrame').addClass('isInvisible');

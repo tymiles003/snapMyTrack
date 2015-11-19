@@ -64,12 +64,19 @@
 	<!-- publish popin -->
 	<div id='publishPopin' class='popin publishPopin boxShadowPopover isInvisible'>
         <div id="publishCloseBtn" class="buttonPublishClose"></div>
-        <div class="popinLongtextBig">We send an email with a link.</div>
-        <div class="popinLongtextVerySmall">Not a SnapMyTrack user? ... they can also see your shared track.</div>
-        <div id="socialPublish" class="horizontalContainer">
-            <input id="publishEmailInput" class="emailInputPopin publishInput" placeholder="Email">
-            <div id="socialSendBtn" class="socialSendBtn"></div>
+<!--        <div class="popinLongtextBig">We send an email with a link.</div>  -->
+        <div class="popinLongtextBig">We post a link or send an email.</div>
+        <input id="publishEmailInput" class="publishEmailInput emailInputPopin isInvisible" placeholder="Email">
+        <div id="socialPublish" class="socialPublish horizontalContainer">
+            <div id="socialShareFacebookBtn" class="socialShareBtn socialShareFacebookImg"></div>
+            <div id="socialShareGoogleBtn" class="socialShareBtn socialShareGoogleImg"></div>
+            <div id="socialShareEmailBtn" class="socialShareBtn socialShareEmailImg"></div>
+            <div id="socialSendInfoBtn" class="socialShareInfoBtn socialShareInfoImg"></div>
         </div>
+        <div id="socialShareInfoFrame" class="socialShareInfoFrame isInvisible">
+            <div id="socialShareInfo" class="socialShareInfo popinLongtextVerySmall marginTinyBottom">We use offical Facebook/Google modules (emails are sent by sendgrid.com).</div>
+        </div>
+        <div class="popinLongtextVerySmall marginSmallBottom">Not a SnapMyTrack user? ... they can also see your shared track.</div>
         <div class="popinLongtextBig">How long to publish?</div>
         <select id="publishPeriodSelect" class="mySelect">
             <option value="snap" selected>Snap (Show Once)</option>
@@ -90,7 +97,10 @@
             <option value="oneMonth">This Month</option>
             <option value="unlimited">All tracks</option>
         </select>
-        <div id="publishSend" class="publishSend">Send</div>
+        <div id="publishSend" class="publishSend isInvisible">Send</div>
+	</div>
+	<!-- settings popin -->
+	<div id='socialSharePopin' class='popin socialSharePopin boxShadowPopover isInvisible'>
 	</div>
 	<!-- settings popin -->
 	<div id='settingsPopin' class='popin popinUserSetting boxShadowPopover isInvisible'>
@@ -201,7 +211,12 @@
                 </div>
                 <div id="passwordSend" class="passwordSend isInvisible">Send</div>
             </div>
-            <div id="authorizeWithMailPasswordBtn" class="authorizeWithMailPassword">Sign in with Email</div>
+            <div id="authorizeWithEmailBtn" class="authorizeWithEmailBtn horizontalContainer">
+                <div id="authorizeWithEmailBtnImg" class="authorizeWithEmailBtnImg"></div>
+                <div>
+                    <p id="authorizeWithEmailBtnLabel" class="authorizeWithEmailBtnLabel">Sign in with Email</p>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -232,7 +247,7 @@
 			<div class="addressContainer">
       			<a id="linkToDsignMatters" href="http://dsignmatters.com"><img class="designMattersImage" src="public/icon/dsignmatters_icon_round_50.png">DsignMatters</a> , Germany 69190 Walldorf, Zum Brühl 33, Phone: +49-6227-890723, Email: <a class="mailLink" href='mailto://dsignmatters@outlook.com' tabindex=9000>info@dsignmatters.com</a>
 			</div>
-		<div class="footerLine">Last-Updated: November 18th 2015, 10:52 pm</div>
+		<div class="footerLine">Last-Updated: November 19th 2015, 11:22 pm</div>
 		</div>
 	</div>
 

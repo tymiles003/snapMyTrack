@@ -194,9 +194,6 @@ body{
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }
-.publishInput{
-    margin-top:0.5em;
-}
 .messageAreaBtn{
     width: 10.0em;
     background: #ffc93b;
@@ -247,7 +244,7 @@ body{
     text-align: center;
     border: 1px solid #ffc93b;
     border-radius: 2.5px;
-    margin-top: 0.85em;
+    margin-top: 2.00em;
     margin-bottom: 0.3em;
 }
 .userAccountLogout{
@@ -468,21 +465,33 @@ body{
     color: #FFFFFF;
     padding-bottom: 0.2em;
 }
-.authorizeWithMailPassword{
-    width: 10.15em;
-    height: 1.35em;
+.authorizeWithEmailBtn{
+    width: 18.20em;
+    height: 3.20em;
+    margin-left: 0.375em;
+    margin-bottom: 0.35em;
     background: #ffc93b;
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    color:#FFFFFF;
-    font-size: 145%;
-    margin-left:0.275em;
-    padding-top: 0.60em;
-    padding-bottom: 0.2em;
-    padding-left: 2.30em;
-    padding-right: 0.10em;
-    border: 1px solid #ffc93b;
+    border: 1px solid #6a797e;
     border-radius: 2.5px;
+}
+.authorizeWithEmailBtnImg{
+    width: 2.10em;
+    height: 2.10em;
+    background: url('../icon/svg/mail.svg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    margin-left:0.43em;
+    margin-right:0.50em;
+    margin-top:0.50em;
+}
+.authorizeWithEmailBtnLabel{
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 130%;
+    color: #FFFFFF;
+    padding-bottom: 0.2em;
 }
 .passwordFrame{
     width: 17.30em;
@@ -519,9 +528,70 @@ body{
     border: 1px solid #FFFFFF;
     border-radius: 4.5px;
 }
+.marginSmallBottom{
+    font-size: 100%;
+    margin-bottom: 1.50em;
+}
+.marginTinyBottom{
+    font-size: 100%;
+    margin-bottom: 1.00em;
+}
+.socialPublish{
+    margin-top:0.50em;
+    margin-left:1.0em;
+    margin-bottom:0.25em;
+}
 .socialSendBtn{
     width: 2.50em;
     height: 2.50em;
+}
+.socialShareBtn{
+    width: 2.4em;
+    height: 2.4em;
+    margin-right:0.40em;
+}
+.socialShareInfoBtn{
+    width: 2.4em;
+    height: 2.4em;
+    margin-left:1.50em;
+}
+.socialShareInfoFrame{
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4.5px;
+}
+.socialShareInfo{
+    padding: 0.5em;
+}
+.socialShareFacebookImg{
+    width: 2em;
+    height: 2em;
+    background: url('../icon/svg/facebook.svg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+.socialShareGoogleImg{
+    width: 2em;
+    height: 2em;
+    background: url('../icon/svg/google+.svg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+.publishEmailInput{
+    margin-top: 0.3em;
+}
+.socialShareEmailImg{
+    width: 2em;
+    height: 2em;
+    background: url('../icon/svg/mail.svg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+.socialShareInfoImg{
+    width: 0.65em;
+    height: 0.65em;
+    background: url('../icon/svg/info-with-circle.svg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
 }
 .passwordInputSmall{
     width: 16.0em;
