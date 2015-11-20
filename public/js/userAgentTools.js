@@ -13,6 +13,16 @@ function isRunningOnIosDevice(){
     return isIOS; 
 }
 
+function isRunningOnIpad(){
+    var isIpad=false;
+    if(isRunningOnIosDevice()){
+        if($(window).width() === 1024 || $(window).width() === 768)
+        isIpad=true;
+//        alert("w:"+$(window).width() + ", h:"+$(window).height());
+    }
+    return isIpad; 
+}
+
 function isRunningOnAndroidDevice(){
     var isAndroid = false;
     var OS = userAgentParser.getOS();
@@ -84,6 +94,19 @@ function isRunningOnWindows8Device(){
     return isWindows8;
 }
 
+function isRunningOnWindows10Device(){
+    var isWindows10 = false;
+    var OS = userAgentParser.getOS();
+//    alert(JSON.stringify(OS, null, '    '));   // ToDo: Deactivate before shipment
+
+    if(OS.name=='Windows'){
+      if(OS.version == '10.0'){
+        isWindows10=true;        
+      }
+    }
+    return isWindows10;
+}
+
 function isRunningOnWindowsPhone8Device(){
     var isWindowsPhone8 = false;
     var OS = userAgentParser.getOS();
@@ -112,6 +135,18 @@ function isRunningOnKindleFireDevice(){
       isKindleFire = true;
     }
     return isKindleFire;
+}
+
+function isRunningOnMobileDevice(){
+    var isMobileDevice = false;
+    if(isRunningOnIosDevice()
+        || isRunningOnAndroidDevice()
+        || isRunningOnUbuntuTouchDevice()
+        || isRunningOnBlackberryDevice()
+        || isRunningOnWindowsPhone8Device() ){
+      isMobileDevice=true;  
+    }
+    return isMobileDevice;
 }
 
 function isRunningOnChromeBrowser(){

@@ -52,6 +52,18 @@ function googleSend(evt,linkToShare){
     }
  }
 
+function whatsAppSend(evt, linkToShare){
+    if(!linkToShare){
+        getLinkToShare(whatsAppSend);
+    }
+    else{
+        var sendText = "Hi,\n"
+                        + "I have published some of my tracks for you:"
+                        + "\n" + linkToShare;
+        window.open("whatsapp://send?text="+sendText);
+    }
+}
+
 function hideEmailSend(){
     if( !$("#publishEmailInput").hasClass('isInvisible') ){
         toggleEmailSend();

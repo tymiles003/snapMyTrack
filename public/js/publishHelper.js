@@ -13,6 +13,12 @@ function togglePublish(){
     if($('#publishPopin').hasClass('isInvisible')){
         $('#publishPopin').removeClass('isInvisible');
         $('#socialSendInfoBtn').click(toggleShareInfo);
+        if( isRunningOnMobileDevice() && !isRunningOnIpad() ){
+            $('#socialShareWhatsAppBtn').removeClass('isInvisible');
+        }
+        else{
+            $('#socialShareWhatsAppBtn').hide();
+        }
     }
     else{
         $('#publishPopin').addClass('isInvisible');

@@ -28,6 +28,7 @@ $('#publishCloseBtn').click(togglePublish);
 $('#publishPopin').click(publishPopinClick);
 $('#socialShareFacebookBtn').click(facebookSend);
 $('#socialShareGoogleBtn').click(googleSend);
+$('#socialShareWhatsAppBtn').click(whatsAppSend);
 $('#socialShareEmailBtn').click(toggleEmailSend);
 $('#messageAreaCloseBtn').click(toggleMessageLog);
 $('#messageAreaGotoSingInScreenBtn').click(toggleMessageLogSignIn);
@@ -1223,6 +1224,10 @@ function prepareSignInCallback(){
     hideSignInOauthInfo();
     // show sign-in spinner
     showSignInSpinner();
+    // scroll page to the top
+    if(isRunningOnIpad()){
+        window.scrollTo(500, 0);
+    }
 }
 
 function serverUserChangeCallback(accountType, userId, appUser){

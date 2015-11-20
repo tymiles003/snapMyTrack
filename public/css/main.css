@@ -576,6 +576,13 @@ body{
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }
+.socialShareWhatsAppImg{
+    width: 2em;
+    height: 2em;
+    background: url('../icon/svg/whatsapp.svg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
 .publishEmailInput{
     margin-top: 0.3em;
 }
@@ -851,6 +858,10 @@ body{
     margin-top:0.25em;
     font-size: 125%;
 }
+.popinLongtextSmall{
+    margin-top:0.5em;
+    font-size: 85%;
+}
 .popinLongtextVerySmall{
     margin-top:0.5em;
     font-size: 70%;
@@ -958,6 +969,10 @@ body{
     font-size: 160%;
 }
 .isInvisible{
+    display: none;
+    visibility: hidden;
+}
+.isGone{
     display: none;
     visibility: hidden;
 }
