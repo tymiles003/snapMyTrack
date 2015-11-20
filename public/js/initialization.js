@@ -1,6 +1,6 @@
 // initialization
 
-var isDevelopment_mode=false;   // add some dev. info ( success/error messages )
+var isDevelopment_mode=true;   // add some dev. info ( success/error messages )
 var useGeoWatch=false;
 var trackingIsActive=false;
 var serverLoginRunning=false;
@@ -442,9 +442,9 @@ function initializeGoogle() {
 function getGoogleLoginStatus(callback, immediate){
     // set immediate = false to show oAuth popup
     window.setTimeout( function(){
-        var clientId = '444771318616-gfpg8jouu25l05frrtrj8l3len0ei8pr.apps.googleusercontent.com';
+        var googleClientId = '444771318616-gfpg8jouu25l05frrtrj8l3len0ei8pr.apps.googleusercontent.com';
         var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email';
-        gapi.auth.authorize({ client_id: clientId,
+        gapi.auth.authorize({ client_id: googleClientId,
                               scope: scopes,
                               immediate: immediate
                             },
@@ -875,6 +875,19 @@ function facebookApiLoadAndSignIn(){
     }
 }
 
+function facebookApiLoad(callback){
+    if(!fbInitDone){
+        // show oAuth sign-in info/spinner
+        showSignInOauthInfo();
+        $.getScript('//connect.facebook.net/en_US/sdk.js', function(){
+            if(!fbInitDone){
+                initializeFacebook();
+                callback();
+            }
+        });
+    }
+}
+
 function googleApiLoadAndSignIn(){
     if(!googleInitDone){
         // show oAuth sign-in info/spinner
@@ -882,6 +895,19 @@ function googleApiLoadAndSignIn(){
         $.ajaxSetup({ cache: true });
         $.getScript('https://apis.google.com/js/client:plusone.js?onload=googleApiSignIn', function(){
             googleApiSignIn();
+        });
+        $.ajaxSetup({ cache: true });
+    }
+}
+
+function googleApiLoad(callback){
+    if(!googleInitDone){
+        // show oAuth sign-in info/spinner
+        showSignInOauthInfo();
+        $.ajaxSetup({ cache: true });
+        $.getScript('https://apis.google.com/js/client:plusone.js?onload=googleApiSignIn', function(){
+            initializeGoogleMultitry(callback);
+            callback();
         });
         $.ajaxSetup({ cache: true });
     }
@@ -902,6 +928,28 @@ function googleApiSignIn( tryCounter ){
             if( tryCounter<3 ){
                 setTimeout( function(){
                     googleApiSignIn( tryCounter );
+                },
+                1000);
+            }
+        }
+    }
+}
+
+function initializeGoogleMultitry( callback, tryCounter ){
+    if(gapi.client){
+        if(!googleInitDone){
+            initializeGoogle();
+            callback();
+        }
+    }
+    else{
+        if(!googleInitDone){
+            if(!tryCounter){
+                tryCounter=1;
+            }
+            if( tryCounter<3 ){
+                setTimeout( function(){
+                    initializeGoogleMultitry( tryCounter );
                 },
                 1000);
             }

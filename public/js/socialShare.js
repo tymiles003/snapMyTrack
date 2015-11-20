@@ -1,16 +1,55 @@
-function facebookSend(){
-    hideEmailSend();
-    FB.ui({
-        method: 'send',
-        link: 'http://snapmytrack.com/',
-    });
+function getLinkToShare(callback){
+    callback(null,'http://snapmytrack.com/');    
 }
 
-function googleSend(){
-    hideEmailSend();
-    alert('coming soon');
-//    $("#socialSharePopin").removeClass('isInvisible');
-//    gapi.post.render("socialSharePopin", {'href' : 'https://plus.google.com/109813896768294978296/posts/hdbPtrsqMXQ'} );
+function facebookSend(evt,linkToShare){
+    if(!fbInitDone){
+        facebookApiLoad(facebookSend);
+        return;
+    }
+
+    if(!linkToShare){
+        getLinkToShare(facebookSend);
+    }
+    else{
+        hideEmailSend();
+        FB.ui({
+            method: 'send',
+            link: linkToShare,
+        });
+    }
+}
+
+function googleSend(evt,linkToShare){
+    if(!googleInitDone){
+        googleApiLoad(googleSend);
+        return;
+    }
+
+    if(!linkToShare){
+        getLinkToShare(googleSend);
+    }
+    else{
+        var googleClientId = '444771318616-gfpg8jouu25l05frrtrj8l3len0ei8pr.apps.googleusercontent.com';
+        hideEmailSend();
+        setTimeout(function() {
+            var shareOptions = {
+                clientid:           googleClientId,
+                contenturl:         "http://snapmytrack.com",
+                cookiepolicy:       "single_host_origin",
+        //        calltoactionlabel:  "Launch SnapMyTrack",
+                calltoactionurl:    "http://snapmytrack.com",
+                prefilltext: "Hi, I have published some of my tracks for you.",
+                onshare: function(response){
+        //            alert("share callback (G+), status: "+response.status);
+                }
+            };
+            gapi.interactivepost.render("socialSharePopin", shareOptions);
+            setTimeout(function() {
+                $("#socialSharePopin").trigger('click');
+            }, 200);
+        }, 10);
+    }
  }
 
 function hideEmailSend(){
