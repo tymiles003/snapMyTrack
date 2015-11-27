@@ -3,7 +3,7 @@
 
 On the one hand, **'SnapMyTrack'** is a location sharing app (pure html/Javascript),
 on the other hand it is a proof of concept for developing a node.js app with **MongoLab** (http://mongolab.com) integration by using a browser only (i.e. Chromebook). Mail gets sent via **SendGrid** (http://sendgrid.com).
-Up to now it looks like you can built such a app with NO money and finally host it via **OpenShift** (https://www.openshift.com). The only few bucks I spent up to now, was for the domain 'snapmytrack.com' (GoDaddy -> maintain DNS to redirect to OpenShift).
+You can built such a app with NO money and finally host it via **OpenShift** (https://www.openshift.com). The only few bucks I spent up to now, was for the domain 'snapmytrack.com' (GoDaddy -> maintain DNS to redirect to OpenShift).
 
 Development environment:
 - KODING (http://koding.com) -> works best for me, as there are no proxy issues in corporate environments
