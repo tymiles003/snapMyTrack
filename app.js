@@ -79,8 +79,8 @@ else{
   return;
 }
 
-var server = app.listen(port,ipaddress, function(){
-        console.log('Latest official deployment: Openshift: http://geotracker-dsignmatters.rhcloud.com/');
+var server = app.listen(port,ipaddress,function(){
+        console.log('Latest official deployment: http://snapmytrack.com (Openshift: http://geotracker-dsignmatters.rhcloud.com/)');
         console.log('-----');
         console.log('Listening on port %d', server.address().port);
         console.log('i.e. Koding:    http://umkk1a021936.michaelbiermann.koding.io:'+server.address().port);

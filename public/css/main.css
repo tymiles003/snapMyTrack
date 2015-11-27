@@ -150,6 +150,10 @@ body{
     font-size: 225%;
     margin-top: 0.50em;
 }
+.appDisclaimer{
+    font-size: 50%;
+    margin-left:0.5em;
+}
 .titleBar{
     width: calc( 100vw - 1.5em );
 }
@@ -844,7 +848,7 @@ body{
     margin-top: 0.5em;
 }
 .popinUserSetting{
-    opacity:0.71;
+    opacity:0.87;
     padding: 1.5em;
     height: 14em;
     width: 15em;
